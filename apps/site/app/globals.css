@@ -60,7 +60,9 @@
     --switch-thumb: #fbfbfb;
     --switch-thumb-on: #fbfbfb;
     --switch-thumb-border: #f0f0f0;
+    --switch-track: #ebebeb;
     --switch-track-on: #2e2e2e;
+    --switch-track-ring-on: transparent;
     --switch-dot: #ebebeb;
     --switch-dot-on: #2e2e2e;
     --scroll-thumb-hover: rgba(0, 0, 0, 0.28);
@@ -80,19 +82,32 @@
       --code-punct: #5c5c5c;
       --scroll-thumb: rgba(255, 255, 255, 0.18);
       --dot-grid: rgba(255, 255, 255, 0.07);
-      --switch-thumb: #f2f2f2;
-      /* The checked track is near-white in dark, so a near-white thumb on it
-         blends into one pill — the thumb flips dark to stay readable. */
-      --switch-thumb-on: #0c0c0c;
-      /* No ring: bg-layer is #1c1c1c here and drew a dark outline round a
-         light thumb. */
-      --switch-thumb-border: transparent;
-      /* The dot is the track colour showing through the thumb, so it matches
-         the track when the thumb is light and vanishes when the thumb is
-         dark. A light pip on a dark thumb reads as a bullseye. */
-      --switch-track-on: #e2e2e2;
-      --switch-dot: #262626;
-      --switch-dot-on: #0c0c0c;
+      /*
+       * Measured, at last, rather than derived — Figma 26:8685 (on) and
+       * 26:8675 (off), read in the file's dark mode.
+       *
+       * Two things I had backwards. The thumb does not flip: it stays white
+       * in both states and in both themes, and the ring around it is
+       * bg-layer rather than nothing. And the dot is not a hole that has to
+       * disappear — off it is the track showing through, on it is
+       * text-inverse, and it stays visible either way. The on track is
+       * bg-layer, which is *darker* than the off track's bg-subtle: in dark
+       * the state is carried by the thumb's position and the dot, not by
+       * lighting the track up.
+       */
+      --switch-thumb: #ffffff;
+      --switch-thumb-on: #ffffff;
+      /* Backgrounds/bg-layer */
+      --switch-thumb-border: #292929;
+      /* Backgrounds/bg-subtle */
+      --switch-track: #333333;
+      --switch-track-on: #292929;
+      /* Strokes/stroke-soft. An inset ring, not a border: the off track has
+         none, and a border that appears on check would move the thumb. */
+      --switch-track-ring-on: rgba(255, 255, 255, 0.05);
+      --switch-dot: #333333;
+      /* Texts/text-inverse */
+      --switch-dot-on: #171717;
       --scroll-thumb-hover: rgba(255, 255, 255, 0.3);
       color-scheme: dark;
     }
@@ -115,12 +130,32 @@
     --code-punct: #5c5c5c;
     --scroll-thumb: rgba(255, 255, 255, 0.18);
     --dot-grid: rgba(255, 255, 255, 0.07);
-    --switch-thumb: #f2f2f2;
-    --switch-thumb-on: #0c0c0c;
-    --switch-thumb-border: transparent;
-    --switch-track-on: #e2e2e2;
-    --switch-dot: #262626;
-    --switch-dot-on: #0c0c0c;
+    /*
+     * Measured, at last, rather than derived — Figma 26:8685 (on) and
+     * 26:8675 (off), read in the file's dark mode.
+     *
+     * Two things I had backwards. The thumb does not flip: it stays white
+     * in both states and in both themes, and the ring around it is
+     * bg-layer rather than nothing. And the dot is not a hole that has to
+     * disappear — off it is the track showing through, on it is
+     * text-inverse, and it stays visible either way. The on track is
+     * bg-layer, which is *darker* than the off track's bg-subtle: in dark
+     * the state is carried by the thumb's position and the dot, not by
+     * lighting the track up.
+     */
+    --switch-thumb: #ffffff;
+    --switch-thumb-on: #ffffff;
+    /* Backgrounds/bg-layer */
+    --switch-thumb-border: #292929;
+    /* Backgrounds/bg-subtle */
+    --switch-track: #333333;
+    --switch-track-on: #292929;
+    /* Strokes/stroke-soft. An inset ring, not a border: the off track has
+       none, and a border that appears on check would move the thumb. */
+    --switch-track-ring-on: rgba(255, 255, 255, 0.05);
+    --switch-dot: #333333;
+    /* Texts/text-inverse */
+    --switch-dot-on: #171717;
     --scroll-thumb-hover: rgba(255, 255, 255, 0.3);
     color-scheme: dark;
   }
@@ -861,14 +896,19 @@
     pointer-events: auto;
   }
 
+  /*
+   * The popover surface, not the page's. In dark the frame puts the panel at
+   * bg-default #171717 over a darker page, so a menu painted with the page
+   * background is a black card on a black page with a shadow nobody can see.
+   */
   .menu {
     display: flex;
     flex-direction: column;
     width: 223px;
     padding: 8px;
-    border: 1px solid var(--yote-stroke-soft);
+    border: 1px solid var(--yote-popover-border);
     border-radius: 18px;
-    background: var(--yote-bg-default);
+    background: var(--yote-popover-bg);
     box-shadow:
       0 5px 6.5px rgba(0, 0, 0, 0.05),
       0 2px 2px rgba(0, 0, 0, 0.02);
@@ -924,7 +964,7 @@
 
   @media (hover: hover) and (pointer: fine) {
     .menu-item:hover {
-      background: var(--yote-bg-surface);
+      background: var(--yote-popover-active);
     }
   }
 
@@ -953,7 +993,7 @@
 
   @media (hover: hover) and (pointer: fine) {
     .switch-row:hover {
-      background: var(--yote-bg-surface);
+      background: var(--yote-popover-active);
     }
   }
 
@@ -980,8 +1020,10 @@
     width: 36px;
     height: 20px;
     border-radius: 78px;
-    background: var(--yote-bg-subtle);
-    transition: background-color var(--yote-duration) ease;
+    background: var(--switch-track);
+    transition:
+      background-color var(--yote-duration) ease,
+      box-shadow var(--yote-duration) ease;
   }
 
   /*
@@ -1002,8 +1044,11 @@
     border: 0.75px solid var(--switch-thumb-border);
     border-radius: 37px;
     background: var(--switch-thumb);
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
-    transition: transform 200ms var(--yote-ease-out);
+    /* Shadows/shadow-sm, from the frame. */
+    box-shadow: 0 10px 20px 3px rgba(0, 0, 0, 0.04);
+    transition:
+      transform 200ms var(--yote-ease-out),
+      background-color var(--yote-duration) ease;
   }
 
   .switch-dot {
@@ -1015,9 +1060,12 @@
   }
 
   /* A shade off the page's strongest ink, so the on state reads as a control
-     rather than as a hole punched in the row. */
+     rather than as a hole punched in the row. The hairline is an inset
+     shadow rather than a border, because the off track has none and a border
+     appearing on check would shrink the box and nudge the thumb. */
   .switch-input:checked + .switch-track {
     background: var(--switch-track-on);
+    box-shadow: inset 0 0 0 0.75px var(--switch-track-ring-on);
   }
 
   .switch-input:checked + .switch-track .switch-thumb {
