@@ -1,19 +1,12 @@
 'use client'
 
 import * as React from 'react'
-import { Textarea } from 'yote-ui'
+import { PasswordInput } from 'yote-ui'
 import { CodeBlock } from './code-block'
 import { MoreMenu, MorePanel, Toggle } from './more-controls'
 import { Pill } from './state-switcher'
 
-/**
- * The textarea's live preview, built on the same shell as the digit input's.
- *
- * Hover is not a pill. It is a real pointer state on a real element, and a
- * button that fakes it would be lying about what the component does — so the
- * stage says to hover the field instead.
- */
-const STATES = ['idle', 'used', 'error', 'disabled', 'readOnly'] as const
+const STATES = ['idle', 'used', 'error', 'disabled'] as const
 type StateKey = (typeof STATES)[number]
 
 const SIZES = ['sm', 'md', 'lg'] as const
@@ -24,44 +17,30 @@ const LABELS: Record<StateKey, string> = {
   used: 'Used',
   error: 'Error',
   disabled: 'Disabled',
-  readOnly: 'Read only',
 }
 
-const SEED = 'Twelve chars'
-const ERROR_TEXT = 'That entry is incorrect. Try again.'
+const SEED = 'Passw0rd!'
+const ERROR_TEXT = 'That password is incorrect. Try again.'
 
-type Flags = {
-  required: boolean
-  optional: boolean
-  info: boolean
-  label: boolean
-  hint: boolean
-  counter: boolean
-  resize: boolean
-}
+type Flags = { info: boolean; forgot: boolean; requirements: boolean; reveal: boolean }
 
 function snippetFor(state: StateKey, size: Size, value: string, f: Flags): string {
-  const props = [`size="${size}"`]
-  if (f.label) props.push('label="Input area"')
-  if (f.required) props.push('required')
-  if (f.optional) props.push('optional')
-  if (f.info) props.push('info="We only use this to improve the product."')
+  const props = [`size="${size}"`, 'label="Password"']
   if (value) props.push(`defaultValue="${value}"`)
-  if (f.counter) props.push('maxLength={200}')
-  else props.push('showCounter={false}')
-  if (!f.resize) props.push('resizable={false}')
+  if (f.info) props.push('info="Use something you have not used elsewhere."')
+  if (f.forgot) props.push('forgotHref="/reset"')
+  if (!f.requirements) props.push('showRequirements={false}')
+  if (!f.reveal) props.push('revealable={false}')
   if (state === 'error') props.push(`error="${ERROR_TEXT}"`)
-  else if (f.hint) props.push('hint="This is a hint text to help users."')
   if (state === 'disabled') props.push('disabled')
-  if (state === 'readOnly') props.push('readOnly')
 
-  return `<Textarea\n${props.map((p) => `  ${p}`).join('\n')}\n/>`
+  return `<PasswordInput\n${props.map((p) => `  ${p}`).join('\n')}\n/>`
 }
 
-export function TextareaPreview({
+export function PasswordPreview({
   title,
   description,
-  docsHref = '/docs/textarea',
+  docsHref = '/docs/password',
 }: {
   title?: string
   description?: string
@@ -71,16 +50,11 @@ export function TextareaPreview({
   const [state, setState] = React.useState<StateKey>('idle')
   const [size, setSize] = React.useState<Size>('md')
   const [value, setValue] = React.useState('')
-  /* One object rather than seven useStates — these are read together by the
-     snippet and the field, and never independently. */
   const [flags, setFlags] = React.useState<Flags>({
-    required: true,
-    optional: true,
     info: true,
-    label: true,
-    hint: true,
-    counter: true,
-    resize: true,
+    forgot: true,
+    requirements: true,
+    reveal: true,
   })
   const set = (key: keyof Flags) => (next: boolean) => setFlags((f) => ({ ...f, [key]: next }))
 
@@ -123,34 +97,29 @@ export function TextareaPreview({
       </div>
 
       <MorePanel open={paramsOpen}>
-        <Toggle label="Important" checked={flags.required} onChange={set('required')} />
-        <Toggle label="Optional" checked={flags.optional} onChange={set('optional')} />
-        <Toggle label="Show label" checked={flags.label} onChange={set('label')} />
         <Toggle label="Show info icon" checked={flags.info} onChange={set('info')} />
-        <Toggle label="Show hint" checked={flags.hint} onChange={set('hint')} />
-        <Toggle label="Show counter" checked={flags.counter} onChange={set('counter')} />
-        <Toggle label="Show resize handle" checked={flags.resize} onChange={set('resize')} />
+        <Toggle label="Show forgot link" checked={flags.forgot} onChange={set('forgot')} />
+        <Toggle
+          label="Show requirements"
+          checked={flags.requirements}
+          onChange={set('requirements')}
+        />
+        <Toggle label="Show reveal toggle" checked={flags.reveal} onChange={set('reveal')} />
       </MorePanel>
 
-      <div className="stage stage-tall">
+      <div className="stage stage-taller">
         <div className="stage-inner">
-          <Textarea
+          <PasswordInput
             size={size}
-            label={flags.label ? 'Input area' : undefined}
-            required={flags.required}
-            optional={flags.optional}
-            info={flags.info ? 'We only use this to improve the product.' : undefined}
-            maxLength={flags.counter ? 200 : undefined}
-            showCounter={flags.counter}
-            resizable={flags.resize}
+            label="Password"
+            info={flags.info ? 'Use something you have not used elsewhere.' : undefined}
+            forgotHref={flags.forgot ? '/reset' : undefined}
+            showRequirements={flags.requirements}
+            revealable={flags.reveal}
             value={value}
             onChange={setValue}
-            hint={
-              state === 'error' || !flags.hint ? undefined : 'This is a hint text to help users.'
-            }
             error={state === 'error' ? ERROR_TEXT : undefined}
             disabled={state === 'disabled'}
-            readOnly={state === 'readOnly'}
           />
         </div>
       </div>

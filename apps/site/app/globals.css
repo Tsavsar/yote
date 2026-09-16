@@ -51,7 +51,7 @@
     --code-punct: #b4b4b4;
     --page-max: 650px;
     --scroll-thumb: rgba(0, 0, 0, 0.16);
-    --dot-grid: #f0f0f0;
+    --dot-grid: #f4f4f4;
     --scroll-thumb-hover: rgba(0, 0, 0, 0.28);
   }
 
@@ -63,7 +63,7 @@
       --code-expr: #a3a3a3;
       --code-punct: #5c5c5c;
       --scroll-thumb: rgba(255, 255, 255, 0.18);
-      --dot-grid: rgba(255, 255, 255, 0.16);
+      --dot-grid: rgba(255, 255, 255, 0.24);
       --scroll-thumb-hover: rgba(255, 255, 255, 0.3);
     }
   }
@@ -75,7 +75,7 @@
     --code-expr: #a3a3a3;
     --code-punct: #5c5c5c;
     --scroll-thumb: rgba(255, 255, 255, 0.18);
-    --dot-grid: rgba(255, 255, 255, 0.16);
+    --dot-grid: rgba(255, 255, 255, 0.24);
     --scroll-thumb-hover: rgba(255, 255, 255, 0.3);
   }
 
@@ -496,48 +496,33 @@
    * they read as belonging to the thing they change.
    */
   /*
-   * One box, not a box inside a box. The controls sit in the stage's own
-   * padding at the top; the dot grid is inset below them rather than a
-   * separate panel with its own border.
-   */
-  .stage {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    padding: 12px;
-    border: 1px solid var(--yote-stroke-soft);
-    border-radius: 20px;
-    background: var(--yote-bg-default);
-    overflow: clip;
-  }
-
-  .stage-bar {
-    display: flex;
-    flex-direction: column;
-  }
-
-  /*
-   * Fixed height, never min-height: a body that resizes on a pill click
+   * Fixed height, never min-height: a stage that resizes on a pill click
    * moves the code panel and everything under the cursor.
    *
    * The dot grid is 4.818px dots on a 38.541px pitch (33.723px gap in the
    * frame, plus the dot), drawn as one gradient instead of the 200-odd divs
    * the export emits.
    */
-  .stage-body {
+  .stage {
     display: grid;
     place-items: center;
     height: 300px;
     padding: 24px;
-    border-radius: 12px;
+    border: 1px solid var(--yote-stroke-soft);
+    border-radius: 20px;
+    background-color: var(--yote-bg-default);
     background-image: radial-gradient(circle, var(--dot-grid) 2.409px, transparent 2.409px);
     background-size: 38.541px 38.541px;
     background-position: center;
     overflow: clip;
   }
 
-  .stage-tall .stage-body {
+  .stage-tall {
     height: 340px;
+  }
+
+  .stage-taller {
+    height: 440px;
   }
 
   .stage-inner {

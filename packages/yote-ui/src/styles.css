@@ -39,6 +39,11 @@
     --yote-shadow-field-hover: 0 2px 4px 0 rgba(138, 138, 138, 0.08);
     --yote-scroll-thumb: rgba(0, 0, 0, 0.16);
 
+    /* Added with the password input (Figma 23:6839-23:7540). */
+    --yote-bg-subtle: #ebebeb;
+    --yote-success-base: #1fc16b;
+    --yote-warning-base: #fa7319;
+
     --yote-radius-sm: 8px;
     --yote-radius-md: 12px;
     --yote-radius-xl: 24px;
@@ -91,6 +96,9 @@
       --yote-shadow-field: 0 2px 4px 0 rgba(0, 0, 0, 0.35);
       --yote-shadow-field-hover: 0 2px 4px 0 rgba(0, 0, 0, 0.45);
       --yote-scroll-thumb: rgba(255, 255, 255, 0.18);
+      --yote-bg-subtle: #262626;
+      --yote-success-base: #3ad98a;
+      --yote-warning-base: #ff8f3d;
     }
   }
 
@@ -117,6 +125,9 @@
     --yote-shadow-field: 0 2px 4px 0 rgba(0, 0, 0, 0.35);
     --yote-shadow-field-hover: 0 2px 4px 0 rgba(0, 0, 0, 0.45);
     --yote-scroll-thumb: rgba(255, 255, 255, 0.18);
+    --yote-bg-subtle: #262626;
+    --yote-success-base: #3ad98a;
+    --yote-warning-base: #ff8f3d;
   }
 
   /* ---------------------------------------------------------------------
@@ -617,6 +628,276 @@
   .yote-message[data-disabled] {
     color: var(--yote-text-disabled);
   }
+
+  /* ---------------------------------------------------------------------
+   * Password input
+   *
+   * Figma 23:6839 (sm), 23:6840 (md), 23:6841 (lg) for geometry; 23:7080
+   * Selected and 23:7194 Used for treatment. The field reuses the same state
+   * tokens as the textarea, so those rules are the same shape.
+   * ------------------------------------------------------------------- */
+
+  .yote-pw {
+    --yote-pw-radius: var(--yote-radius-md);
+    --yote-pw-pad-y: 10px;
+    --yote-pw-pad-left: 10px;
+    --yote-pw-pad-right: 8px;
+  }
+
+  .yote-pw[data-size='sm'] {
+    --yote-pw-radius: var(--yote-radius-sm);
+    --yote-pw-pad-y: 8px;
+    --yote-pw-pad-left: 8px;
+    --yote-pw-pad-right: 8px;
+  }
+
+  .yote-pw[data-size='lg'] {
+    --yote-pw-radius: var(--yote-radius-md);
+    --yote-pw-pad-y: 12px;
+    --yote-pw-pad-left: 12px;
+    --yote-pw-pad-right: 10px;
+  }
+
+  /* The info mark sits at the far end of the row, not beside the word. */
+  .yote-pw-label-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    width: 100%;
+  }
+
+  .yote-pw-label {
+    font-weight: 500;
+    color: var(--yote-text-strong);
+    letter-spacing: 0.28px;
+  }
+
+  .yote-pw-field {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    padding: var(--yote-pw-pad-y) var(--yote-pw-pad-right) var(--yote-pw-pad-y)
+      var(--yote-pw-pad-left);
+    border: 1px solid var(--yote-stroke-soft);
+    border-radius: var(--yote-pw-radius);
+    background: var(--yote-bg-default);
+    box-shadow: var(--yote-shadow-field);
+    overflow: clip;
+    transition:
+      border-color var(--yote-duration) ease,
+      background-color var(--yote-duration) ease,
+      box-shadow var(--yote-duration) ease;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .yote-pw-field:hover {
+      background: var(--yote-bg-surface);
+      border-color: var(--yote-bg-layer);
+      box-shadow: var(--yote-shadow-field-hover);
+    }
+  }
+
+  .yote-pw-field[data-focused] {
+    background: var(--yote-bg-default);
+    border-color: var(--yote-feature-base);
+    box-shadow: var(--yote-focus-active);
+  }
+
+  .yote-pw-field[data-invalid] {
+    background: var(--yote-bg-default);
+    border-color: var(--yote-error-base);
+    box-shadow: var(--yote-focus-error);
+  }
+
+  .yote-pw-field[data-disabled] {
+    background: var(--yote-bg-surface);
+    border-color: var(--yote-bg-surface);
+    box-shadow: none;
+  }
+
+  .yote-pw-lead {
+    display: inline-flex;
+    flex: none;
+    color: var(--yote-text-soft);
+  }
+
+  .yote-pw-input {
+    flex: 1 1 0;
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    outline: none;
+    background: transparent;
+    font: inherit;
+    /* 16px at coarse pointers is handled by the media query below; the design
+       sets 12/16 with 0.24 tracking for the masked dots. */
+    font-size: 12px;
+    line-height: 16px;
+    letter-spacing: 0.24px;
+    color: var(--yote-text-strong);
+  }
+
+  .yote-pw-input::placeholder {
+    color: var(--yote-text-disabled);
+    opacity: 1;
+  }
+
+  .yote-pw-input:disabled {
+    color: var(--yote-text-disabled);
+    -webkit-text-fill-color: var(--yote-text-disabled);
+    cursor: not-allowed;
+  }
+
+  /* iOS zooms any control under 16px on focus. Coarse pointers get 16px and
+     the design's tracking scaled with it; precise pointers keep the 12px. */
+  @media (pointer: coarse) {
+    .yote-pw-input {
+      font-size: 16px;
+      line-height: 20px;
+      letter-spacing: 0.32px;
+    }
+  }
+
+  .yote-pw-reveal {
+    display: inline-grid;
+    flex: none;
+    place-items: center;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: var(--yote-text-soft);
+    cursor: pointer;
+    transition: color var(--yote-duration) ease;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .yote-pw-reveal:hover {
+      color: var(--yote-text-strong);
+    }
+  }
+
+  .yote-pw-reveal:disabled {
+    color: var(--yote-text-disabled);
+    cursor: not-allowed;
+  }
+
+  .yote-pw-forgot {
+    align-self: stretch;
+    font-size: 12px;
+    line-height: 16px;
+    letter-spacing: 0.24px;
+    color: var(--yote-text-soft);
+    text-align: right;
+    text-decoration: none;
+    transition: color var(--yote-duration) ease;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .yote-pw-forgot:hover {
+      color: var(--yote-text-strong);
+    }
+  }
+
+  /* ---- requirements --------------------------------------------------- */
+
+  .yote-pw-req {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
+  }
+
+  .yote-pw-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+  }
+
+  .yote-pw-segment {
+    flex: 1 1 0;
+    min-width: 0;
+    height: 4px;
+    border-radius: 7px;
+    background: var(--yote-bg-subtle);
+    transition: background-color var(--yote-duration) ease;
+  }
+
+  /*
+   * The ramp lives on the container so one attribute recolours the bar.
+   * Amber for anything partial, green only once every rule passes, and red
+   * for a submit with nothing typed — where there are no filled segments to
+   * recolour, so the whole bar carries it.
+   */
+  .yote-pw-req[data-strength='partial'] .yote-pw-segment[data-filled] {
+    background: var(--yote-warning-base);
+  }
+
+  .yote-pw-req[data-strength='strong'] .yote-pw-segment[data-filled] {
+    background: var(--yote-success-base);
+  }
+
+  .yote-pw-req[data-strength='invalid'] .yote-pw-segment {
+    background: var(--yote-error-base);
+  }
+
+  .yote-pw-req-title {
+    font-size: 14px;
+    line-height: 20px;
+    letter-spacing: 0.28px;
+    color: var(--yote-text-strong);
+  }
+
+  .yote-pw-req-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .yote-pw-req-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    line-height: 16px;
+    letter-spacing: 0.24px;
+    color: var(--yote-text-sub);
+    transition: color var(--yote-duration) ease;
+  }
+
+  .yote-pw-req-item[data-met] {
+    color: var(--yote-text-strong);
+  }
+
+  .yote-pw-req-icon {
+    display: inline-flex;
+    flex: none;
+    color: var(--yote-text-disabled);
+    transition: color var(--yote-duration) ease;
+  }
+
+  .yote-pw-req-item[data-met] .yote-pw-req-icon {
+    color: var(--yote-success-base);
+  }
+
+  /* Visible to assistive tech only — the icon carries no text of its own. */
+  .yote-sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
 
   /* ---------------------------------------------------------------------
    * Motion

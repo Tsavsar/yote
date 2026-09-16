@@ -1,4 +1,5 @@
 import { Install } from '../components/install'
+import { PasswordPreview } from '../components/password-preview'
 import { Preview } from '../components/preview'
 import { SiteNav } from '../components/site-nav'
 import { TextareaPreview } from '../components/textarea-preview'
@@ -34,6 +35,13 @@ export default function LandingPage() {
           <TextareaPreview
             title="Text area"
             description="Multi-line entry, with a counter and a drag handle"
+          />
+        </section>
+
+        <section className="showcase">
+          <PasswordPreview
+            title="Password"
+            description="Masked entry, with a reveal toggle and live requirements"
           />
         </section>
       </main>
