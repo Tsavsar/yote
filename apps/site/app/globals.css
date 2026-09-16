@@ -327,7 +327,15 @@
     gap: 32px;
   }
 
+  /* Name and description on the left, the overflow menu on the right. */
   .showcase-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+  }
+
+  .showcase-text {
     display: flex;
     flex-direction: column;
     gap: 6px;
@@ -398,13 +406,21 @@
     overflow: clip;
   }
 
-  /* State pills left, length pills right, as the frame splits them. */
+  /*
+   * One line: states left, size or length right. nowrap because the two
+   * groups are a pair — wrapping the second under the first reads as two
+   * unrelated rows. Each group may wrap internally if it has to.
+   */
   .controls {
     display: flex;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     align-items: flex-start;
     justify-content: space-between;
     gap: 10px;
+  }
+
+  .control-row {
+    min-width: 0;
   }
 
   .control-row {
@@ -598,6 +614,256 @@
     line-height: 21px;
     color: var(--yote-text-sub);
     text-wrap: pretty;
+  }
+
+
+  /* ---- more parameters ------------------------------------------------ */
+
+  .more-menu {
+    position: relative;
+    display: inline-flex;
+    flex: none;
+  }
+
+  .more-trigger {
+    display: inline-grid;
+    place-items: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    color: var(--yote-text-soft);
+    background: transparent;
+    transition:
+      color var(--yote-duration) ease,
+      background-color var(--yote-duration) ease;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .more-trigger:hover {
+      color: var(--yote-text-strong);
+      background: var(--yote-bg-surface);
+    }
+  }
+
+  /* ---- overflow menu -------------------------------------------------- */
+
+  .menu {
+    position: absolute;
+    top: calc(100% + 6px);
+    right: 0;
+    z-index: 20;
+    display: flex;
+    flex-direction: column;
+    min-width: 168px;
+    padding: 4px;
+    border: 1px solid var(--yote-stroke-soft);
+    border-radius: 10px;
+    background: var(--yote-bg-default);
+    box-shadow: var(--yote-shadow-xs);
+    opacity: 0;
+    /* Scales from its own top-right, which is where the trigger is. */
+    transform-origin: top right;
+    transform: scale(0.96);
+    pointer-events: none;
+    transition:
+      opacity 140ms var(--yote-ease-out),
+      transform 140ms var(--yote-ease-out);
+  }
+
+  .menu[data-open] {
+    opacity: 1;
+    transform: scale(1);
+    pointer-events: auto;
+  }
+
+  .menu-item {
+    padding: 6px 10px;
+    border-radius: 7px;
+    font-size: 13px;
+    line-height: 20px;
+    text-align: left;
+    color: var(--yote-text-sub);
+    background: transparent;
+    transition:
+      color var(--yote-duration) ease,
+      background-color var(--yote-duration) ease;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .menu-item:hover {
+      color: var(--yote-text-strong);
+      background: var(--yote-bg-surface);
+    }
+  }
+
+  /*
+   * 0fr to 1fr rather than a measured pixel height: the content stays in
+   * normal flow, so the panel is always exactly as tall as what is in it and
+   * nothing has to be re-measured when the viewport changes.
+   */
+  .more-panel {
+    display: grid;
+    grid-template-rows: 0fr;
+    width: 100%;
+    /* visibility keeps the collapsed controls out of the tab order, and
+       unlike `hidden` it can be transitioned. */
+    visibility: hidden;
+    transition:
+      grid-template-rows 240ms var(--yote-ease-out),
+      visibility 240ms;
+  }
+
+  .more-panel[data-open] {
+    grid-template-rows: 1fr;
+    visibility: visible;
+  }
+
+  .more-panel-inner {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 20px;
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  .more-panel[data-open] .more-panel-inner {
+    padding-top: 2px;
+  }
+
+  /* ---- toggle --------------------------------------------------------- */
+
+  .toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .toggle-input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .toggle-track {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    width: 28px;
+    height: 16px;
+    padding: 2px;
+    border-radius: 999px;
+    background: var(--yote-bg-layer);
+    transition: background-color var(--yote-duration) ease;
+  }
+
+  .toggle-thumb {
+    width: 12px;
+    height: 12px;
+    border-radius: 999px;
+    background: var(--yote-bg-default);
+    box-shadow: var(--yote-shadow-field);
+    /* Only transform moves, so the thumb never triggers layout. */
+    transition: transform 200ms var(--yote-ease-out);
+  }
+
+  /* Monochrome, not the brand purple: this is page chrome, and the accent
+     stays inside the component where it was measured. */
+  .toggle-input:checked + .toggle-track {
+    background: var(--yote-text-strong);
+  }
+
+  .toggle-input:checked + .toggle-track .toggle-thumb {
+    transform: translateX(12px);
+  }
+
+  .toggle-input:focus-visible + .toggle-track {
+    outline: 2px solid var(--yote-text-strong);
+    outline-offset: 2px;
+  }
+
+  .toggle-label {
+    font-size: 13px;
+    line-height: 20px;
+    color: var(--yote-text-sub);
+  }
+
+  /* ---- tooltip -------------------------------------------------------- */
+
+  .tooltip-root {
+    position: relative;
+    display: inline-flex;
+  }
+
+  /*
+   * Scaled down from Figma node 23:6479. The frame is a 230px marketing card
+   * at 16px padding; hung off a 28px icon button it would dwarf the control
+   * it explains, so padding, radius and measure come in while the type,
+   * colour and arrow stay as drawn.
+   */
+  .tooltip {
+    position: absolute;
+    bottom: calc(100% + 10px);
+    right: 0;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    width: max-content;
+    max-width: 208px;
+    padding: 10px 12px;
+    border-radius: 12px;
+    background: #2e7cfa;
+    color: #ffffff;
+    box-shadow: 0 10px 20px 3px rgba(0, 0, 0, 0.04);
+    text-align: left;
+    opacity: 0;
+    transform: translateY(4px) scale(0.96);
+    pointer-events: none;
+    transition:
+      opacity 160ms var(--yote-ease-out),
+      transform 160ms var(--yote-ease-out);
+  }
+
+  .tooltip[data-open] {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+
+  .tooltip-title {
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 20px;
+    letter-spacing: 0.28px;
+  }
+
+  .tooltip-body {
+    font-size: 12px;
+    line-height: 16px;
+    letter-spacing: 0.24px;
+  }
+
+  /* The export's own triangle, turned to point down at the trigger. */
+  .tooltip-arrow {
+    position: absolute;
+    top: 100%;
+    right: 12px;
+    margin-top: -1px;
+    color: #2e7cfa;
+    transform: rotate(180deg);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .tooltip {
+      transform: none;
+    }
+
+    .tooltip[data-open] {
+      transform: none;
+    }
   }
 
   /* ---- docs shell ----------------------------------------------------- */

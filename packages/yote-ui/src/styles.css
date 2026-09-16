@@ -321,8 +321,15 @@
     box-shadow: inset 0 0 0 0.5px var(--yote-error-base);
   }
 
+  /*
+   * The error ring is not conditional on focus (Figma node 6:4760, where the
+   * cell carries focus-error with nothing focused). It was gated behind
+   * [data-active] here, so a rejected code that lost focus kept the red
+   * border and silently dropped its ring — the state read as half-applied.
+   */
   .yote-cell[data-invalid]::after {
     box-shadow: var(--yote-focus-error);
+    opacity: 1;
   }
 
   /*

@@ -3,6 +3,7 @@
 import * as React from 'react'
 import { PinInput } from 'yote-ui'
 import { CodeBlock } from './code-block'
+import { MoreMenu, MorePanel, Toggle } from './more-controls'
 import { Pill } from './state-switcher'
 
 /**
@@ -35,12 +36,21 @@ const seedFor = (state: StateKey, length: number) =>
  * rather than as stable. Holding the shape costs a redundant `length={4}` and
  * makes the panel look deliberate at every setting.
  */
-function snippetFor(state: StateKey, length: Length, value: string, mask: boolean): string {
+function snippetFor(
+  state: StateKey,
+  length: Length,
+  value: string,
+  mask: boolean,
+  showLabel: boolean,
+  showHint: boolean,
+): string {
   const props = [`length={${length}}`]
+  if (showLabel) props.push('label="Verification code"')
   if (value) props.push(`defaultValue="${value}"`)
   if (mask) props.push('mask')
   if (state === 'active') props.push('autoFocus')
   if (state === 'error') props.push(`error="${ERROR_TEXT}"`)
+  else if (showHint) props.push('hint="Enter the code we sent you."')
   if (state === 'disabled') props.push('disabled')
   props.push('onComplete={verify}')
 
@@ -52,6 +62,8 @@ type Model = {
   length: Length
   value: string
   mask: boolean
+  showLabel: boolean
+  showHint: boolean
   errorKey: number
 }
 
@@ -60,6 +72,8 @@ type Action =
   | { type: 'length'; length: Length }
   | { type: 'value'; value: string }
   | { type: 'mask'; mask: boolean }
+  | { type: 'showLabel'; showLabel: boolean }
+  | { type: 'showHint'; showHint: boolean }
 
 /**
  * One reducer rather than five useStates.
@@ -94,6 +108,10 @@ function reduce(model: Model, action: Action): Model {
       return { ...model, value: action.value }
     case 'mask':
       return { ...model, mask: action.mask }
+    case 'showLabel':
+      return { ...model, showLabel: action.showLabel }
+    case 'showHint':
+      return { ...model, showHint: action.showHint }
   }
 }
 
@@ -116,14 +134,26 @@ function Row({ label, children }: { label: string; children: React.ReactNode }) 
   )
 }
 
-export function Preview() {
-  const [{ state, length, value, mask, errorKey }, dispatch] = React.useReducer(reduce, {
-    state: 'idle',
-    length: 4,
-    value: '',
-    mask: false,
-    errorKey: 0,
-  })
+export function Preview({
+  title,
+  description,
+  docsHref = '/docs/digit-input',
+}: {
+  title?: string
+  description?: string
+  docsHref?: string
+}) {
+  const [paramsOpen, setParamsOpen] = React.useState(false)
+  const [{ state, length, value, mask, showLabel, showHint, errorKey }, dispatch] =
+    React.useReducer(reduce, {
+      state: 'idle',
+      length: 4,
+      value: '',
+      mask: false,
+      showLabel: true,
+      showHint: true,
+      errorKey: 0,
+    })
 
   const inputRef = React.useRef<HTMLInputElement>(null)
 
@@ -135,6 +165,20 @@ export function Preview() {
 
   return (
     <div className="preview">
+      {title !== undefined ? (
+        <div className="showcase-head">
+          <div className="showcase-text">
+            <h2 className="showcase-title">{title}</h2>
+            {description !== undefined ? <p className="showcase-note">{description}</p> : null}
+          </div>
+          <MoreMenu
+            paramsOpen={paramsOpen}
+            onToggleParams={() => setParamsOpen((o) => !o)}
+            docsHref={docsHref}
+          />
+        </div>
+      ) : null}
+
       {/* Controls above the stage: you pick a setting and then look down at
           the result, rather than reaching past the thing you are changing. */}
       <div className="controls">
@@ -153,16 +197,25 @@ export function Preview() {
             </Pill>
           ))}
         </Row>
-
-        <Row label="Mask">
-          <Pill active={!mask} onClick={() => dispatch({ type: 'mask', mask: false })}>
-            Digits
-          </Pill>
-          <Pill active={mask} onClick={() => dispatch({ type: 'mask', mask: true })}>
-            Dots
-          </Pill>
-        </Row>
       </div>
+
+      <MorePanel open={paramsOpen}>
+        <Toggle
+          label="Mask as dots"
+          checked={mask}
+          onChange={(next) => dispatch({ type: 'mask', mask: next })}
+        />
+        <Toggle
+          label="Show label"
+          checked={showLabel}
+          onChange={(next) => dispatch({ type: 'showLabel', showLabel: next })}
+        />
+        <Toggle
+          label="Show hint"
+          checked={showHint}
+          onChange={(next) => dispatch({ type: 'showHint', showHint: next })}
+        />
+      </MorePanel>
 
       <div className="stage">
         <PinInput
@@ -171,13 +224,15 @@ export function Preview() {
           value={value}
           onChange={(next) => dispatch({ type: 'value', value: next })}
           mask={mask}
+          label={showLabel ? 'Verification code' : undefined}
+          hint={showHint ? 'Enter the code we sent you.' : undefined}
           error={state === 'error' ? ERROR_TEXT : undefined}
           errorKey={errorKey}
           disabled={state === 'disabled'}
         />
       </div>
 
-      <CodeBlock code={snippetFor(state, length, value, mask)} />
+      <CodeBlock code={snippetFor(state, length, value, mask, showLabel, showHint)} />
     </div>
   )
 }

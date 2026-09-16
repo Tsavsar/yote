@@ -27,19 +27,14 @@ export default function LandingPage() {
         <Install />
 
         <section className="showcase">
-          <div className="showcase-head">
-            <h2 className="showcase-title">Digit input</h2>
-            <p className="showcase-note">Inputs for codes, keys, pins, passwords etcs</p>
-          </div>
-          <Preview />
+          <Preview title="Digit input" description="Inputs for codes, keys, pins, passwords etcs" />
         </section>
 
         <section className="showcase">
-          <div className="showcase-head">
-            <h2 className="showcase-title">Text area</h2>
-            <p className="showcase-note">Multi-line entry, with a counter and a drag handle</p>
-          </div>
-          <TextareaPreview />
+          <TextareaPreview
+            title="Text area"
+            description="Multi-line entry, with a counter and a drag handle"
+          />
         </section>
       </main>
 
