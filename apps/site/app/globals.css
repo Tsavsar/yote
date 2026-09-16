@@ -355,58 +355,150 @@
   }
 
   .install-tabs {
+    position: relative;
     display: flex;
     gap: 4px;
   }
 
+  /*
+   * One element that glides, not a background that appears on whichever tab
+   * is active. Width and position are measured from the real buttons, so it
+   * tracks the text rather than assuming the four labels are equal.
+   */
+  .install-tab-indicator {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 0;
+    height: 100%;
+    border-radius: 6px;
+    background: var(--yote-bg-surface);
+    transition:
+      transform 280ms var(--yote-ease-out),
+      width 280ms var(--yote-ease-out);
+  }
+
   .install-tab {
+    position: relative;
+    z-index: 1;
     padding: 4px 8px;
     border-radius: 6px;
     font-size: 12px;
     line-height: 16px;
     letter-spacing: 0.24px;
     color: var(--yote-text-soft);
-    background: var(--yote-bg-default);
-    transition:
-      color var(--yote-duration) ease,
-      background-color var(--yote-duration) ease;
+    background: transparent;
+    transition: color var(--yote-duration) ease;
   }
 
-  /*
-   * The row is only as wide as the command it holds, and grows to fit a
-   * longer one. `interpolate-size` is what lets `fit-content` animate at all;
-   * without it the width still lands in the right place, it just gets there
-   * in one frame.
-   */
+  .install-tab[data-active] {
+    color: var(--yote-text-strong);
+  }
+
   .install-row {
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 16px;
-    width: fit-content;
-    max-width: 100%;
+    width: 100%;
     padding: 16px 18px 16px 20px;
     border-radius: 12px;
     background: var(--yote-bg-surface);
-    transition: width 320ms var(--yote-ease-out);
   }
 
-  @media (hover: hover) and (pointer: fine) {
-    .install-tab:hover {
-      color: var(--yote-text-strong);
+  .install-code {
+    display: inline-flex;
+    align-items: center;
+    /* One space between every segment, so the parts that do not roll keep
+       their spacing whatever the neighbours are doing. */
+    gap: 0.6ch;
+    min-width: 0;
+    font-family: var(--font-mono);
+    font-size: 14px;
+    line-height: 16px;
+    letter-spacing: 0.28px;
+    color: var(--yote-text-strong);
+    white-space: nowrap;
+  }
+
+  .install-prompt {
+    color: var(--code-punct);
+  }
+
+  /*
+   * Both commands share one grid cell inside a clipped box, so the outgoing
+   * line can fall away while the incoming one rises into the same place. The
+   * box is sized by whichever is taller — one line — so nothing reflows.
+   */
+  .install-lines {
+    position: relative;
+    display: inline-grid;
+    overflow: clip;
+    /* Room for the descenders the clip would otherwise shave. */
+    padding-block: 3px;
+    margin-block: -3px;
+  }
+
+  .install-line {
+    grid-area: 1 / 1;
+    white-space: nowrap;
+    animation: install-line-in 300ms var(--yote-ease-out) both;
+  }
+
+  .install-line[data-out] {
+    animation: install-line-out 300ms var(--yote-ease-out) both;
+  }
+
+  /* Up into place. */
+  @keyframes install-line-in {
+    from {
+      opacity: 0;
+      transform: translateY(100%);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
     }
   }
 
-  .install-tab[data-active] {
-    color: var(--yote-text-strong);
-    background: var(--yote-bg-surface);
+  /*
+   * Down and away, while the incoming line rises into the same place. They
+   * pass each other below the visible line, which is why both are clipped
+   * and cross-faded — the old one falls out as the new one arrives.
+   */
+  @keyframes install-line-out {
+    from {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    to {
+      opacity: 0;
+      transform: translateY(100%);
+    }
   }
 
-  /* ---- showcase ------------------------------------------------------- */
+  @media (prefers-reduced-motion: reduce) {
+    .install-line,
+    .install-line[data-out] {
+      animation: none;
+    }
 
-  .showcase {
+    .install-line[data-out] {
+      display: none;
+    }
+
+    .install-tab-indicator {
+      transition: none;
+    }
+  }
+
+  /* ---- preview -------------------------------------------------------- */
+
+  /* head -> controls 32, controls -> stage 12, stage -> code 12. */
+  .preview {
     display: flex;
     flex-direction: column;
+    gap: 12px;
   }
 
   /* Name and description on the left, the overflow menu on the right. */
@@ -415,6 +507,7 @@
     align-items: flex-start;
     justify-content: space-between;
     gap: 16px;
+    margin-bottom: 20px;
   }
 
   .showcase-text {
@@ -435,69 +528,6 @@
     line-height: 20px;
     letter-spacing: 0.28px;
     color: var(--yote-text-sub);
-  }
-
-  .install-code {
-    display: inline-flex;
-    align-items: baseline;
-    font-family: var(--font-mono);
-    font-size: 14px;
-    line-height: 16px;
-    letter-spacing: 0.28px;
-    color: var(--yote-text-strong);
-    white-space: nowrap;
-  }
-
-  .install-chars {
-    display: inline-flex;
-    /* The overflow clip is what makes it read as a roll: each character
-       leaves and arrives behind the line's own edge. */
-    overflow: clip;
-    padding-block: 2px;
-    margin-block: -2px;
-  }
-
-  .install-char {
-    display: inline-block;
-    animation: install-roll 260ms var(--yote-ease-out) both;
-  }
-
-  @keyframes install-roll {
-    from {
-      opacity: 0;
-      transform: translateY(0.7em);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .install-row {
-      transition: none;
-    }
-
-    .install-char {
-      animation: none;
-    }
-  }
-
-  .install-prompt {
-    color: var(--code-punct);
-  }
-
-  /* ---- preview -------------------------------------------------------- */
-
-  /* head -> controls 32, controls -> stage 12, stage -> code 12. */
-  .preview {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-  }
-
-  .showcase-head {
-    margin-bottom: 20px;
   }
 
   /*
