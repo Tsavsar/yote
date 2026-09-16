@@ -55,11 +55,14 @@
     --page-max: 650px;
     --scroll-thumb: rgba(0, 0, 0, 0.16);
     --dot-grid: #f6f6f6;
-    --switch-thumb: #ffffff;
-    --switch-thumb-on: #ffffff;
-    --switch-thumb-border: #f5f5f5;
+    /* Off-white, not #ffffff. Pure white against the near-black checked
+       track was a harder edge than anything else on the page. */
+    --switch-thumb: #fbfbfb;
+    --switch-thumb-on: #fbfbfb;
+    --switch-thumb-border: #f0f0f0;
+    --switch-track-on: #2e2e2e;
     --switch-dot: #ebebeb;
-    --switch-dot-on: #171717;
+    --switch-dot-on: #2e2e2e;
     --scroll-thumb-hover: rgba(0, 0, 0, 0.28);
   }
 
@@ -75,6 +78,7 @@
     --switch-thumb: #f2f2f2;
     --switch-thumb-on: #0c0c0c;
     --switch-thumb-border: transparent;
+    --switch-track-on: #e2e2e2;
     --switch-dot: #262626;
     --switch-dot-on: #0c0c0c;
       --switch-thumb: #f2f2f2;
@@ -87,6 +91,7 @@
       /* The dot is the track colour showing through the thumb, so it matches
          the track when the thumb is light and vanishes when the thumb is
          dark. A light pip on a dark thumb reads as a bullseye. */
+      --switch-track-on: #e2e2e2;
       --switch-dot: #262626;
       --switch-dot-on: #0c0c0c;
       --scroll-thumb-hover: rgba(255, 255, 255, 0.3);
@@ -430,30 +435,42 @@
    * line can fall away while the incoming one rises into the same place. The
    * box is sized by whichever is taller — one line — so nothing reflows.
    */
+  /*
+   * One clipped window per segment. Both lines travel the same way — the old
+   * one leaves through the top as the new one arrives from the bottom — so it
+   * reads as a single strip turning over. Crossing them looked like two
+   * separate things colliding.
+   *
+   * The width animates too: `npm` to `pnpm` used to snap the box wider in one
+   * frame while the letters were still moving, which is what made the motion
+   * feel broken.
+   */
   .install-lines {
     position: relative;
     display: inline-grid;
+    width: fit-content;
     overflow: clip;
     /* Room for the descenders the clip would otherwise shave. */
     padding-block: 3px;
     margin-block: -3px;
+    transition: width 300ms var(--yote-ease-out);
   }
 
   .install-line {
     grid-area: 1 / 1;
     white-space: nowrap;
-    animation: install-line-in 300ms var(--yote-ease-out) both;
+    animation: install-line-in 260ms var(--yote-ease-out) both;
   }
 
   .install-line[data-out] {
-    animation: install-line-out 300ms var(--yote-ease-out) both;
+    animation: install-line-out 260ms var(--yote-ease-out) both;
   }
 
-  /* Up into place. */
+  /* In from below. */
   @keyframes install-line-in {
     from {
       opacity: 0;
-      transform: translateY(100%);
+      transform: translateY(110%);
     }
     to {
       opacity: 1;
@@ -461,11 +478,7 @@
     }
   }
 
-  /*
-   * Down and away, while the incoming line rises into the same place. They
-   * pass each other below the visible line, which is why both are clipped
-   * and cross-faded — the old one falls out as the new one arrives.
-   */
+  /* Out through the top, so the pair reads as one strip moving. */
   @keyframes install-line-out {
     from {
       opacity: 1;
@@ -473,7 +486,7 @@
     }
     to {
       opacity: 0;
-      transform: translateY(100%);
+      transform: translateY(-110%);
     }
   }
 
@@ -487,6 +500,7 @@
       display: none;
     }
 
+    .install-lines,
     .install-tab-indicator {
       transition: none;
     }
@@ -975,7 +989,7 @@
     border: 0.75px solid var(--switch-thumb-border);
     border-radius: 37px;
     background: var(--switch-thumb);
-    box-shadow: 0 10px 20px 3px rgba(0, 0, 0, 0.04);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
     transition: transform 200ms var(--yote-ease-out);
   }
 
@@ -987,8 +1001,10 @@
     transition: background-color var(--yote-duration) ease;
   }
 
+  /* A shade off the page's strongest ink, so the on state reads as a control
+     rather than as a hole punched in the row. */
   .switch-input:checked + .switch-track {
-    background: var(--yote-text-strong);
+    background: var(--switch-track-on);
   }
 
   .switch-input:checked + .switch-track .switch-thumb {

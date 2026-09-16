@@ -945,6 +945,164 @@
 
 
   /* ---------------------------------------------------------------------
+   * Phone input
+   *
+   * Figma 26:9409 (sm), 26:9410 (md), 26:9411 (lg). The left padding grows
+   * with the size while the right stays at 8 — the country group sits at the
+   * start, the number runs to the end.
+   * ------------------------------------------------------------------- */
+
+  .yote-phone {
+    --yote-phone-radius: var(--yote-radius-md);
+    --yote-phone-pad-y: 10px;
+    --yote-phone-pad-left: 14px;
+    --yote-phone-pad-right: 8px;
+  }
+
+  .yote-phone[data-size='sm'] {
+    --yote-phone-radius: var(--yote-radius-sm);
+    --yote-phone-pad-y: 8px;
+    --yote-phone-pad-left: 12px;
+  }
+
+  .yote-phone[data-size='lg'] {
+    --yote-phone-pad-y: 12px;
+    --yote-phone-pad-left: 16px;
+  }
+
+  .yote-phone-field {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    width: 100%;
+    padding: var(--yote-phone-pad-y) var(--yote-phone-pad-right) var(--yote-phone-pad-y)
+      var(--yote-phone-pad-left);
+    border: 1px solid var(--yote-stroke-soft);
+    border-radius: var(--yote-phone-radius);
+    background: var(--yote-bg-default);
+    box-shadow: var(--yote-shadow-field);
+    overflow: clip;
+    transition:
+      border-color var(--yote-duration) ease,
+      background-color var(--yote-duration) ease,
+      box-shadow var(--yote-duration) ease;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .yote-phone-field:hover {
+      background: var(--yote-bg-surface);
+      border-color: var(--yote-bg-layer);
+      box-shadow: var(--yote-shadow-field-hover);
+    }
+  }
+
+  .yote-phone-field[data-focused] {
+    background: var(--yote-bg-default);
+    border-color: var(--yote-feature-base);
+    box-shadow: var(--yote-focus-active);
+  }
+
+  .yote-phone-field[data-invalid] {
+    background: var(--yote-bg-default);
+    border-color: var(--yote-error-base);
+    box-shadow: var(--yote-focus-error);
+  }
+
+  .yote-phone-field[data-disabled] {
+    background: var(--yote-bg-surface);
+    border-color: var(--yote-bg-surface);
+    box-shadow: none;
+  }
+
+  /* The select covers this group, so the whole thing is the hit target. */
+  .yote-phone-country {
+    position: relative;
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    gap: 8px;
+    color: var(--yote-text-soft);
+  }
+
+  .yote-phone-flag {
+    font-size: 16px;
+    line-height: 1;
+  }
+
+  .yote-phone-dial {
+    font-size: 14px;
+    line-height: 20px;
+    letter-spacing: 0.28px;
+    color: var(--yote-text-strong);
+  }
+
+  .yote-phone-chevron {
+    flex: none;
+  }
+
+  /*
+   * A real select, sized over the group and invisible. The platform picker is
+   * searchable, keyboard driven and correct on a phone; a custom popover
+   * would be all of that to rebuild and worse on every count.
+   */
+  .yote-phone-select {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    border: 0;
+    cursor: pointer;
+    font: inherit;
+  }
+
+  .yote-phone-select:disabled {
+    cursor: not-allowed;
+  }
+
+  .yote-phone-select:focus-visible {
+    outline: 2px solid var(--yote-feature-base);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  .yote-phone-input {
+    flex: 1 1 0;
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    outline: none;
+    background: transparent;
+    font: inherit;
+    font-size: 14px;
+    line-height: 20px;
+    letter-spacing: 0.28px;
+    color: var(--yote-text-strong);
+  }
+
+  .yote-phone-input::placeholder {
+    color: var(--yote-text-soft);
+    opacity: 1;
+  }
+
+  .yote-phone-input:disabled {
+    color: var(--yote-text-disabled);
+    -webkit-text-fill-color: var(--yote-text-disabled);
+    cursor: not-allowed;
+  }
+
+  /* iOS zooms any control under 16px on focus. */
+  @media (pointer: coarse) {
+    .yote-phone-input,
+    .yote-phone-dial {
+      font-size: 16px;
+      letter-spacing: 0.32px;
+    }
+  }
+
+
+  /* ---------------------------------------------------------------------
    * Motion
    *
    * Never ease-in on UI: it delays the initial movement, which is the exact

@@ -1,5 +1,6 @@
 import { Install } from '../components/install'
 import { PasswordPreview } from '../components/password-preview'
+import { PhonePreview } from '../components/phone-preview'
 import { Preview } from '../components/preview'
 import { SiteNav } from '../components/site-nav'
 import { TextareaPreview } from '../components/textarea-preview'
@@ -42,6 +43,13 @@ export default function LandingPage() {
           <PasswordPreview
             title="Password"
             description="Masked entry, with a reveal toggle and live requirements"
+          />
+        </section>
+
+        <section className="showcase">
+          <PhonePreview
+            title="Phone number"
+            description="A dialling country and a national number, in one field"
           />
         </section>
       </main>
