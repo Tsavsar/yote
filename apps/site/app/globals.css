@@ -94,7 +94,7 @@
 
   /* ---- shell ---------------------------------------------------------- */
 
-  /* 82px to the nav's centre line in the frame; 24px gutters either side. */
+  /* The nav row starts at 82px in the frame. */
   .nav {
     display: flex;
     align-items: center;
@@ -102,7 +102,7 @@
     gap: 16px;
     max-width: var(--page-max);
     margin: 0 auto;
-    padding: 73px 24px 0;
+    padding: 82px 24px 0;
   }
 
   .wordmark {
@@ -215,13 +215,30 @@
     }
   }
 
+  /*
+   * Vertical rhythm measured off the frame rather than set to one uniform
+   * gap, which is what made the page feel evenly cramped:
+   *
+   *   nav row (82) -> hero (225)      123px
+   *   hero -> install                  44px
+   *   install -> first component      111px
+   *
+   * The tight 44 binds the lead to its install line; the wide 111 separates
+   * the pitch from the components. One gap for both flattens that.
+   */
   .page {
     max-width: var(--page-max);
     margin: 0 auto;
-    padding: 61px 24px 96px;
+    padding: 123px 24px 120px;
     display: flex;
     flex-direction: column;
-    gap: 40px;
+    gap: 44px;
+  }
+
+  .showcase {
+    /* 44 from .page plus 67 = the frame's 111. Applies between components
+       too, so each one gets the same air as the first. */
+    margin-top: 67px;
   }
 
   /* ---- hero ----------------------------------------------------------- */
@@ -232,6 +249,10 @@
     align-items: flex-start;
     gap: 10px;
     text-align: left;
+  }
+
+  .footer {
+    margin-top: 0;
   }
 
   /* Title/Regular/H5: 30 on 38, regular weight, 0.3px tracking. */
@@ -324,7 +345,6 @@
   .showcase {
     display: flex;
     flex-direction: column;
-    gap: 32px;
   }
 
   /* Name and description on the left, the overflow menu on the right. */
@@ -370,10 +390,15 @@
 
   /* ---- preview -------------------------------------------------------- */
 
+  /* head -> controls 32, controls -> stage 12, stage -> code 12. */
   .preview {
     display: flex;
     flex-direction: column;
     gap: 12px;
+  }
+
+  .showcase-head {
+    margin-bottom: 20px;
   }
 
   /*
