@@ -882,8 +882,16 @@
     transition: color var(--yote-duration) ease;
   }
 
-  .yote-pw-req-item[data-met] .yote-pw-req-icon {
+  .yote-pw-req-icon[data-met] {
     color: var(--yote-success-base);
+  }
+
+  /*
+   * Declared after `[data-met]`, so error wins. A red field sitting over four
+   * green ticks said the entry was fine and wrong at the same time.
+   */
+  .yote-pw-req-icon[data-invalid] {
+    color: var(--yote-error-base);
   }
 
   /* Visible to assistive tech only — the icon carries no text of its own. */

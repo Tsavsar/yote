@@ -138,17 +138,20 @@ export const PasswordInput = React.forwardRef<HTMLInputElement, PasswordInputPro
      *   none     nothing typed yet, every segment grey
      *   partial  anything from one rule to all-but-one, filled segments amber
      *   strong   every rule passes, the whole bar green
-     *   invalid  submitted empty — the bar itself is the error, since there
-     *            are no filled segments to recolour at zero
+     *   invalid  the consumer says the entry is wrong
+     *
+     * `invalid` is checked first and colours the whole bar, not just the
+     * filled segments — at zero there are none to recolour, and at four a
+     * green bar over a red field claimed the entry was fine and wrong at the
+     * same time.
      */
-    const strength =
-      isInvalid && value.length === 0
-        ? 'invalid'
-        : metCount === 0
-          ? 'none'
-          : metCount === total
-            ? 'strong'
-            : 'partial'
+    const strength = isInvalid
+      ? 'invalid'
+      : metCount === 0
+        ? 'none'
+        : metCount === total
+          ? 'strong'
+          : 'partial'
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
       const next = event.target.value
@@ -278,7 +281,12 @@ export const PasswordInput = React.forwardRef<HTMLInputElement, PasswordInputPro
                   className={cx('yote-pw-req-item', classNames?.requirement)}
                   data-met={r.met || undefined}
                 >
-                  <span className="yote-pw-req-icon" aria-hidden="true">
+                  <span
+                    className="yote-pw-req-icon"
+                    data-met={r.met || undefined}
+                    data-invalid={isInvalid || undefined}
+                    aria-hidden="true"
+                  >
                     {r.met ? <MetIcon /> : <UnmetIcon />}
                   </span>
                   {/* The only part a screen reader needs: the rule and whether

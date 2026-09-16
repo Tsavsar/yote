@@ -3,7 +3,7 @@
 import * as React from 'react'
 import { PasswordInput } from 'yote-ui'
 import { CodeBlock } from './code-block'
-import { MoreMenu, MorePanel, Toggle } from './more-controls'
+import { MoreMenu, Toggle } from './more-controls'
 import { Pill } from './state-switcher'
 
 const STATES = ['idle', 'used', 'error', 'disabled'] as const
@@ -46,7 +46,6 @@ export function PasswordPreview({
   description?: string
   docsHref?: string
 }) {
-  const [paramsOpen, setParamsOpen] = React.useState(false)
   const [state, setState] = React.useState<StateKey>('idle')
   const [size, setSize] = React.useState<Size>('md')
   const [value, setValue] = React.useState('')
@@ -71,11 +70,16 @@ export function PasswordPreview({
             <h2 className="showcase-title">{title}</h2>
             {description !== undefined ? <p className="showcase-note">{description}</p> : null}
           </div>
-          <MoreMenu
-            paramsOpen={paramsOpen}
-            onToggleParams={() => setParamsOpen((o) => !o)}
-            docsHref={docsHref}
-          />
+          <MoreMenu docsHref={docsHref}>
+            <Toggle label="Show info icon" checked={flags.info} onChange={set('info')} />
+            <Toggle label="Show forgot link" checked={flags.forgot} onChange={set('forgot')} />
+            <Toggle
+              label="Show requirements"
+              checked={flags.requirements}
+              onChange={set('requirements')}
+            />
+            <Toggle label="Show reveal toggle" checked={flags.reveal} onChange={set('reveal')} />
+          </MoreMenu>
         </div>
       ) : null}
 
@@ -95,17 +99,6 @@ export function PasswordPreview({
           ))}
         </div>
       </div>
-
-      <MorePanel open={paramsOpen}>
-        <Toggle label="Show info icon" checked={flags.info} onChange={set('info')} />
-        <Toggle label="Show forgot link" checked={flags.forgot} onChange={set('forgot')} />
-        <Toggle
-          label="Show requirements"
-          checked={flags.requirements}
-          onChange={set('requirements')}
-        />
-        <Toggle label="Show reveal toggle" checked={flags.reveal} onChange={set('reveal')} />
-      </MorePanel>
 
       <div className="stage stage-taller">
         <div className="stage-inner">

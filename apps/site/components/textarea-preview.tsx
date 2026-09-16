@@ -3,7 +3,7 @@
 import * as React from 'react'
 import { Textarea } from 'yote-ui'
 import { CodeBlock } from './code-block'
-import { MoreMenu, MorePanel, Toggle } from './more-controls'
+import { MoreMenu, Toggle } from './more-controls'
 import { Pill } from './state-switcher'
 
 /**
@@ -67,7 +67,6 @@ export function TextareaPreview({
   description?: string
   docsHref?: string
 }) {
-  const [paramsOpen, setParamsOpen] = React.useState(false)
   const [state, setState] = React.useState<StateKey>('idle')
   const [size, setSize] = React.useState<Size>('md')
   const [value, setValue] = React.useState('')
@@ -97,11 +96,15 @@ export function TextareaPreview({
             <h2 className="showcase-title">{title}</h2>
             {description !== undefined ? <p className="showcase-note">{description}</p> : null}
           </div>
-          <MoreMenu
-            paramsOpen={paramsOpen}
-            onToggleParams={() => setParamsOpen((o) => !o)}
-            docsHref={docsHref}
-          />
+          <MoreMenu docsHref={docsHref}>
+            <Toggle label="Important" checked={flags.required} onChange={set('required')} />
+            <Toggle label="Optional" checked={flags.optional} onChange={set('optional')} />
+            <Toggle label="Show label" checked={flags.label} onChange={set('label')} />
+            <Toggle label="Show info icon" checked={flags.info} onChange={set('info')} />
+            <Toggle label="Show hint" checked={flags.hint} onChange={set('hint')} />
+            <Toggle label="Show counter" checked={flags.counter} onChange={set('counter')} />
+            <Toggle label="Show resize handle" checked={flags.resize} onChange={set('resize')} />
+          </MoreMenu>
         </div>
       ) : null}
 
@@ -121,16 +124,6 @@ export function TextareaPreview({
           ))}
         </div>
       </div>
-
-      <MorePanel open={paramsOpen}>
-        <Toggle label="Important" checked={flags.required} onChange={set('required')} />
-        <Toggle label="Optional" checked={flags.optional} onChange={set('optional')} />
-        <Toggle label="Show label" checked={flags.label} onChange={set('label')} />
-        <Toggle label="Show info icon" checked={flags.info} onChange={set('info')} />
-        <Toggle label="Show hint" checked={flags.hint} onChange={set('hint')} />
-        <Toggle label="Show counter" checked={flags.counter} onChange={set('counter')} />
-        <Toggle label="Show resize handle" checked={flags.resize} onChange={set('resize')} />
-      </MorePanel>
 
       <div className="stage stage-tall">
         <div className="stage-inner">

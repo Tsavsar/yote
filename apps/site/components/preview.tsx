@@ -3,7 +3,7 @@
 import * as React from 'react'
 import { PinInput } from 'yote-ui'
 import { CodeBlock } from './code-block'
-import { MoreMenu, MorePanel, Toggle } from './more-controls'
+import { MoreMenu, Toggle } from './more-controls'
 import { Pill } from './state-switcher'
 
 /**
@@ -143,7 +143,6 @@ export function Preview({
   description?: string
   docsHref?: string
 }) {
-  const [paramsOpen, setParamsOpen] = React.useState(false)
   const [{ state, length, value, mask, showLabel, showHint, errorKey }, dispatch] =
     React.useReducer(reduce, {
       state: 'idle',
@@ -171,11 +170,23 @@ export function Preview({
             <h2 className="showcase-title">{title}</h2>
             {description !== undefined ? <p className="showcase-note">{description}</p> : null}
           </div>
-          <MoreMenu
-            paramsOpen={paramsOpen}
-            onToggleParams={() => setParamsOpen((o) => !o)}
-            docsHref={docsHref}
-          />
+          <MoreMenu docsHref={docsHref}>
+            <Toggle
+              label="Mask as dots"
+              checked={mask}
+              onChange={(next) => dispatch({ type: 'mask', mask: next })}
+            />
+            <Toggle
+              label="Show label"
+              checked={showLabel}
+              onChange={(next) => dispatch({ type: 'showLabel', showLabel: next })}
+            />
+            <Toggle
+              label="Show hint"
+              checked={showHint}
+              onChange={(next) => dispatch({ type: 'showHint', showHint: next })}
+            />
+          </MoreMenu>
         </div>
       ) : null}
 
@@ -200,24 +211,6 @@ export function Preview({
           ))}
         </Row>
       </div>
-
-      <MorePanel open={paramsOpen}>
-        <Toggle
-          label="Mask as dots"
-          checked={mask}
-          onChange={(next) => dispatch({ type: 'mask', mask: next })}
-        />
-        <Toggle
-          label="Show label"
-          checked={showLabel}
-          onChange={(next) => dispatch({ type: 'showLabel', showLabel: next })}
-        />
-        <Toggle
-          label="Show hint"
-          checked={showHint}
-          onChange={(next) => dispatch({ type: 'showHint', showHint: next })}
-        />
-      </MorePanel>
 
       <div className="stage">
         <PinInput

@@ -51,7 +51,7 @@
     --code-punct: #b4b4b4;
     --page-max: 650px;
     --scroll-thumb: rgba(0, 0, 0, 0.16);
-    --dot-grid: #f4f4f4;
+    --dot-grid: #ededed;
     --scroll-thumb-hover: rgba(0, 0, 0, 0.28);
   }
 
@@ -63,7 +63,7 @@
       --code-expr: #a3a3a3;
       --code-punct: #5c5c5c;
       --scroll-thumb: rgba(255, 255, 255, 0.18);
-      --dot-grid: rgba(255, 255, 255, 0.24);
+      --dot-grid: rgba(255, 255, 255, 0.32);
       --scroll-thumb-hover: rgba(255, 255, 255, 0.3);
     }
   }
@@ -75,7 +75,7 @@
     --code-expr: #a3a3a3;
     --code-punct: #5c5c5c;
     --scroll-thumb: rgba(255, 255, 255, 0.18);
-    --dot-grid: rgba(255, 255, 255, 0.24);
+    --dot-grid: rgba(255, 255, 255, 0.32);
     --scroll-thumb-hover: rgba(255, 255, 255, 0.3);
   }
 
@@ -685,7 +685,7 @@
   }
 
 
-  /* ---- more parameters ------------------------------------------------ */
+  /* ---- more menu, Figma 26:8703 --------------------------------------- */
 
   .more-menu {
     position: relative;
@@ -713,23 +713,16 @@
     }
   }
 
-  /* ---- overflow menu -------------------------------------------------- */
-
-  .menu {
+  /* Both panels ride in one row, so the submenu opens beside the menu. */
+  .menu-wrap {
     position: absolute;
     top: calc(100% + 6px);
     right: 0;
     z-index: 20;
     display: flex;
-    flex-direction: column;
-    min-width: 168px;
-    padding: 4px;
-    border: 1px solid var(--yote-stroke-soft);
-    border-radius: 10px;
-    background: var(--yote-bg-default);
-    box-shadow: var(--yote-shadow-xs);
+    align-items: flex-start;
+    gap: 10px;
     opacity: 0;
-    /* Scales from its own top-right, which is where the trigger is. */
     transform-origin: top right;
     transform: scale(0.96);
     pointer-events: none;
@@ -738,88 +731,101 @@
       transform 140ms var(--yote-ease-out);
   }
 
-  .menu[data-open] {
+  .menu-wrap[data-open] {
     opacity: 1;
     transform: scale(1);
     pointer-events: auto;
   }
 
+  .menu {
+    display: flex;
+    flex-direction: column;
+    width: 223px;
+    padding: 8px;
+    border: 1px solid var(--yote-stroke-soft);
+    border-radius: 18px;
+    background: var(--yote-bg-default);
+    box-shadow:
+      0 5px 6.5px rgba(0, 0, 0, 0.05),
+      0 2px 2px rgba(0, 0, 0, 0.02);
+  }
+
+  /* The submenu is in the flow but hidden until asked for, so opening it
+     does not reposition the menu it hangs off. */
+  .menu-params {
+    display: none;
+  }
+
+  .menu-params[data-open] {
+    display: flex;
+  }
+
   .menu-item {
-    padding: 6px 10px;
-    border-radius: 7px;
-    font-size: 13px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px;
+    border-radius: 10px;
+    font-size: 14px;
     line-height: 20px;
+    letter-spacing: 0.28px;
     text-align: left;
-    color: var(--yote-text-sub);
+    text-decoration: none;
+    color: var(--yote-text-strong);
     background: transparent;
-    transition:
-      color var(--yote-duration) ease,
-      background-color var(--yote-duration) ease;
+    transition: background-color var(--yote-duration) ease;
+  }
+
+  .menu-item-expand {
+    justify-content: space-between;
+    width: 100%;
   }
 
   @media (hover: hover) and (pointer: fine) {
     .menu-item:hover {
-      color: var(--yote-text-strong);
       background: var(--yote-bg-surface);
     }
   }
 
-  /*
-   * 0fr to 1fr rather than a measured pixel height: the content stays in
-   * normal flow, so the panel is always exactly as tall as what is in it and
-   * nothing has to be re-measured when the viewport changes.
-   */
-  /*
-   * 0fr to 1fr rather than a measured pixel height: the content stays in
-   * normal flow, so the panel is always exactly as tall as what is in it and
-   * nothing has to be re-measured when the viewport changes.
-   */
-  .more-panel {
-    display: grid;
-    grid-template-rows: 0fr;
-    width: 100%;
-    /* visibility keeps the collapsed controls out of the tab order, and
-       unlike `hidden` it can be transitioned. */
-    visibility: hidden;
-    transition:
-      grid-template-rows 240ms var(--yote-ease-out),
-      visibility 240ms;
+  .menu-chevron {
+    display: inline-grid;
+    place-items: center;
+    color: var(--yote-text-soft);
+    transition: transform 200ms var(--yote-ease-out);
   }
 
-  .more-panel[data-open] {
-    grid-template-rows: 1fr;
-    visibility: visible;
+  .menu-chevron[data-open] {
+    transform: rotate(90deg);
   }
 
-  /* The wrapper that does the collapsing cannot also be the visible box —
-     it needs overflow hidden and zero min-height for the 0fr trick. */
-  .more-panel-clip {
-    min-height: 0;
-    overflow: hidden;
-  }
+  /* ---- switch, Figma 26:8643 ------------------------------------------ */
 
-  /* The parameters are their own group, so they get their own surface. */
-  .more-panel-inner {
+  .switch-row {
     display: flex;
-    flex-wrap: wrap;
-    gap: 10px 20px;
-    margin-top: 12px;
-    padding: 12px 14px;
-    border-radius: 12px;
-    background: var(--yote-bg-surface);
-  }
-
-  /* ---- toggle --------------------------------------------------------- */
-
-  .toggle {
-    display: inline-flex;
     align-items: center;
-    gap: 8px;
+    gap: 10px;
+    padding: 10px;
+    border-radius: 10px;
     cursor: pointer;
-    user-select: none;
+    transition: background-color var(--yote-duration) ease;
   }
 
-  .toggle-input {
+  @media (hover: hover) and (pointer: fine) {
+    .switch-row:hover {
+      background: var(--yote-bg-surface);
+    }
+  }
+
+  .switch-label {
+    flex: 1 1 0;
+    min-width: 0;
+    font-size: 14px;
+    line-height: 20px;
+    letter-spacing: 0.28px;
+    color: var(--yote-text-strong);
+  }
+
+  .switch-input {
     position: absolute;
     width: 1px;
     height: 1px;
@@ -827,47 +833,65 @@
     pointer-events: none;
   }
 
-  .toggle-track {
+  .switch-track {
     position: relative;
-    display: inline-flex;
-    align-items: center;
-    width: 28px;
-    height: 16px;
-    padding: 2px;
-    border-radius: 999px;
-    background: var(--yote-bg-layer);
+    flex: none;
+    width: 36px;
+    height: 20px;
+    border-radius: 78px;
+    background: var(--yote-bg-subtle);
     transition: background-color var(--yote-duration) ease;
   }
 
-  .toggle-thumb {
-    width: 12px;
-    height: 12px;
-    border-radius: 999px;
-    background: var(--yote-bg-default);
-    box-shadow: var(--yote-shadow-field);
-    /* Only transform moves, so the thumb never triggers layout. */
+  /*
+   * The thumb carries a 6px dot of its own — that detail is what makes it
+   * read as a switch rather than a coloured pill. Only transform moves, so
+   * throwing it never triggers layout.
+   */
+  .switch-thumb {
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    display: grid;
+    place-items: center;
+    width: 16px;
+    height: 16px;
+    border: 0.75px solid var(--yote-bg-layer);
+    border-radius: 37px;
+    background: #ffffff;
+    box-shadow: 0 10px 20px 3px rgba(0, 0, 0, 0.04);
     transition: transform 200ms var(--yote-ease-out);
   }
 
-  /* Monochrome, not the brand purple: this is page chrome, and the accent
-     stays inside the component where it was measured. */
-  .toggle-input:checked + .toggle-track {
+  .switch-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 22px;
+    background: var(--yote-bg-subtle);
+    transition: background-color var(--yote-duration) ease;
+  }
+
+  .switch-input:checked + .switch-track {
     background: var(--yote-text-strong);
   }
 
-  .toggle-input:checked + .toggle-track .toggle-thumb {
-    transform: translateX(12px);
+  .switch-input:checked + .switch-track .switch-thumb {
+    transform: translateX(16px);
   }
 
-  .toggle-input:focus-visible + .toggle-track {
+  .switch-input:checked + .switch-track .switch-dot {
+    background: var(--yote-text-strong);
+  }
+
+  .switch-input:focus-visible + .switch-track {
     outline: 2px solid var(--yote-text-strong);
     outline-offset: 2px;
   }
 
-  .toggle-label {
-    font-size: 13px;
-    line-height: 20px;
-    color: var(--yote-text-sub);
+  @media (prefers-reduced-motion: reduce) {
+    .switch-thumb {
+      transition: none;
+    }
   }
 
   /* ---- tooltip -------------------------------------------------------- */
