@@ -20,7 +20,6 @@ const LABELS: Record<StateKey, string> = {
 }
 
 const SEED = 'Passw0rd!'
-const ERROR_TEXT = 'That password is incorrect. Try again.'
 
 type Flags = { info: boolean; forgot: boolean; requirements: boolean; reveal: boolean }
 
@@ -31,7 +30,8 @@ function snippetFor(state: StateKey, size: Size, value: string, f: Flags): strin
   if (f.forgot) props.push('forgotHref="/reset"')
   if (!f.requirements) props.push('showRequirements={false}')
   if (!f.reveal) props.push('revealable={false}')
-  if (state === 'error') props.push(`error="${ERROR_TEXT}"`)
+  // No message on error for now — the red field and bar carry it.
+  if (state === 'error') props.push('invalid')
   if (state === 'disabled') props.push('disabled')
 
   return `<PasswordInput\n${props.map((p) => `  ${p}`).join('\n')}\n/>`
@@ -118,7 +118,7 @@ export function PasswordPreview({
             revealable={flags.reveal}
             value={value}
             onChange={setValue}
-            error={state === 'error' ? ERROR_TEXT : undefined}
+            invalid={state === 'error'}
             disabled={state === 'disabled'}
           />
         </div>
