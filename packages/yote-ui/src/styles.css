@@ -38,6 +38,15 @@
     --yote-shadow-field: 0 2px 4px 0 rgba(54, 54, 54, 0.04);
     --yote-shadow-field-hover: 0 2px 4px 0 rgba(138, 138, 138, 0.08);
     --yote-scroll-thumb: rgba(0, 0, 0, 0.16);
+    --yote-flag-ring: rgba(0, 0, 0, 0.16);
+
+    /* A popover floats over the page, so it cannot reuse the field tokens: on
+       a white page a white panel is separated by its shadow, and on a black
+       one there is no shadow to see. Dark lifts the surface instead. */
+    --yote-popover-bg: #ffffff;
+    --yote-popover-border: rgba(0, 0, 0, 0.06);
+    --yote-popover-active: #f5f5f5;
+    --yote-popover-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.04), 0 12px 32px -8px rgba(0, 0, 0, 0.14);
 
     /* Added with the password input (Figma 23:6839-23:7540). */
     --yote-bg-subtle: #ebebeb;
@@ -46,6 +55,7 @@
 
     --yote-radius-sm: 8px;
     --yote-radius-md: 12px;
+    --yote-radius-lg: 16px;
     --yote-radius-xl: 24px;
     --yote-shadow-xs: 0 2px 4px -1px rgba(0, 0, 0, 0.02), 0 5px 13px -5px rgba(0, 0, 0, 0.05);
     --yote-focus-active: 0 0 0 2px var(--yote-bg-default), 0 0 0 4px var(--yote-purple-alpha-24);
@@ -96,6 +106,11 @@
       --yote-shadow-field: 0 2px 4px 0 rgba(0, 0, 0, 0.35);
       --yote-shadow-field-hover: 0 2px 4px 0 rgba(0, 0, 0, 0.45);
       --yote-scroll-thumb: rgba(255, 255, 255, 0.18);
+      --yote-flag-ring: rgba(255, 255, 255, 0.24);
+      --yote-popover-bg: #1c1c1c;
+      --yote-popover-border: rgba(255, 255, 255, 0.1);
+      --yote-popover-active: #2c2c2c;
+      --yote-popover-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.5), 0 16px 40px -8px rgba(0, 0, 0, 0.7);
       --yote-bg-subtle: #262626;
       --yote-success-base: #3ad98a;
       --yote-warning-base: #ff8f3d;
@@ -125,6 +140,11 @@
     --yote-shadow-field: 0 2px 4px 0 rgba(0, 0, 0, 0.35);
     --yote-shadow-field-hover: 0 2px 4px 0 rgba(0, 0, 0, 0.45);
     --yote-scroll-thumb: rgba(255, 255, 255, 0.18);
+    --yote-flag-ring: rgba(255, 255, 255, 0.24);
+    --yote-popover-bg: #1c1c1c;
+    --yote-popover-border: rgba(255, 255, 255, 0.1);
+    --yote-popover-active: #2c2c2c;
+    --yote-popover-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.5), 0 16px 40px -8px rgba(0, 0, 0, 0.7);
     --yote-bg-subtle: #262626;
     --yote-success-base: #3ad98a;
     --yote-warning-base: #ff8f3d;
@@ -943,7 +963,6 @@
     white-space: nowrap;
   }
 
-
   /* ---------------------------------------------------------------------
    * Phone input
    *
@@ -1014,19 +1033,55 @@
     box-shadow: none;
   }
 
-  /* The select covers this group, so the whole thing is the hit target. */
-  .yote-phone-country {
+  /* ---- country dropdown, Figma 29:10460 ------------------------------- */
+
+  .yote-cs {
     position: relative;
     display: inline-flex;
     flex: none;
+  }
+
+  .yote-phone-country {
+    display: inline-flex;
     align-items: center;
     gap: 8px;
+    padding: 0;
+    border: 0;
+    background: transparent;
     color: var(--yote-text-soft);
+    cursor: pointer;
+    font: inherit;
+  }
+
+  .yote-phone-country:disabled {
+    cursor: not-allowed;
+  }
+
+  .yote-phone-country:focus-visible {
+    outline: 2px solid var(--yote-feature-base);
+    outline-offset: 3px;
+    border-radius: 4px;
   }
 
   .yote-phone-flag {
+    display: inline-flex;
     font-size: 16px;
     line-height: 1;
+  }
+
+  /*
+   * The drawn flags. A hairline ring, because Finland and Japan are white at
+   * the edge and would otherwise dissolve into the field — the rectangle is
+   * part of reading it as a flag.
+   */
+  .yote-flag {
+    display: block;
+    flex: none;
+    width: 20px;
+    height: 15px;
+    border-radius: 2px;
+    box-shadow: inset 0 0 0 0.5px var(--yote-flag-ring);
+    overflow: hidden;
   }
 
   .yote-phone-dial {
@@ -1041,29 +1096,177 @@
   }
 
   /*
-   * A real select, sized over the group and invisible. The platform picker is
-   * searchable, keyboard driven and correct on a phone; a custom popover
-   * would be all of that to rebuild and worse on every count.
+   * Fixed, not absolute, because the panel is portalled to the body: it is
+   * placed against the viewport so no ancestor's overflow can clip it. Top,
+   * left, width and max-height all arrive as inline style from the measure.
    */
-  .yote-phone-select {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    opacity: 0;
+  .yote-cs-panel {
+    position: fixed;
+    z-index: 60;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    /* A fallback only. The real width arrives inline from the measure, and it
+       is the field's, so the panel reads as the field opening rather than as
+       something hovering next to it. */
+    width: 300px;
+    padding: 4px 0;
+    border: 1px solid var(--yote-popover-border);
+    border-radius: var(--yote-radius-lg);
+    background: var(--yote-popover-bg);
+    box-shadow: var(--yote-popover-shadow);
+    overflow: clip;
+    animation: yote-cs-in 140ms var(--yote-ease-out) both;
+  }
+
+  /* Flipped above the field, so it grows from the field rather than towards
+     it — the entrance direction has to follow the placement or it reads
+     backwards. */
+  .yote-cs-panel[data-side='top'] {
+    animation-name: yote-cs-in-up;
+  }
+
+  @keyframes yote-cs-in {
+    from {
+      opacity: 0;
+      transform: translateY(-4px) scale(0.99);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  @keyframes yote-cs-in-up {
+    from {
+      opacity: 0;
+      transform: translateY(4px) scale(0.99);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  .yote-cs-search {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    height: 36px;
+    margin: 0 4px;
+    padding: 6px 8px 6px 12px;
+    border: 1px solid var(--yote-popover-border);
+    border-radius: var(--yote-radius-md);
+    /* The page background, not the panel's — a well sunk into the panel. In
+       dark that difference is the only thing separating the two. */
+    background: var(--yote-bg-default);
+    box-shadow: var(--yote-shadow-field);
+    color: var(--yote-text-soft);
+  }
+
+  .yote-cs-search-input {
+    flex: 1 1 0;
+    min-width: 0;
+    margin: 0;
+    padding: 0;
     border: 0;
-    cursor: pointer;
+    outline: none;
+    background: transparent;
     font: inherit;
+    font-size: 14px;
+    line-height: 20px;
+    letter-spacing: 0.28px;
+    color: var(--yote-text-strong);
   }
 
-  .yote-phone-select:disabled {
-    cursor: not-allowed;
+  .yote-cs-search-input::placeholder {
+    color: var(--yote-text-soft);
+    opacity: 1;
   }
 
-  .yote-phone-select:focus-visible {
-    outline: 2px solid var(--yote-feature-base);
-    outline-offset: 2px;
-    border-radius: 4px;
+  /*
+   * The list scrolls, not the panel — the search field stays put while the
+   * options move under it. Custom scrollbar, since nothing on this site
+   * shows a native one.
+   */
+  .yote-cs-list {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    /* min-height so it can shrink under the panel's measured max-height; a
+       flex item defaults to min-height:auto and refuses to. */
+    min-height: 0;
+    max-height: 216px;
+    margin: 0;
+    padding: 0 4px;
+    list-style: none;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--yote-scroll-thumb) transparent;
+  }
+
+  .yote-cs-list::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .yote-cs-list::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .yote-cs-list::-webkit-scrollbar-thumb {
+    border-radius: 999px;
+    background: var(--yote-scroll-thumb);
+  }
+
+  .yote-cs-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px;
+    border-radius: var(--yote-radius-md);
+    font-size: 14px;
+    line-height: 20px;
+    letter-spacing: 0.28px;
+    color: var(--yote-text-sub);
+    cursor: pointer;
+    transition:
+      background-color var(--yote-duration) ease,
+      color var(--yote-duration) ease;
+  }
+
+  /* Pointer and keyboard share one highlight, so the two never disagree. */
+  .yote-cs-item[data-active] {
+    background: var(--yote-popover-active);
+    color: var(--yote-text-strong);
+  }
+
+  .yote-cs-item[data-selected] {
+    color: var(--yote-text-strong);
+  }
+
+  .yote-cs-flag {
+    display: inline-flex;
+    flex: none;
+    font-size: 18px;
+    line-height: 1;
+  }
+
+  .yote-cs-dial {
+    flex: 1 1 0;
+    min-width: 0;
+  }
+
+  .yote-cs-name {
+    flex: none;
+    text-align: right;
+    white-space: nowrap;
+  }
+
+  .yote-cs-empty {
+    padding: 10px;
+    font-size: 14px;
+    line-height: 20px;
+    color: var(--yote-text-soft);
   }
 
   .yote-phone-input {
@@ -1100,7 +1303,6 @@
       letter-spacing: 0.32px;
     }
   }
-
 
   /* ---------------------------------------------------------------------
    * Motion

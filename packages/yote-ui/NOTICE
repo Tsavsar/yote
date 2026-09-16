@@ -1,0 +1,16 @@
+Yöte (yote-ui)
+Copyright (c) Tsavsar
+Licensed under the MIT License.
+
+--------------------------------------------------------------------------
+
+This product includes flag artwork derived from flag-icons.
+
+  flag-icons — https://github.com/lipis/flag-icons
+  Copyright (c) 2013 Panayiotis Lipiridis
+  Licensed under the MIT License.
+
+The paths for the eight flags in DEFAULT_PHONE_COUNTRIES (US, GB, FI, NG,
+DE, FR, IN, JP) are taken from that project's 4x3 set and inlined as React
+components in src/flags.tsx. No flag-icons code is bundled and the package
+has no dependency on it.

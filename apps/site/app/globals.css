@@ -64,6 +64,11 @@
     --switch-dot: #ebebeb;
     --switch-dot-on: #2e2e2e;
     --scroll-thumb-hover: rgba(0, 0, 0, 0.28);
+
+    /* Native chrome — scrollbars, the caret, a date picker a consumer drops
+       in — reads this, not our tokens. Without it a dark page keeps light
+       scrollbars. */
+    color-scheme: light;
   }
 
   @media (prefers-color-scheme: dark) {
@@ -75,12 +80,6 @@
       --code-punct: #5c5c5c;
       --scroll-thumb: rgba(255, 255, 255, 0.18);
       --dot-grid: rgba(255, 255, 255, 0.07);
-    --switch-thumb: #f2f2f2;
-    --switch-thumb-on: #0c0c0c;
-    --switch-thumb-border: transparent;
-    --switch-track-on: #e2e2e2;
-    --switch-dot: #262626;
-    --switch-dot-on: #0c0c0c;
       --switch-thumb: #f2f2f2;
       /* The checked track is near-white in dark, so a near-white thumb on it
          blends into one pill — the thumb flips dark to stay readable. */
@@ -95,9 +94,19 @@
       --switch-dot: #262626;
       --switch-dot-on: #0c0c0c;
       --scroll-thumb-hover: rgba(255, 255, 255, 0.3);
+      color-scheme: dark;
     }
   }
 
+  /*
+   * Declared here as well as in the media query above, and this is the whole
+   * bug the switch kept regressing on: clicking the theme control sets
+   * data-theme="dark", which does not turn on `prefers-color-scheme: dark`.
+   * On a light machine the block above never matched, so every switch fix
+   * landed in a rule the toggle could not reach — the black ring, the
+   * bullseye and the hard white all came straight back the moment you pressed
+   * the button rather than changing your OS.
+   */
   :root[data-theme='dark'] {
     --code-tag: #f2f2f2;
     --code-attr: #a3a3a3;
@@ -106,7 +115,14 @@
     --code-punct: #5c5c5c;
     --scroll-thumb: rgba(255, 255, 255, 0.18);
     --dot-grid: rgba(255, 255, 255, 0.07);
+    --switch-thumb: #f2f2f2;
+    --switch-thumb-on: #0c0c0c;
+    --switch-thumb-border: transparent;
+    --switch-track-on: #e2e2e2;
+    --switch-dot: #262626;
+    --switch-dot-on: #0c0c0c;
     --scroll-thumb-hover: rgba(255, 255, 255, 0.3);
+    color-scheme: dark;
   }
 
   body {
@@ -727,8 +743,6 @@
     transform: scale(0.97);
   }
 
-
-
   /* ---- components list ------------------------------------------------ */
 
   .components {
@@ -798,7 +812,6 @@
     color: var(--yote-text-sub);
     text-wrap: pretty;
   }
-
 
   /* ---- more menu, Figma 26:8703 --------------------------------------- */
 
@@ -1030,7 +1043,6 @@
     }
   }
 
-
   /* ---- press ---------------------------------------------------------- */
 
   /*
@@ -1165,7 +1177,6 @@
     }
   }
 
-
   /* ---- scrollbars ----------------------------------------------------- */
 
   /*
@@ -1204,7 +1215,6 @@
   .scroll-thin::-webkit-scrollbar-corner {
     background: transparent;
   }
-
 
   .code-pre::-webkit-scrollbar,
   .table-wrap::-webkit-scrollbar,
@@ -1263,7 +1273,8 @@
     flex-direction: column;
     gap: 24px;
     height: 100vh;
-    padding: 20px 0 16px;
+    /* Aligns the wordmark with the page title rather than floating above it. */
+    padding: 56px 0 24px;
     overflow-y: auto;
   }
 
@@ -1290,6 +1301,22 @@
     color: var(--yote-text-soft);
   }
 
+  /* An outbound link in docs prose. Underlined rather than coloured — the page
+     has no accent, and colour would be the only one on it. */
+  .docs-a {
+    color: var(--yote-text-strong);
+    text-decoration: underline;
+    text-decoration-color: var(--yote-text-soft);
+    text-underline-offset: 3px;
+    transition: text-decoration-color var(--yote-duration) ease;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .docs-a:hover {
+      text-decoration-color: var(--yote-text-strong);
+    }
+  }
+
   .docs-link {
     padding: 5px 8px;
     border-radius: 7px;
@@ -1312,11 +1339,19 @@
     background: var(--yote-bg-surface);
   }
 
+  /* The mark on one side, the theme toggle on the other, both aligned to the
+     link column's own 8px gutter. */
   .docs-sidebar-foot {
     display: flex;
     align-items: center;
-    gap: 2px;
+    justify-content: space-between;
+    gap: 8px;
     padding-top: 8px;
+  }
+
+  .icon-lg {
+    width: 17px;
+    height: 17px;
   }
 
   .docs-content {
@@ -1333,9 +1368,25 @@
 
   .docs-lede {
     margin-top: 10px;
+    margin-bottom: 32px;
     max-width: 62ch;
     color: var(--yote-text-sub);
     text-wrap: pretty;
+  }
+
+  /*
+   * A preview dropped straight into a docs page had no air around it — the
+   * lede ran into the controls and the next heading sat on the code panel.
+   * The h2 rule below already carries 48px, so this only opens the top.
+   */
+  .docs-content .preview {
+    margin-bottom: 8px;
+  }
+
+  .docs-content .install,
+  .docs-content .code,
+  .docs-content .table-wrap {
+    margin-bottom: 4px;
   }
 
   /* scroll-margin so an anchor jump does not tuck the heading under nothing. */
@@ -1520,5 +1571,4 @@
     outline: 2px solid var(--yote-text-strong);
     outline-offset: 2px;
   }
-
 }

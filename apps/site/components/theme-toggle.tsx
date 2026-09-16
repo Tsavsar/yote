@@ -1,32 +1,21 @@
 'use client'
 
-import * as React from 'react'
 import { MoonIcon, SunIcon } from './icons'
+import { setTheme, useIsDark } from './theme'
 
 /**
- * Sets `data-theme` on the root, which is one of the two selectors the token
- * layer answers to. With no attribute set the page follows the system, which
- * is the other one — so the initial state here is genuinely "system", not
- * "light pretending to be system".
+ * The compact flip in the landing nav. The docs get the full three-way
+ * switcher; here there is one control's worth of room, so this flips between
+ * light and dark and writes to the same store — a visitor who picked "system"
+ * in the docs sees it resolved, and one press pins whichever is not showing.
  *
- * Both glyphs sit in one grid cell and cross-fade with a little blur, the same
- * treatment as the icon swap on shatermt.com. Blur bridges the gap between two
- * overlapping marks so the eye reads one changing rather than two trading
- * places.
+ * Both glyphs sit in one grid cell and cross-fade with a little blur, the
+ * same treatment as the icon swap on shatermt.com. Blur bridges the gap
+ * between two overlapping marks so the eye reads one changing rather than two
+ * trading places.
  */
 export function ThemeToggle() {
-  const [theme, setTheme] = React.useState<'light' | 'dark' | null>(null)
-  const [isDark, setIsDark] = React.useState(false)
-
-  React.useEffect(() => {
-    const el = document.documentElement
-    if (theme === null) el.removeAttribute('data-theme')
-    else el.setAttribute('data-theme', theme)
-
-    setIsDark(
-      theme === null ? window.matchMedia('(prefers-color-scheme: dark)').matches : theme === 'dark',
-    )
-  }, [theme])
+  const isDark = useIsDark()
 
   return (
     <button

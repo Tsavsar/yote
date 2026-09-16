@@ -5,7 +5,7 @@
   "license": "MIT",
   "type": "module",
   "sideEffects": ["**/*.css"],
-  "files": ["dist"],
+  "files": ["dist", "NOTICE"],
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",

@@ -9,7 +9,14 @@
 /** Copy affordance, 13.85 drawn inside an 18px frame at 15% inset. */
 export function CopyIcon() {
   return (
-    <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true" focusable="false">
+    <svg
+      width="18"
+      height="18"
+      viewBox="0 0 18 18"
+      fill="none"
+      aria-hidden="true"
+      focusable="false"
+    >
       <g transform="translate(2.075 2.075)">
         <path
           d="M9.625 4.225H11.425C12.4195 4.225 13.225 5.0305 13.225 6.025V11.425C13.225 12.4195 12.4195 13.225 11.425 13.225H6.025C5.0305 13.225 4.225 12.4195 4.225 11.425V9.625"
@@ -33,7 +40,14 @@ export function CopyIcon() {
 /** Check, shown after a copy. Not in the file — same stroke weight and caps. */
 export function CheckIcon() {
   return (
-    <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true" focusable="false">
+    <svg
+      width="18"
+      height="18"
+      viewBox="0 0 18 18"
+      fill="none"
+      aria-hidden="true"
+      focusable="false"
+    >
       <path
         d="M4 9.5L7.2 12.5L14 5.5"
         stroke="currentColor"
@@ -48,7 +62,14 @@ export function CheckIcon() {
 /** The sun, from node 16:5839. */
 export function SunIcon() {
   return (
-    <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true" focusable="false">
+    <svg
+      width="18"
+      height="18"
+      viewBox="0 0 18 18"
+      fill="none"
+      aria-hidden="true"
+      focusable="false"
+    >
       <g stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
         <path d="M9 0.75V2.25" />
         <path d="M14.834 3.166L13.773 4.227" />
@@ -67,7 +88,14 @@ export function SunIcon() {
 /** The moon. Drawn to the sun's stroke weight, since the file has no dark frame. */
 export function MoonIcon() {
   return (
-    <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true" focusable="false">
+    <svg
+      width="18"
+      height="18"
+      viewBox="0 0 18 18"
+      fill="none"
+      aria-hidden="true"
+      focusable="false"
+    >
       <path
         d="M15.2 11.4A6.6 6.6 0 0 1 6.6 2.8a6.6 6.6 0 1 0 8.6 8.6Z"
         stroke="currentColor"

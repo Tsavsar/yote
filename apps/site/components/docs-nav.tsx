@@ -2,7 +2,6 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { GithubLink } from './github-link'
 import { Logo } from './logo'
 import { ThemeToggle } from './theme-toggle'
 
@@ -36,7 +35,17 @@ const GROUPS = [
   },
 ]
 
-export function DocsNav() {
+/**
+ * `github` arrives as a prop rather than an import.
+ *
+ * This file is a client component — it reads the pathname to mark the active
+ * link — and GithubLink is an async server component that fetches the star
+ * count. Rendering one inside the other made React treat it as an async
+ * *client* component, which is not a thing: it threw on every docs page and
+ * suspended on an uncached promise. Passing it down as an already-rendered
+ * element keeps it on the server where it belongs.
+ */
+export function DocsNav({ github }: { github: React.ReactNode }) {
   const pathname = usePathname()
 
   return (
@@ -66,8 +75,8 @@ export function DocsNav() {
       </div>
 
       <div className="docs-sidebar-foot">
+        {github}
         <ThemeToggle />
-        <GithubLink />
       </div>
     </nav>
   )

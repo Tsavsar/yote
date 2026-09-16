@@ -192,3 +192,18 @@ export function ChevronDownIcon() {
     </svg>
   )
 }
+
+/** The dropdown search glyph (Figma 29:10434, 16px). */
+export function SearchIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false">
+      <path
+        d="M11.3335 11.3335L14.0002 14.0002M2.00021 7.33354C2.00021 8.74802 2.56211 10.1046 3.5623 11.1048C4.5625 12.105 5.91905 12.6669 7.33354 12.6669C8.74803 12.6669 10.1046 12.105 11.1048 11.1048C12.105 10.1046 12.6669 8.74802 12.6669 7.33354C12.6669 5.91905 12.105 4.56249 11.1048 3.5623C10.1046 2.56211 8.74803 2.0002 7.33354 2.0002C5.91905 2.0002 4.5625 2.56211 3.5623 3.5623C2.56211 4.56249 2.00021 5.91905 2.00021 7.33354Z"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  )
+}
