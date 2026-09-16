@@ -128,7 +128,11 @@ export function MorePanel({ open, children }: { open: boolean; children: React.R
     // animate. The stylesheet takes it out of the tab order with `visibility`
     // instead, which is animatable.
     <div className="more-panel" data-open={open || undefined}>
-      <div className="more-panel-inner">{children}</div>
+      {/* Two wrappers on purpose: the outer one does the 0fr collapse and
+          needs overflow hidden, so it cannot also be the visible surface. */}
+      <div className="more-panel-clip">
+        <div className="more-panel-inner">{children}</div>
+      </div>
     </div>
   )
 }

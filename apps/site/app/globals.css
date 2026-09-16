@@ -51,6 +51,7 @@
     --code-punct: #b4b4b4;
     --page-max: 650px;
     --scroll-thumb: rgba(0, 0, 0, 0.16);
+    --dot-grid: #f0f0f0;
     --scroll-thumb-hover: rgba(0, 0, 0, 0.28);
   }
 
@@ -62,6 +63,7 @@
       --code-expr: #a3a3a3;
       --code-punct: #5c5c5c;
       --scroll-thumb: rgba(255, 255, 255, 0.18);
+      --dot-grid: rgba(255, 255, 255, 0.16);
       --scroll-thumb-hover: rgba(255, 255, 255, 0.3);
     }
   }
@@ -73,6 +75,7 @@
     --code-expr: #a3a3a3;
     --code-punct: #5c5c5c;
     --scroll-thumb: rgba(255, 255, 255, 0.18);
+    --dot-grid: rgba(255, 255, 255, 0.16);
     --scroll-thumb-hover: rgba(255, 255, 255, 0.3);
   }
 
@@ -492,9 +495,16 @@
    * the dot grid. The controls used to float above an unrelated box; inside,
    * they read as belonging to the thing they change.
    */
+  /*
+   * One box, not a box inside a box. The controls sit in the stage's own
+   * padding at the top; the dot grid is inset below them rather than a
+   * separate panel with its own border.
+   */
   .stage {
     display: flex;
     flex-direction: column;
+    gap: 12px;
+    padding: 12px;
     border: 1px solid var(--yote-stroke-soft);
     border-radius: 20px;
     background: var(--yote-bg-default);
@@ -504,24 +514,23 @@
   .stage-bar {
     display: flex;
     flex-direction: column;
-    padding: 12px;
-    border-bottom: 1px solid var(--yote-stroke-soft);
   }
 
   /*
-   * Fixed height, never min-height: a body that resizes on a pill click moves
-   * the code panel and everything under the cursor.
+   * Fixed height, never min-height: a body that resizes on a pill click
+   * moves the code panel and everything under the cursor.
    *
    * The dot grid is 4.818px dots on a 38.541px pitch (33.723px gap in the
-   * frame, plus the dot) in bg-layer, drawn as one gradient instead of the
-   * 200-odd divs the export emits.
+   * frame, plus the dot), drawn as one gradient instead of the 200-odd divs
+   * the export emits.
    */
   .stage-body {
     display: grid;
     place-items: center;
     height: 300px;
     padding: 24px;
-    background-image: radial-gradient(circle, var(--yote-bg-layer) 2.409px, transparent 2.409px);
+    border-radius: 12px;
+    background-image: radial-gradient(circle, var(--dot-grid) 2.409px, transparent 2.409px);
     background-size: 38.541px 38.541px;
     background-position: center;
     overflow: clip;
@@ -775,6 +784,11 @@
    * normal flow, so the panel is always exactly as tall as what is in it and
    * nothing has to be re-measured when the viewport changes.
    */
+  /*
+   * 0fr to 1fr rather than a measured pixel height: the content stays in
+   * normal flow, so the panel is always exactly as tall as what is in it and
+   * nothing has to be re-measured when the viewport changes.
+   */
   .more-panel {
     display: grid;
     grid-template-rows: 0fr;
@@ -792,16 +806,22 @@
     visibility: visible;
   }
 
-  .more-panel-inner {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px 20px;
+  /* The wrapper that does the collapsing cannot also be the visible box —
+     it needs overflow hidden and zero min-height for the 0fr trick. */
+  .more-panel-clip {
     min-height: 0;
     overflow: hidden;
   }
 
-  .more-panel[data-open] .more-panel-inner {
-    padding-top: 12px;
+  /* The parameters are their own group, so they get their own surface. */
+  .more-panel-inner {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 20px;
+    margin-top: 12px;
+    padding: 12px 14px;
+    border-radius: 12px;
+    background: var(--yote-bg-surface);
   }
 
   /* ---- toggle --------------------------------------------------------- */
