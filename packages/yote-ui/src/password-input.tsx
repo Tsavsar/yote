@@ -144,6 +144,10 @@ export const PasswordInput = React.forwardRef<HTMLInputElement, PasswordInputPro
      * filled segments — at zero there are none to recolour, and at four a
      * green bar over a red field claimed the entry was fine and wrong at the
      * same time.
+     *
+     * Disabled outranks both, in the stylesheet rather than here: the count
+     * is still true, it just must not be reported as an achievement on a
+     * field nobody can type into.
      */
     const strength = isInvalid
       ? 'invalid'
@@ -177,8 +181,8 @@ export const PasswordInput = React.forwardRef<HTMLInputElement, PasswordInputPro
         data-readonly={readOnly || undefined}
       >
         {label != null ? (
-          <div className={cx('yote-pw-label-row', classNames?.labelRow)}>
-            <label htmlFor={id} className={cx('yote-label', 'yote-pw-label', classNames?.label)}>
+          <div className={cx('yote-label-row', classNames?.labelRow)}>
+            <label htmlFor={id} className={cx('yote-label', classNames?.label)}>
               {label}
             </label>
             {info != null ? (
@@ -188,7 +192,7 @@ export const PasswordInput = React.forwardRef<HTMLInputElement, PasswordInputPro
                 role="img"
                 aria-label={info}
               >
-                <InfoIcon size={16} />
+                <InfoIcon size={14} />
               </span>
             ) : null}
           </div>
@@ -254,6 +258,7 @@ export const PasswordInput = React.forwardRef<HTMLInputElement, PasswordInputPro
             id={reqId}
             className={cx('yote-pw-req', classNames?.requirements)}
             data-strength={strength}
+            data-disabled={disabled || undefined}
           >
             {/*
               The bar is decoration over the list below it — the list already
@@ -266,6 +271,7 @@ export const PasswordInput = React.forwardRef<HTMLInputElement, PasswordInputPro
                   key={r.label}
                   className={cx('yote-pw-segment', classNames?.segment)}
                   data-filled={i < metCount || undefined}
+                  data-disabled={disabled || undefined}
                 />
               ))}
             </div>
@@ -279,20 +285,30 @@ export const PasswordInput = React.forwardRef<HTMLInputElement, PasswordInputPro
                 <li
                   key={r.label}
                   className={cx('yote-pw-req-item', classNames?.requirement)}
-                  data-met={r.met || undefined}
+                  data-met={(r.met && !disabled) || undefined}
+                  data-disabled={disabled || undefined}
                 >
                   <span
                     className="yote-pw-req-icon"
-                    data-met={r.met || undefined}
+                    data-met={(r.met && !disabled) || undefined}
                     data-invalid={isInvalid || undefined}
+                    data-disabled={disabled || undefined}
                     aria-hidden="true"
                   >
-                    {r.met ? <MetIcon /> : <UnmetIcon />}
+                    {/*
+                      Disabled never shows a tick. A greyed-out check still
+                      says the rule was satisfied, on a field nobody can type
+                      into — the neutral mark reads as "not evaluated", which
+                      is what a disabled field actually means.
+                    */}
+                    {r.met && !disabled ? <MetIcon /> : <UnmetIcon />}
                   </span>
                   {/* The only part a screen reader needs: the rule and whether
                       it passes, as words. */}
                   <span className="yote-pw-req-label">{r.label}</span>
-                  <span className="yote-sr-only">{r.met ? ' — met' : ' — not met'}</span>
+                  <span className="yote-sr-only">
+                    {disabled ? ' — unavailable' : r.met ? ' — met' : ' — not met'}
+                  </span>
                 </li>
               ))}
             </ul>

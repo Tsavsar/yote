@@ -247,9 +247,13 @@ export const PinInput = React.forwardRef<HTMLInputElement, PinInputProps>(functi
       data-size="md"
     >
       {label != null ? (
-        <label htmlFor={id} className={cx('yote-label', classNames?.label)}>
-          {label}
-        </label>
+        // The same label row every field uses, so a label sits identically
+        // whichever component it belongs to.
+        <div className="yote-label-row">
+          <label htmlFor={id} className={cx('yote-label', classNames?.label)}>
+            {label}
+          </label>
+        </div>
       ) : null}
 
       <div

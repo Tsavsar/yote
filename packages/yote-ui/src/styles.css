@@ -173,10 +173,17 @@
     transition: max-width 240ms var(--yote-ease-out);
   }
 
+  /*
+   * Figma's Label/Small: 14 on 20, medium, 0.28px tracking, text-strong.
+   * This was text-sub at regular weight — invented before the label was
+   * measured, and it left every field's label greyed against its own value.
+   */
   .yote-label {
     font-size: 14px;
+    font-weight: 500;
     line-height: 20px;
-    color: var(--yote-text-sub);
+    letter-spacing: 0.28px;
+    color: var(--yote-text-strong);
     cursor: default;
   }
 
@@ -442,6 +449,12 @@
 
   /* ---- label row ------------------------------------------------------ */
 
+  /*
+   * One label row for every field. The info marker is pushed to the far end
+   * with `margin-left: auto` rather than each component picking its own
+   * justification — that is what lets a field with a required star and an
+   * optional note sit in the same rule as one with neither.
+   */
   .yote-label-row {
     display: flex;
     align-items: center;
@@ -470,6 +483,7 @@
   .yote-info {
     display: inline-flex;
     flex: none;
+    margin-left: auto;
     color: var(--yote-text-soft);
   }
 
@@ -618,11 +632,17 @@
     cursor: not-allowed;
   }
 
+  /* Same 20px box as the error mark, so swapping hint for error never moves
+     the text beside it. */
   .yote-message-icon-sm {
     display: inline-flex;
-    width: 16px;
-    height: 16px;
-    margin-top: 4px;
+    align-items: center;
+    justify-content: center;
+    flex: none;
+    align-self: flex-start;
+    width: 20px;
+    height: 20px;
+    margin-top: 2px;
   }
 
   .yote-message[data-disabled] {
@@ -659,20 +679,6 @@
   }
 
   /* The info mark sits at the far end of the row, not beside the word. */
-  .yote-pw-label-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 8px;
-    width: 100%;
-  }
-
-  .yote-pw-label {
-    font-weight: 500;
-    color: var(--yote-text-strong);
-    letter-spacing: 0.28px;
-  }
-
   .yote-pw-field {
     display: flex;
     align-items: center;
@@ -808,6 +814,7 @@
     flex-direction: column;
     gap: 12px;
     width: 100%;
+    color: var(--yote-text-strong);
   }
 
   .yote-pw-bar {
@@ -844,11 +851,13 @@
     background: var(--yote-error-base);
   }
 
+  /* Inherits, so the block's disabled colour reaches it — it used to declare
+     text-strong after the inherit and win against itself. */
   .yote-pw-req-title {
     font-size: 14px;
     line-height: 20px;
     letter-spacing: 0.28px;
-    color: var(--yote-text-strong);
+    color: inherit;
   }
 
   .yote-pw-req-list {
@@ -892,6 +901,34 @@
    */
   .yote-pw-req-icon[data-invalid] {
     color: var(--yote-error-base);
+  }
+
+  /* Last, so disabled outranks both — four green ticks on a field nobody can
+     type into read as an achievement that was never earned. */
+  .yote-pw-req-icon[data-disabled] {
+    color: var(--yote-text-disabled);
+  }
+
+  /*
+   * Mirrors the strength selectors' shape exactly — class + attribute,
+   * descendant, class + attribute — so it carries the same weight and wins
+   * on order. A single-attribute override lost to them and left a disabled
+   * field showing a full green bar.
+   */
+  .yote-pw-req[data-disabled] .yote-pw-segment[data-filled] {
+    background: var(--yote-bg-subtle);
+  }
+
+  .yote-pw-segment[data-disabled] {
+    background: var(--yote-bg-subtle);
+  }
+
+  .yote-pw-req-item[data-disabled] {
+    color: var(--yote-text-disabled);
+  }
+
+  .yote-pw-req[data-disabled] {
+    color: var(--yote-text-disabled);
   }
 
   /* Visible to assistive tech only — the icon carries no text of its own. */

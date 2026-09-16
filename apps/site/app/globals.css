@@ -38,6 +38,9 @@
    * where it was measured, inside the component.
    */
   :root {
+    /* Lets `width: fit-content` animate on the install row. */
+    interpolate-size: allow-keywords;
+
     --font-sf:
       -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', 'Helvetica Neue', Arial,
       sans-serif;
@@ -53,6 +56,8 @@
     --scroll-thumb: rgba(0, 0, 0, 0.16);
     --dot-grid: #f6f6f6;
     --switch-thumb: #ffffff;
+    --switch-thumb-on: #ffffff;
+    --switch-thumb-border: #f5f5f5;
     --switch-dot: #ebebeb;
     --switch-dot-on: #171717;
     --scroll-thumb-hover: rgba(0, 0, 0, 0.28);
@@ -68,11 +73,22 @@
       --scroll-thumb: rgba(255, 255, 255, 0.18);
       --dot-grid: rgba(255, 255, 255, 0.07);
     --switch-thumb: #f2f2f2;
-    --switch-dot: #9a9a9a;
-    --switch-dot-on: #f2f2f2;
+    --switch-thumb-on: #0c0c0c;
+    --switch-thumb-border: transparent;
+    --switch-dot: #262626;
+    --switch-dot-on: #0c0c0c;
       --switch-thumb: #f2f2f2;
-      --switch-dot: #9a9a9a;
-      --switch-dot-on: #f2f2f2;
+      /* The checked track is near-white in dark, so a near-white thumb on it
+         blends into one pill — the thumb flips dark to stay readable. */
+      --switch-thumb-on: #0c0c0c;
+      /* No ring: bg-layer is #1c1c1c here and drew a dark outline round a
+         light thumb. */
+      --switch-thumb-border: transparent;
+      /* The dot is the track colour showing through the thumb, so it matches
+         the track when the thumb is light and vanishes when the thumb is
+         dark. A light pip on a dark thumb reads as a bullseye. */
+      --switch-dot: #262626;
+      --switch-dot-on: #0c0c0c;
       --scroll-thumb-hover: rgba(255, 255, 255, 0.3);
     }
   }
@@ -356,14 +372,23 @@
       background-color var(--yote-duration) ease;
   }
 
+  /*
+   * The row is only as wide as the command it holds, and grows to fit a
+   * longer one. `interpolate-size` is what lets `fit-content` animate at all;
+   * without it the width still lands in the right place, it just gets there
+   * in one frame.
+   */
   .install-row {
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 16px;
+    width: fit-content;
+    max-width: 100%;
     padding: 16px 18px 16px 20px;
     border-radius: 12px;
     background: var(--yote-bg-surface);
+    transition: width 320ms var(--yote-ease-out);
   }
 
   @media (hover: hover) and (pointer: fine) {
@@ -413,12 +438,49 @@
   }
 
   .install-code {
+    display: inline-flex;
+    align-items: baseline;
     font-family: var(--font-mono);
     font-size: 14px;
     line-height: 16px;
     letter-spacing: 0.28px;
     color: var(--yote-text-strong);
     white-space: nowrap;
+  }
+
+  .install-chars {
+    display: inline-flex;
+    /* The overflow clip is what makes it read as a roll: each character
+       leaves and arrives behind the line's own edge. */
+    overflow: clip;
+    padding-block: 2px;
+    margin-block: -2px;
+  }
+
+  .install-char {
+    display: inline-block;
+    animation: install-roll 260ms var(--yote-ease-out) both;
+  }
+
+  @keyframes install-roll {
+    from {
+      opacity: 0;
+      transform: translateY(0.7em);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .install-row {
+      transition: none;
+    }
+
+    .install-char {
+      animation: none;
+    }
   }
 
   .install-prompt {
@@ -880,7 +942,7 @@
     place-items: center;
     width: 16px;
     height: 16px;
-    border: 0.75px solid var(--yote-bg-layer);
+    border: 0.75px solid var(--switch-thumb-border);
     border-radius: 37px;
     background: var(--switch-thumb);
     box-shadow: 0 10px 20px 3px rgba(0, 0, 0, 0.04);
@@ -901,6 +963,10 @@
 
   .switch-input:checked + .switch-track .switch-thumb {
     transform: translateX(16px);
+  }
+
+  .switch-input:checked + .switch-track .switch-thumb {
+    background: var(--switch-thumb-on);
   }
 
   .switch-input:checked + .switch-track .switch-dot {

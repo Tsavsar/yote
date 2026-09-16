@@ -6,10 +6,9 @@ import { CopyButton } from './code-block'
 /**
  * Install block, Figma node 18:5876.
  *
- * Tabs sit above the command as their own row rather than inside a shared
- * box, and the command row is a plain surface panel. A bare `npm i` makes
- * everyone on pnpm or bun translate it before pasting; the copy button always
- * carries whichever line is showing.
+ * Tabs sit above the command as their own row, and the command row is a plain
+ * surface panel. A bare `npm i` makes everyone on pnpm or bun translate it
+ * before pasting; the copy button always carries whichever line is showing.
  */
 const MANAGERS = [
   { id: 'npm', command: 'npm i yote-ui' },
@@ -19,6 +18,38 @@ const MANAGERS = [
 ] as const
 
 type ManagerId = (typeof MANAGERS)[number]['id']
+
+/**
+ * The command, one span per character.
+ *
+ * Each span is keyed on the manager, so switching remounts every character
+ * and replays the roll — the same trick the pin input uses to restart its
+ * caret blink. The stagger is 14ms, which reads as the line flipping rather
+ * than as four separate words arriving.
+ *
+ * Characters that do not change still replay: the line reads as one object
+ * turning over, and holding some letters still while others move looks like
+ * a rendering fault rather than a deliberate stagger.
+ */
+function Command({ command, manager }: { command: string; manager: ManagerId }) {
+  return (
+    <code className="install-code" aria-label={command}>
+      <span className="install-prompt">$</span>{' '}
+      <span className="install-chars">
+        {command.split('').map((char, i) => (
+          <span
+            key={`${manager}-${i}`}
+            className="install-char"
+            style={{ animationDelay: `${i * 14}ms` }}
+            aria-hidden="true"
+          >
+            {char === ' ' ? ' ' : char}
+          </span>
+        ))}
+      </span>
+    </code>
+  )
+}
 
 export function Install() {
   const [manager, setManager] = React.useState<ManagerId>('npm')
@@ -43,9 +74,7 @@ export function Install() {
       </div>
 
       <div className="install-row">
-        <code className="install-code">
-          <span className="install-prompt">$</span> {active.command}
-        </code>
+        <Command command={active.command} manager={manager} />
         <CopyButton value={active.command} />
       </div>
     </div>
