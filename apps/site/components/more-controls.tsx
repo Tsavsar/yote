@@ -84,7 +84,34 @@ export function MoreMenu({
 }) {
   const [open, setOpen] = React.useState(false)
   const [paramsOpen, setParamsOpen] = React.useState(false)
+  const [placement, setPlacement] = React.useState<'right' | 'bottom'>('right')
   const rootRef = React.useRef<HTMLDivElement>(null)
+  const menuRef = React.useRef<HTMLDivElement>(null)
+  const paramsRef = React.useRef<HTMLDivElement>(null)
+
+  /*
+   * Right by default, bottom when it will not fit — never left, which would
+   * put the switches over the menu that opened them.
+   *
+   * Measured in a layout effect so the decision is made before paint; the
+   * submenu is laid out at its natural size either way, so reading its width
+   * here costs one forced reflow on open and nothing afterwards.
+   */
+  React.useLayoutEffect(() => {
+    if (!paramsOpen) return
+    const menu = menuRef.current
+    const params = paramsRef.current
+    if (!menu || !params) return
+
+    const measure = () => {
+      const rect = menu.getBoundingClientRect()
+      const needed = params.offsetWidth + 10
+      setPlacement(rect.right + needed <= window.innerWidth - 8 ? 'right' : 'bottom')
+    }
+    measure()
+    window.addEventListener('resize', measure)
+    return () => window.removeEventListener('resize', measure)
+  }, [paramsOpen])
 
   const close = React.useCallback(() => {
     setOpen(false)
@@ -123,13 +150,7 @@ export function MoreMenu({
       </Tooltip>
 
       <div className="menu-wrap" data-open={open || undefined}>
-        {/* The submenu is first in the DOM and sits to the left, matching the
-            frame — it opens away from the page edge, not over it. */}
-        <div className="menu menu-params" data-open={paramsOpen || undefined} role="group">
-          {children}
-        </div>
-
-        <div className="menu" role="menu">
+        <div className="menu" role="menu" ref={menuRef}>
           <button
             type="button"
             role="menuitem"
@@ -145,6 +166,16 @@ export function MoreMenu({
           <Link href={docsHref} role="menuitem" className="menu-item" onClick={close}>
             View docs
           </Link>
+        </div>
+
+        <div
+          className="menu menu-params"
+          ref={paramsRef}
+          data-open={paramsOpen || undefined}
+          data-placement={placement}
+          role="group"
+        >
+          {children}
         </div>
       </div>
     </div>

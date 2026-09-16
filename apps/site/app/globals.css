@@ -51,7 +51,10 @@
     --code-punct: #b4b4b4;
     --page-max: 650px;
     --scroll-thumb: rgba(0, 0, 0, 0.16);
-    --dot-grid: #ededed;
+    --dot-grid: #f6f6f6;
+    --switch-thumb: #ffffff;
+    --switch-dot: #ebebeb;
+    --switch-dot-on: #171717;
     --scroll-thumb-hover: rgba(0, 0, 0, 0.28);
   }
 
@@ -63,7 +66,13 @@
       --code-expr: #a3a3a3;
       --code-punct: #5c5c5c;
       --scroll-thumb: rgba(255, 255, 255, 0.18);
-      --dot-grid: rgba(255, 255, 255, 0.32);
+      --dot-grid: rgba(255, 255, 255, 0.07);
+    --switch-thumb: #f2f2f2;
+    --switch-dot: #9a9a9a;
+    --switch-dot-on: #f2f2f2;
+      --switch-thumb: #f2f2f2;
+      --switch-dot: #9a9a9a;
+      --switch-dot-on: #f2f2f2;
       --scroll-thumb-hover: rgba(255, 255, 255, 0.3);
     }
   }
@@ -75,7 +84,7 @@
     --code-expr: #a3a3a3;
     --code-punct: #5c5c5c;
     --scroll-thumb: rgba(255, 255, 255, 0.18);
-    --dot-grid: rgba(255, 255, 255, 0.32);
+    --dot-grid: rgba(255, 255, 255, 0.07);
     --scroll-thumb-hover: rgba(255, 255, 255, 0.3);
   }
 
@@ -713,15 +722,11 @@
     }
   }
 
-  /* Both panels ride in one row, so the submenu opens beside the menu. */
   .menu-wrap {
     position: absolute;
     top: calc(100% + 6px);
     right: 0;
     z-index: 20;
-    display: flex;
-    align-items: flex-start;
-    gap: 10px;
     opacity: 0;
     transform-origin: top right;
     transform: scale(0.96);
@@ -750,14 +755,31 @@
       0 2px 2px rgba(0, 0, 0, 0.02);
   }
 
-  /* The submenu is in the flow but hidden until asked for, so opening it
-     does not reposition the menu it hangs off. */
+  /*
+   * The submenu is positioned off the menu, not laid out beside it, so
+   * opening it never moves the menu.
+   *
+   * No transition: it just appears. Placement is measured in JS — right when
+   * there is room, bottom when there is not, never left, which would put the
+   * switches over the menu that opened them.
+   */
   .menu-params {
+    position: absolute;
     display: none;
   }
 
   .menu-params[data-open] {
     display: flex;
+  }
+
+  .menu-params[data-placement='right'] {
+    top: 0;
+    left: calc(100% + 10px);
+  }
+
+  .menu-params[data-placement='bottom'] {
+    top: calc(100% + 10px);
+    right: 0;
   }
 
   .menu-item {
@@ -848,6 +870,8 @@
    * read as a switch rather than a coloured pill. Only transform moves, so
    * throwing it never triggers layout.
    */
+  /* Tokens, not #ffffff — a hardcoded white thumb with a hardcoded grey dot
+     stayed light-mode coloured on a dark track. */
   .switch-thumb {
     position: absolute;
     top: 2px;
@@ -858,7 +882,7 @@
     height: 16px;
     border: 0.75px solid var(--yote-bg-layer);
     border-radius: 37px;
-    background: #ffffff;
+    background: var(--switch-thumb);
     box-shadow: 0 10px 20px 3px rgba(0, 0, 0, 0.04);
     transition: transform 200ms var(--yote-ease-out);
   }
@@ -867,7 +891,7 @@
     width: 6px;
     height: 6px;
     border-radius: 22px;
-    background: var(--yote-bg-subtle);
+    background: var(--switch-dot);
     transition: background-color var(--yote-duration) ease;
   }
 
@@ -880,7 +904,7 @@
   }
 
   .switch-input:checked + .switch-track .switch-dot {
-    background: var(--yote-text-strong);
+    background: var(--switch-dot-on);
   }
 
   .switch-input:focus-visible + .switch-track {
@@ -891,6 +915,66 @@
   @media (prefers-reduced-motion: reduce) {
     .switch-thumb {
       transition: none;
+    }
+  }
+
+
+  /* ---- press ---------------------------------------------------------- */
+
+  /*
+   * One press response for everything you can press. 140ms out on the strong
+   * ease-out, and it settles back on release — quick enough not to sit in the
+   * way, big enough to feel like the interface heard you.
+   *
+   * Only transform, so a press never triggers layout, and gone entirely under
+   * reduced motion.
+   */
+  .pill,
+  .menu-item,
+  .install-tab,
+  .nav-link,
+  .nav-icon-button,
+  .more-trigger,
+  .copy,
+  .switch-row {
+    transition:
+      color var(--yote-duration) ease,
+      background-color var(--yote-duration) ease,
+      border-color var(--yote-duration) ease,
+      transform 140ms var(--yote-ease-out);
+  }
+
+  .pill:active,
+  .menu-item:active,
+  .install-tab:active,
+  .nav-link:active,
+  .nav-icon-button:active,
+  .more-trigger:active,
+  .copy:active,
+  .switch-row:active {
+    transform: scale(0.97);
+  }
+
+  /* A row of switches is wide; scaling the whole row reads as a wobble, so it
+     presses on its own axis from the left where the label starts. */
+  .switch-row {
+    transform-origin: left center;
+  }
+
+  .switch-row:active {
+    transform: scale(0.99);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .pill:active,
+    .menu-item:active,
+    .install-tab:active,
+    .nav-link:active,
+    .nav-icon-button:active,
+    .more-trigger:active,
+    .copy:active,
+    .switch-row:active {
+      transform: none;
     }
   }
 
