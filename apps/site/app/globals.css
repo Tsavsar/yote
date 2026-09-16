@@ -1,0 +1,894 @@
+/*
+ * Layer order is declared up front, before anything else registers a layer.
+ *
+ * Tailwind v4 emits real cascade layers, so "unlayered beats layered" is not
+ * what decides this — layer order is, and order is set by first appearance.
+ *
+ * `yote` sits between `base` and `components` deliberately, and the position
+ * is load-bearing in both directions:
+ *
+ *   After `base`, because Tailwind's preflight resets form controls with
+ *   `color: inherit; opacity: 1`. Put yote first and preflight wins, which
+ *   un-hides the invisible input sitting across the pin group — the real
+ *   value paints over the cells. Specificity cannot save it; layer order
+ *   beats specificity.
+ *
+ *   Before `utilities`, because that is the whole point of shipping inside a
+ *   layer: `classNames={{ cell: 'bg-amber-100' }}` has to win.
+ *
+ * This statement has to be read before `@layer yote` appears anywhere, which
+ * is why layout.tsx imports this file ahead of yote-ui/styles.css.
+ */
+@layer theme, base, yote, components, utilities;
+
+@import 'tailwindcss';
+
+@theme {
+  --color-yote-accent: var(--yote-feature-base);
+}
+
+@layer components {
+  /*
+   * Type follows shatermt.com: the SF system stack, a 360 base weight, 14/22
+   * body, and positive tracking at small sizes. No webfont — the portfolio
+   * does not load one either, and the two sites should feel related.
+   *
+   * The page carries no accent colour. Sonner and Vaul are entirely
+   * monochrome and read as more considered for it; the brand purple stays
+   * where it was measured, inside the component.
+   */
+  :root {
+    --font-sf:
+      -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', 'Helvetica Neue', Arial,
+      sans-serif;
+    /* IBM Plex Mono per the design, loaded by next/font in layout.tsx. */
+    --font-mono: var(--font-plex-mono), ui-monospace, SFMono-Regular, Menlo, monospace;
+
+    --code-tag: #0e0e0e;
+    --code-attr: #6a6a6a;
+    --code-str: #0e0e0e;
+    --code-expr: #6a6a6a;
+    --code-punct: #b4b4b4;
+    --page-max: 650px;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme='light']) {
+      --code-tag: #f2f2f2;
+      --code-attr: #a3a3a3;
+      --code-str: #f2f2f2;
+      --code-expr: #a3a3a3;
+      --code-punct: #5c5c5c;
+    }
+  }
+
+  :root[data-theme='dark'] {
+    --code-tag: #f2f2f2;
+    --code-attr: #a3a3a3;
+    --code-str: #f2f2f2;
+    --code-expr: #a3a3a3;
+    --code-punct: #5c5c5c;
+  }
+
+  body {
+    background: var(--yote-bg-default);
+    color: var(--yote-text-strong);
+    font-family: var(--font-sf);
+    font-size: 14px;
+    font-weight: 360;
+    line-height: 22px;
+    letter-spacing: 0.01em;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Echoes the portfolio's selection colour — the one bit of colour on the
+     page, and it only exists while you are dragging over text. */
+  ::selection {
+    background: #0f6dff;
+    color: #ffffff;
+  }
+
+  html {
+    scrollbar-gutter: stable;
+  }
+
+  /* ---- shell ---------------------------------------------------------- */
+
+  /* 82px to the nav's centre line in the frame; 24px gutters either side. */
+  .nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    max-width: var(--page-max);
+    margin: 0 auto;
+    padding: 73px 24px 0;
+  }
+
+  .wordmark {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 15px;
+    font-weight: 500;
+    letter-spacing: 0.01em;
+    color: var(--yote-text-strong);
+  }
+
+  .wordmark-mark {
+    width: 21px;
+    height: 16px;
+    flex: none;
+  }
+
+  .nav-links {
+    display: flex;
+    align-items: center;
+    /* 29px between nav items in the frame. */
+    gap: 29px;
+  }
+
+  .nav-link {
+    padding: 0;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 20px;
+    letter-spacing: 0.28px;
+    color: var(--yote-text-strong);
+    background: transparent;
+    transition:
+      color var(--yote-duration) ease,
+      background-color var(--yote-duration) ease,
+      transform var(--yote-duration) var(--yote-ease-out);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .nav-link:hover {
+      color: var(--yote-text-sub);
+    }
+  }
+
+  .nav-link:active {
+    transform: scale(0.97);
+  }
+
+  .nav-link-github {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .icon {
+    width: 18px;
+    height: 18px;
+    flex: none;
+  }
+
+  .star-count {
+    /* Tabular figures so the count does not jitter the nav as it ticks up. */
+    font-variant-numeric: tabular-nums;
+    color: var(--yote-text-soft);
+  }
+
+  .nav-icon-button {
+    display: inline-grid;
+    place-items: center;
+    padding: 6px;
+  }
+
+  /* Both glyphs share one cell, so the button never resizes on swap. */
+  .icon-swap {
+    display: inline-grid;
+    width: 18px;
+    height: 18px;
+  }
+
+  .icon-slot {
+    grid-area: 1 / 1;
+    width: 18px;
+    height: 18px;
+    opacity: 0;
+    transform: scale(0.8);
+    filter: blur(2px);
+    transition:
+      opacity 250ms var(--yote-ease-out),
+      transform 250ms var(--yote-ease-out),
+      filter 250ms var(--yote-ease-out);
+  }
+
+  .icon-slot[data-shown] {
+    opacity: 1;
+    transform: scale(1);
+    filter: blur(0);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .icon-slot {
+      transform: none;
+      filter: none;
+    }
+
+    /* Resizing the panel is positional motion; the content still changes. */
+    .code-pre {
+      transition: none;
+    }
+  }
+
+  .page {
+    max-width: var(--page-max);
+    margin: 0 auto;
+    padding: 61px 24px 96px;
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+  }
+
+  /* ---- hero ----------------------------------------------------------- */
+
+  .hero {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    text-align: left;
+  }
+
+  /* Title/Regular/H5: 30 on 38, regular weight, 0.3px tracking. */
+  .headline {
+    font-size: 30px;
+    line-height: 38px;
+    font-weight: 400;
+    letter-spacing: 0.3px;
+  }
+
+  .lede {
+    max-width: 508px;
+    font-size: 14px;
+    line-height: 20px;
+    letter-spacing: 0.28px;
+    color: var(--yote-text-sub);
+    text-wrap: pretty;
+  }
+
+  /* ---- sections ------------------------------------------------------- */
+
+  .section {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .section-title {
+    font-size: 15px;
+    font-weight: 500;
+    letter-spacing: 0.01em;
+  }
+
+  .section-note {
+    max-width: 62ch;
+    margin-top: -4px;
+    color: var(--yote-text-sub);
+    text-wrap: pretty;
+  }
+
+  /* ---- install -------------------------------------------------------- */
+
+  .install {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .install-tabs {
+    display: flex;
+    gap: 4px;
+  }
+
+  .install-tab {
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 12px;
+    line-height: 16px;
+    letter-spacing: 0.24px;
+    color: var(--yote-text-soft);
+    background: var(--yote-bg-default);
+    transition:
+      color var(--yote-duration) ease,
+      background-color var(--yote-duration) ease;
+  }
+
+  .install-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 16px 18px 16px 20px;
+    border-radius: 12px;
+    background: var(--yote-bg-surface);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .install-tab:hover {
+      color: var(--yote-text-strong);
+    }
+  }
+
+  .install-tab[data-active] {
+    color: var(--yote-text-strong);
+    background: var(--yote-bg-surface);
+  }
+
+  /* ---- showcase ------------------------------------------------------- */
+
+  .showcase {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+  }
+
+  .showcase-head {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .showcase-title {
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 20px;
+    letter-spacing: 0.28px;
+  }
+
+  .showcase-note {
+    font-size: 14px;
+    line-height: 20px;
+    letter-spacing: 0.28px;
+    color: var(--yote-text-sub);
+  }
+
+  .install-code {
+    font-family: var(--font-mono);
+    font-size: 14px;
+    line-height: 16px;
+    letter-spacing: 0.28px;
+    color: var(--yote-text-strong);
+    white-space: nowrap;
+  }
+
+  .install-prompt {
+    color: var(--code-punct);
+  }
+
+  /* ---- preview -------------------------------------------------------- */
+
+  .preview {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  /*
+   * Fixed height, never min-height. A stage that resizes on a pill click
+   * moves the code panel and the whole page under the cursor.
+   */
+  /*
+   * Fixed height, never min-height: a stage that resizes on a pill click moves
+   * the code panel and everything under the cursor.
+   *
+   * The dot grid is 4.818px dots on a 38.541px pitch (33.723px gap in the
+   * frame, plus the dot) in bg-layer, drawn as one gradient instead of the
+   * 200-odd divs the export emits.
+   */
+  .stage {
+    display: grid;
+    place-items: center;
+    height: 300px;
+    padding: 24px;
+    border: 1px solid var(--yote-stroke-soft);
+    border-radius: 20px;
+    background-color: var(--yote-bg-default);
+    background-image: radial-gradient(
+      circle,
+      var(--yote-bg-layer) 2.409px,
+      transparent 2.409px
+    );
+    background-size: 38.541px 38.541px;
+    background-position: center;
+    overflow: clip;
+  }
+
+  /* State pills left, length pills right, as the frame splits them. */
+  .controls {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 10px;
+  }
+
+  .control-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+  }
+
+  /* Borderless, 6px, and the active one is a surface fill rather than a dark
+     one — the frame keeps the control row quiet so the stage carries the eye. */
+  .pill {
+    padding: 4px 12px;
+    border-radius: 6px;
+    border: 0;
+    background: var(--yote-bg-default);
+    color: var(--yote-text-soft);
+    font-size: 14px;
+    line-height: 20px;
+    letter-spacing: 0.28px;
+    transition:
+      color var(--yote-duration) ease,
+      background-color var(--yote-duration) ease,
+      transform var(--yote-duration) var(--yote-ease-out);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .pill:hover {
+      color: var(--yote-text-strong);
+    }
+  }
+
+  .pill:active {
+    transform: scale(0.97);
+  }
+
+  .pill[data-active] {
+    background: var(--yote-bg-surface);
+    color: var(--yote-text-strong);
+  }
+
+  /* ---- code ----------------------------------------------------------- */
+
+  .code {
+    position: relative;
+    border-radius: 12px;
+    background: var(--yote-bg-surface);
+    /* No scrollbar-gutter: nothing scrolls vertically here any more, and the
+       reserved gutter was just dead space against the copy button. */
+    overflow: hidden;
+  }
+
+  .code-pre {
+    --code-pad-y: 16px;
+    --code-lh: 1.6;
+
+    margin: 0;
+    padding: var(--code-pad-y) 52px var(--code-pad-y) 20px;
+    /*
+     * Height follows the snippet's real line count, and moves rather than
+     * jumps. Padding is added back explicitly because border-box would
+     * otherwise subtract it from the line box.
+     */
+    height: calc(var(--code-lines, 1) * var(--code-lh) * 1em + 2 * var(--code-pad-y));
+    transition: height 220ms var(--yote-ease-out);
+    /*
+     * Both axes stated. Setting only `overflow-x: auto` computes overflow-y to
+     * auto as well, so every height transition briefly overflowed and flashed
+     * a native vertical scrollbar. The height always matches the line count,
+     * so there is nothing to scroll to vertically.
+     */
+    overflow-x: auto;
+    overflow-y: hidden;
+    font-family: var(--font-mono);
+    font-size: 14px;
+    line-height: var(--code-lh);
+    letter-spacing: 0.28px;
+    color: var(--yote-text-strong);
+  }
+
+  .inline-code {
+    padding: 2px 5px;
+    border-radius: 5px;
+    background: var(--yote-bg-surface);
+    font-family: var(--font-mono);
+    font-size: 0.86em;
+    letter-spacing: 0;
+  }
+
+  /*
+   * Both labels occupy the same grid cell, so the button is always as wide as
+   * "Copied" and never resizes when the text swaps under the pointer.
+   */
+  .copy {
+    position: absolute;
+    top: 16px;
+    right: 18px;
+    display: inline-grid;
+    place-items: center;
+    width: 18px;
+    height: 18px;
+    border: 0;
+    background: transparent;
+    color: var(--yote-text-soft);
+    transition:
+      color var(--yote-duration) ease,
+      transform var(--yote-duration) var(--yote-ease-out);
+  }
+
+  .install-row .copy {
+    position: static;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .copy:hover {
+      color: var(--yote-text-strong);
+    }
+  }
+
+  .copy:active {
+    transform: scale(0.97);
+  }
+
+
+
+  /* ---- components list ------------------------------------------------ */
+
+  .components {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--yote-stroke-soft);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  .component {
+    padding: 14px 16px;
+    border-top: 1px solid var(--yote-stroke-soft);
+  }
+
+  .component:first-child {
+    border-top: 0;
+  }
+
+  .component-head {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .component-name {
+    font-weight: 500;
+  }
+
+  .component-status {
+    padding: 1px 8px;
+    border: 1px solid var(--yote-stroke-soft);
+    border-radius: 6px;
+    font-size: 12px;
+    color: var(--yote-text-soft);
+  }
+
+  .component-status[data-shipped] {
+    border-color: transparent;
+    background: var(--yote-text-strong);
+    color: var(--yote-bg-default);
+  }
+
+  .component-note {
+    margin-top: 2px;
+    color: var(--yote-text-sub);
+    text-wrap: pretty;
+  }
+
+  /* ---- notes ---------------------------------------------------------- */
+
+  .notes {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(196px, 1fr));
+    gap: 24px;
+  }
+
+  .note-title {
+    margin-bottom: 6px;
+    font-size: 14px;
+    font-weight: 500;
+  }
+
+  .note-body {
+    font-size: 13px;
+    line-height: 21px;
+    color: var(--yote-text-sub);
+    text-wrap: pretty;
+  }
+
+  /* ---- docs shell ----------------------------------------------------- */
+
+  /*
+   * Three columns: sidebar, content, contents rail. The sidebar and rail are
+   * sticky and scroll independently, so the content column is the only thing
+   * that owns the page scroll.
+   */
+  .docs-shell {
+    display: grid;
+    grid-template-columns: 216px minmax(0, 1fr) 200px;
+    gap: 48px;
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 0 24px;
+    align-items: start;
+  }
+
+  .docs-sidebar {
+    position: sticky;
+    top: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    height: 100vh;
+    padding: 20px 0 16px;
+    overflow-y: auto;
+  }
+
+  .docs-wordmark {
+    padding-left: 8px;
+  }
+
+  .docs-groups {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .docs-group {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+  }
+
+  .docs-group-title {
+    padding: 0 8px 6px;
+    font-size: 12px;
+    color: var(--yote-text-soft);
+  }
+
+  .docs-link {
+    padding: 5px 8px;
+    border-radius: 7px;
+    font-size: 13px;
+    color: var(--yote-text-sub);
+    transition:
+      color var(--yote-duration) ease,
+      background-color var(--yote-duration) ease;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .docs-link:hover {
+      color: var(--yote-text-strong);
+      background: var(--yote-bg-surface);
+    }
+  }
+
+  .docs-link[data-active] {
+    color: var(--yote-text-strong);
+    background: var(--yote-bg-surface);
+  }
+
+  .docs-sidebar-foot {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    padding-top: 8px;
+  }
+
+  .docs-content {
+    min-width: 0;
+    padding: 56px 0 120px;
+  }
+
+  .docs-title {
+    font-size: 30px;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+  }
+
+  .docs-lede {
+    margin-top: 10px;
+    max-width: 62ch;
+    color: var(--yote-text-sub);
+    text-wrap: pretty;
+  }
+
+  /* scroll-margin so an anchor jump does not tuck the heading under nothing. */
+  .docs-h2 {
+    margin: 48px 0 12px;
+    scroll-margin-top: 24px;
+    font-size: 19px;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+  }
+
+  .docs-h3 {
+    margin: 28px 0 10px;
+    font-size: 15px;
+    font-weight: 500;
+  }
+
+  .docs-p {
+    margin-bottom: 14px;
+    max-width: 68ch;
+    color: var(--yote-text-sub);
+    text-wrap: pretty;
+  }
+
+  .docs-inline-link {
+    color: var(--yote-text-strong);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    text-decoration-color: var(--yote-text-disabled);
+  }
+
+  /* ---- contents rail -------------------------------------------------- */
+
+  .docs-toc {
+    position: sticky;
+    top: 56px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 56px 0;
+  }
+
+  .docs-toc-title {
+    padding-bottom: 8px;
+    font-size: 12px;
+    color: var(--yote-text-soft);
+  }
+
+  .docs-toc-link {
+    /* The 1px rule is always there and only changes colour, so the active
+       entry does not shift the text sideways as you scroll. */
+    padding: 4px 0 4px 10px;
+    border-left: 1px solid var(--yote-stroke-soft);
+    font-size: 13px;
+    color: var(--yote-text-soft);
+    transition:
+      color var(--yote-duration) ease,
+      border-color var(--yote-duration) ease;
+  }
+
+  .docs-toc-link[data-active] {
+    color: var(--yote-text-strong);
+    border-left-color: var(--yote-text-strong);
+  }
+
+  /* ---- docs tables ---------------------------------------------------- */
+
+  .table-wrap {
+    margin-bottom: 16px;
+    overflow-x: auto;
+    border: 1px solid var(--yote-stroke-soft);
+    border-radius: 12px;
+  }
+
+  .props {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    text-align: left;
+  }
+
+  .props th {
+    padding: 10px 14px;
+    font-weight: 500;
+    color: var(--yote-text-soft);
+    border-bottom: 1px solid var(--yote-stroke-soft);
+    white-space: nowrap;
+  }
+
+  .props td {
+    padding: 10px 14px;
+    color: var(--yote-text-sub);
+    border-bottom: 1px solid var(--yote-stroke-soft);
+    vertical-align: top;
+  }
+
+  .props tr:last-child td {
+    border-bottom: 0;
+  }
+
+  .bullets {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 16px;
+    padding-left: 18px;
+    max-width: 68ch;
+    list-style: disc;
+    color: var(--yote-text-sub);
+    text-wrap: pretty;
+  }
+
+  /* ---- code head ------------------------------------------------------ */
+
+  .code-head {
+    display: flex;
+    align-items: center;
+    padding: 9px 14px;
+    border-bottom: 1px solid var(--yote-stroke-soft);
+  }
+
+  .code-filename {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--yote-text-soft);
+  }
+
+  .code[data-titled] .copy {
+    top: 6px;
+  }
+
+  .stage-tall {
+    height: 300px;
+  }
+
+  .stage-inner {
+    width: 100%;
+    max-width: 340px;
+  }
+
+  @media (max-width: 1080px) {
+    .docs-shell {
+      grid-template-columns: 200px minmax(0, 1fr);
+      gap: 32px;
+    }
+
+    .docs-toc {
+      display: none;
+    }
+  }
+
+  @media (max-width: 720px) {
+    .docs-shell {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    /* The sidebar stops being a rail and becomes a header strip. */
+    .docs-sidebar {
+      position: static;
+      height: auto;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--yote-stroke-soft);
+    }
+
+    .docs-groups {
+      flex-direction: row;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .docs-content {
+      padding-top: 32px;
+    }
+  }
+
+  /* ---- footer --------------------------------------------------------- */
+
+  .footer {
+    max-width: var(--page-max);
+    margin: 0 auto;
+    padding: 0 24px 48px;
+    font-size: 13px;
+    color: var(--yote-text-soft);
+  }
+
+  /* Action buttons keep a real focus outline. */
+  .pill:focus-visible,
+  .copy:focus-visible,
+  .nav-link:focus-visible,
+  .install-tab:focus-visible {
+    outline: 2px solid var(--yote-text-strong);
+    outline-offset: 2px;
+  }
+
+}

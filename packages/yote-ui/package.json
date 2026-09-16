@@ -1,0 +1,36 @@
+{
+  "name": "yote-ui",
+  "version": "0.1.0",
+  "description": "Form inputs, done properly. Styled and animated out of the box.",
+  "license": "MIT",
+  "type": "module",
+  "sideEffects": ["**/*.css"],
+  "files": ["dist"],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    },
+    "./styles.css": "./dist/styles.css"
+  },
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "typecheck": "tsc --noEmit"
+  },
+  "keywords": ["react", "input", "pin-input", "otp", "one-time-code", "form"],
+  "peerDependencies": {
+    "react": ">=18",
+    "react-dom": ">=18"
+  },
+  "devDependencies": {
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "tsup": "^8.3.5",
+    "typescript": "^5.7.2"
+  }
+}

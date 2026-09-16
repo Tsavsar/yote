@@ -1,0 +1,11 @@
+{
+  "name": "yote-monorepo",
+  "private": true,
+  "type": "module",
+  "workspaces": ["packages/*", "apps/*"],
+  "scripts": {
+    "build": "npm run build --workspace=yote-ui",
+    "dev": "npm run dev --workspace=yote-ui",
+    "typecheck": "npm run typecheck --workspaces --if-present"
+  }
+}

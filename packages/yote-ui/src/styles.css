@@ -1,0 +1,684 @@
+/*
+ * Yöte — all component CSS.
+ *
+ * Everything lives inside @layer yote. Unlayered CSS beats layered CSS
+ * regardless of specificity, so any Tailwind utility or consumer class
+ * overrides these rules with no specificity fight and no !important.
+ *
+ * Two rules follow from that, and they are not negotiable:
+ *   1. Single class selectors only. No descendant chains. State attributes
+ *      are duplicated onto whichever element needs to react to them, so a
+ *      single utility class can always win.
+ *   2. Nothing is ever marked !important.
+ */
+
+@layer yote {
+  :root {
+    /* Surfaces and text */
+    --yote-bg-default: #ffffff;
+    --yote-bg-surface: #f7f7f7;
+    --yote-stroke-soft: rgba(0, 0, 0, 0.05);
+    --yote-text-strong: #171717;
+    --yote-text-sub: #5c5c5c;
+    --yote-text-soft: #8a8a8a;
+
+    /* Brand. The hex is canonical — hsla(256, 88%, 64%) resolves to #7E52F4,
+       one value off in red. Figma variable `feature-base` is #7D52F4. */
+    --yote-feature-base: #7d52f4;
+    --yote-feature-dark: #351a75;
+    --yote-purple-alpha-24: rgba(125, 82, 244, 0.24);
+
+    --yote-error-base: #fb3748;
+    --yote-error-faint: #ffc0c5;
+
+    /* Added with the textarea (Figma 15:5101-15:5643). */
+    --yote-bg-layer: #f5f5f5;
+    --yote-text-disabled: #d1d1d1;
+    --yote-info-base: #335cff;
+    --yote-shadow-field: 0 2px 4px 0 rgba(54, 54, 54, 0.04);
+    --yote-shadow-field-hover: 0 2px 4px 0 rgba(138, 138, 138, 0.08);
+
+    --yote-radius-sm: 8px;
+    --yote-radius-md: 12px;
+    --yote-radius-xl: 24px;
+    --yote-shadow-xs: 0 2px 4px -1px rgba(0, 0, 0, 0.02), 0 5px 13px -5px rgba(0, 0, 0, 0.05);
+    --yote-focus-active: 0 0 0 2px var(--yote-bg-default), 0 0 0 4px var(--yote-purple-alpha-24);
+    --yote-focus-error: 0 0 0 2px var(--yote-bg-default), 0 0 0 4px var(--yote-error-faint);
+
+    --yote-ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+    --yote-duration: 160ms;
+  }
+
+  /* ---------------------------------------------------------------------
+   * Dark theme
+   *
+   * PROVISIONAL. These values are a derivation, not from the Figma file.
+   * Structure is final; hex values are placeholders pending the dark frames.
+   *
+   * Derived rather than inverted: the accent holds its hue but lifts in
+   * lightness so it keeps the same weight against a dark ground, the ring
+   * alpha roughly doubles because 24% purple disappears on near-black, and
+   * the error red lifts so it stops vibrating.
+   *
+   * Declared twice so system preference and an explicit attribute both work.
+   * ------------------------------------------------------------------- */
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme='light']) {
+      --yote-bg-default: #0c0c0c;
+      --yote-bg-surface: #161616;
+      --yote-stroke-soft: rgba(255, 255, 255, 0.08);
+      --yote-text-strong: #f2f2f2;
+      --yote-text-sub: #a3a3a3;
+      --yote-text-soft: #6f6f6f;
+
+      --yote-feature-base: #9a78f7;
+      --yote-feature-dark: #c4aefa;
+      --yote-purple-alpha-24: rgba(154, 120, 247, 0.45);
+
+      --yote-error-base: #ff6170;
+      --yote-error-faint: rgba(255, 97, 112, 0.42);
+
+      --yote-shadow-xs: 0 2px 4px -1px rgba(0, 0, 0, 0.3), 0 5px 13px -5px rgba(0, 0, 0, 0.5);
+    }
+  }
+
+  :root[data-theme='dark'] {
+    --yote-bg-default: #0c0c0c;
+    --yote-bg-surface: #161616;
+    --yote-stroke-soft: rgba(255, 255, 255, 0.08);
+    --yote-text-strong: #f2f2f2;
+    --yote-text-sub: #a3a3a3;
+    --yote-text-soft: #6f6f6f;
+
+    --yote-feature-base: #9a78f7;
+    --yote-feature-dark: #c4aefa;
+    --yote-purple-alpha-24: rgba(154, 120, 247, 0.45);
+
+    --yote-error-base: #ff6170;
+    --yote-error-faint: rgba(255, 97, 112, 0.42);
+
+    --yote-shadow-xs: 0 2px 4px -1px rgba(0, 0, 0, 0.3), 0 5px 13px -5px rgba(0, 0, 0, 0.5);
+
+    --yote-bg-layer: #1c1c1c;
+    --yote-text-disabled: #4a4a4a;
+    --yote-info-base: #6e8bff;
+    --yote-shadow-field: 0 2px 4px 0 rgba(0, 0, 0, 0.35);
+    --yote-shadow-field-hover: 0 2px 4px 0 rgba(0, 0, 0, 0.45);
+  }
+
+  /* ---------------------------------------------------------------------
+   * Field shell — label, control, message
+   * ------------------------------------------------------------------- */
+
+  /*
+   * The shell every field shares: label, control, message in a column.
+   * Deliberately carries no width of its own — each component decides that,
+   * because a digit group is sized by its cell count and a textarea is not.
+   */
+  .yote-field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
+  }
+
+  /*
+   * The pin input's width lives here, not on .yote-field.
+   *
+   * `container-type: inline-size` on the group applies inline-axis
+   * containment, so the group contributes nothing to its parent's intrinsic
+   * width. A `fit-content` field therefore sized itself from the label text
+   * and starved the cells — four 87.5px cells collapsed to 34.6px each.
+   * A definite width here breaks the cycle: the field is sized from the cell
+   * count, the group fills it, and cqi finally has a real number to divide.
+   */
+  .yote-pin-field {
+    --yote-cell-base: 87.5px;
+    --yote-gap: 10px;
+
+    max-width: calc(
+      var(--yote-len, 4) * var(--yote-cell-base) + (var(--yote-len, 4) - 1) * var(--yote-gap)
+    );
+    /*
+     * The one place a layout property is animated on purpose. Changing
+     * `length` moves this edge, and there is no transform that grows a box
+     * without scaling the digits inside it. It is one small element and the
+     * alternative — the group snapping to a new width while cells fade in
+     * against it — is visibly worse.
+     */
+    transition: max-width 240ms var(--yote-ease-out);
+  }
+
+  .yote-label {
+    font-size: 14px;
+    line-height: 20px;
+    color: var(--yote-text-sub);
+    cursor: default;
+  }
+
+  /*
+   * Reserve the message row so an error appearing never moves the form.
+   *
+   * Type is Figma's Paragraph/Medium (node 6:4770): 16px on 24px with 0.32px
+   * tracking. One line of that is the reserve.
+   */
+  .yote-message {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    min-height: 24px;
+    font-size: 16px;
+    line-height: 24px;
+    letter-spacing: 0.32px;
+    color: var(--yote-text-soft);
+    transition: color var(--yote-duration) ease;
+  }
+
+  .yote-message[data-invalid] {
+    color: var(--yote-error-base);
+  }
+
+  /* Never let the 20px mark squash when the message wraps to two lines. */
+  .yote-message-icon {
+    flex: none;
+    align-self: flex-start;
+    width: 20px;
+    height: 20px;
+    /* Optically centres the mark against a 24px line box. */
+    margin-top: 2px;
+  }
+
+  /* ---------------------------------------------------------------------
+   * Pin input
+   * ------------------------------------------------------------------- */
+
+  /*
+   * Block-level flex, not inline-flex. An inline-flex box aligns on the
+   * baseline of its first flex item; an empty cell has no text so its
+   * baseline falls at the bottom edge, and a filled cell's baseline is the
+   * digit's — so the whole group jumped vertically the moment the first
+   * digit landed. Block-level flex has no baseline to align to.
+   *
+   * Cells hold 87.5px wherever there is room and shrink evenly below that,
+   * so four cells are exactly 380px on desktop and six cells still fit a
+   * 320px phone. container-type gives the cells a stable reference for
+   * their own width: a percentage inside border-radius would resolve
+   * against the cell instead of the group.
+   */
+  .yote-group {
+    --yote-cell-w: min(
+      var(--yote-cell-base),
+      (100cqi - (var(--yote-len, 4) - 1) * var(--yote-gap)) / var(--yote-len, 4)
+    );
+    /* 24 / 87.5 — hold the Figma radius ratio as cells shrink, with a floor
+       so a narrow cell never rounds all the way to a pill. */
+    --yote-cell-r: clamp(14px, calc(var(--yote-cell-w) * 0.2743), var(--yote-radius-xl));
+
+    container-type: inline-size;
+    position: relative;
+    display: flex;
+    gap: var(--yote-gap);
+    width: 100%;
+    line-height: 0;
+    cursor: text;
+  }
+
+  .yote-group[data-disabled] {
+    cursor: default;
+  }
+
+  .yote-group[data-shaking] {
+    animation: yote-shake 280ms var(--yote-ease-out);
+  }
+
+  /*
+   * The real input: one for the whole group, never one per cell. Per-cell
+   * inputs break clipboard paste, autocomplete="one-time-code", and the
+   * iOS/Android keyboard suggestion that fills the code straight from the
+   * SMS. Do not refactor this.
+   */
+  .yote-input {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    outline: none;
+    background: transparent;
+    opacity: 0;
+    /* 16px or iOS zooms the viewport on focus. */
+    font-size: 16px;
+    color: transparent;
+    caret-color: transparent;
+    cursor: inherit;
+  }
+
+  .yote-cell {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto;
+    width: var(--yote-cell-w);
+    height: 66px;
+    border: 1px solid var(--yote-stroke-soft);
+    border-radius: var(--yote-cell-r);
+    background: var(--yote-bg-default);
+    box-shadow: var(--yote-shadow-xs);
+    /*
+     * A cell entering gets its own animation rather than a transition, so the
+     * entry cannot delay or retarget the border and ring transitions below —
+     * a focus ring that waited on an entry delay would feel broken.
+     *
+     * Deliberately not staggered. A cascade reads well once, but `length` is
+     * a prop a consumer may render on every page load, and nothing should
+     * gate the field being usable behind a queue of delays.
+     */
+    animation: yote-cell-in 180ms var(--yote-ease-out) both;
+    transition:
+      border-color var(--yote-duration) ease,
+      background-color var(--yote-duration) ease,
+      box-shadow var(--yote-duration) ease;
+  }
+
+  /*
+   * The focus ring is a pseudo element whose opacity transitions, so the
+   * ring fades without repainting the field. inset: -1px puts the pseudo on
+   * the cell's border box, which is what border-radius already describes —
+   * so `inherit` lines the corners up exactly.
+   */
+  .yote-cell::after {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    border-radius: inherit;
+    box-shadow: var(--yote-focus-active);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity var(--yote-duration) var(--yote-ease-out);
+  }
+
+  /*
+   * Active holds the border at 1px and supplies the extra half pixel as an
+   * inset ring. Going 1px -> 1.5px shrinks the content box by half a pixel
+   * per side and nudges the centred digit. Any state that changes
+   * border-width shifts layout; use inset shadows instead.
+   */
+  .yote-cell[data-active] {
+    border-color: var(--yote-feature-base);
+    box-shadow: inset 0 0 0 0.5px var(--yote-feature-base);
+  }
+
+  .yote-cell[data-active]::after {
+    opacity: 1;
+  }
+
+  .yote-cell[data-invalid] {
+    border-color: var(--yote-error-base);
+    box-shadow: inset 0 0 0 0.5px var(--yote-error-base);
+  }
+
+  .yote-cell[data-invalid]::after {
+    box-shadow: var(--yote-focus-error);
+  }
+
+  /*
+   * Disabled: surface fill, no visible border, no shadow. The border stays
+   * in the box at 1px and goes transparent — dropping to `none` would
+   * resize the cell and shift the row.
+   */
+  .yote-cell[data-disabled] {
+    background: var(--yote-bg-surface);
+    border-color: transparent;
+    box-shadow: none;
+  }
+
+  .yote-cell[data-disabled]::after {
+    opacity: 0;
+  }
+
+  .yote-digit {
+    line-height: 38px;
+    font-size: 30px;
+    font-weight: 400;
+    letter-spacing: 0.3px;
+    color: var(--yote-text-strong);
+    font-variant-numeric: tabular-nums;
+    user-select: none;
+    animation: yote-digit-in 140ms var(--yote-ease-out);
+    transition: color var(--yote-duration) ease;
+  }
+
+  .yote-digit[data-invalid] {
+    color: var(--yote-error-base);
+  }
+
+  /* Hidden, not dimmed — a disabled field shows no value at all. */
+  .yote-digit[data-disabled] {
+    color: transparent;
+  }
+
+  .yote-caret {
+    position: absolute;
+    width: 2px;
+    height: 28px;
+    border-radius: 2px;
+    background: var(--yote-feature-dark);
+    /* 530ms on, 530ms off — the macOS caret period. */
+    animation: yote-blink 1.06s steps(1, end) infinite;
+  }
+
+  /* ---------------------------------------------------------------------
+   * Textarea
+   *
+   * Figma 15:5101 (X-Small), 15:5103 (Small), 15:5102 (Medium) for geometry;
+   * 15:5235 Selected, 15:5253 Used, 15:5307 Error, 15:5361 Hover,
+   * 15:5643 Disabled for treatment.
+   *
+   * Every measured value is a custom property on the root, so a consumer can
+   * retune one field without a stylesheet — `style={{ '--yote-ta-height':
+   * '200px' }}` is a legitimate way to use this.
+   * ------------------------------------------------------------------- */
+
+  .yote-ta {
+    --yote-ta-height: 127px;
+    --yote-ta-radius: var(--yote-radius-md);
+    --yote-ta-pad-y: 8px;
+    --yote-ta-pad-left: 10px;
+    /* Right padding runs 2px tighter than left in every size, to sit the
+       resize handle nearer the edge. Measured, not tidied. */
+    --yote-ta-pad-right: 8px;
+  }
+
+  .yote-ta[data-size='sm'] {
+    --yote-ta-height: 113px;
+    --yote-ta-radius: var(--yote-radius-sm);
+    --yote-ta-pad-y: 6px;
+    --yote-ta-pad-left: 8px;
+    --yote-ta-pad-right: 8px;
+  }
+
+  .yote-ta[data-size='lg'] {
+    --yote-ta-height: 141px;
+    --yote-ta-radius: var(--yote-radius-md);
+    --yote-ta-pad-y: 10px;
+    --yote-ta-pad-left: 12px;
+    --yote-ta-pad-right: 10px;
+  }
+
+  /* ---- label row ------------------------------------------------------ */
+
+  .yote-label-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    width: 100%;
+  }
+
+  .yote-required {
+    flex: 1 0 0;
+    min-width: 1px;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 20px;
+    letter-spacing: 0.28px;
+    color: var(--yote-info-base);
+  }
+
+  .yote-optional {
+    font-size: 12px;
+    line-height: 16px;
+    letter-spacing: 0.24px;
+    color: var(--yote-text-disabled);
+    white-space: nowrap;
+  }
+
+  .yote-info {
+    display: inline-flex;
+    flex: none;
+    color: var(--yote-text-soft);
+  }
+
+  /* ---- field ---------------------------------------------------------- */
+
+  .yote-ta-field {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    width: 100%;
+    height: var(--yote-ta-height);
+    padding: var(--yote-ta-pad-y) var(--yote-ta-pad-right) var(--yote-ta-pad-y)
+      var(--yote-ta-pad-left);
+    border: 1px solid var(--yote-stroke-soft);
+    border-radius: var(--yote-ta-radius);
+    background: var(--yote-bg-default);
+    box-shadow: var(--yote-shadow-field);
+    overflow: clip;
+    transition:
+      border-color var(--yote-duration) ease,
+      background-color var(--yote-duration) ease,
+      box-shadow var(--yote-duration) ease;
+  }
+
+  /*
+   * Hover is gated so a tap on a touch device does not latch the state, and
+   * it is the lowest-priority treatment — every rule below overrides it.
+   */
+  @media (hover: hover) and (pointer: fine) {
+    .yote-ta-field:hover {
+      background: var(--yote-bg-surface);
+      border-color: var(--yote-bg-layer);
+      box-shadow: var(--yote-shadow-field-hover);
+    }
+  }
+
+  /* Focus ring as a box-shadow pair, the same two-step the pin input uses:
+     2px of page background, then 4px of tint. No shadow-field underneath. */
+  .yote-ta-field[data-focused] {
+    background: var(--yote-bg-default);
+    border-color: var(--yote-feature-base);
+    box-shadow: var(--yote-focus-active);
+  }
+
+  .yote-ta-field[data-invalid] {
+    background: var(--yote-bg-default);
+    border-color: var(--yote-error-base);
+    box-shadow: var(--yote-focus-error);
+  }
+
+  /* Disabled wins over everything, including hover. */
+  .yote-ta-field[data-disabled] {
+    background: var(--yote-bg-surface);
+    border-color: var(--yote-bg-surface);
+    box-shadow: none;
+  }
+
+  .yote-ta-input {
+    flex: 1 1 auto;
+    width: 100%;
+    min-height: 0;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    outline: none;
+    background: transparent;
+    resize: none;
+    font: inherit;
+    font-size: 14px;
+    line-height: 20px;
+    letter-spacing: 0.28px;
+    color: var(--yote-text-strong);
+    /* The page never scrolls sideways because of a field. */
+    overflow-x: hidden;
+    overflow-y: auto;
+    scrollbar-width: thin;
+  }
+
+  .yote-ta-input::placeholder {
+    color: var(--yote-text-soft);
+    opacity: 1;
+  }
+
+  .yote-ta-input:disabled {
+    color: var(--yote-text-disabled);
+    -webkit-text-fill-color: var(--yote-text-disabled);
+    cursor: not-allowed;
+  }
+
+  .yote-ta-input:disabled::placeholder {
+    color: var(--yote-text-disabled);
+  }
+
+  /* ---- footer --------------------------------------------------------- */
+
+  .yote-ta-footer {
+    display: flex;
+    flex: none;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 8px;
+    width: 100%;
+  }
+
+  .yote-ta-counter {
+    font-size: 12px;
+    line-height: 16px;
+    letter-spacing: 0.24px;
+    color: var(--yote-text-soft);
+    /* Tabular figures, so the handle does not shuffle as the count changes. */
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+    user-select: none;
+  }
+
+  .yote-ta-resize {
+    display: inline-flex;
+    flex: none;
+    color: var(--yote-text-soft);
+    cursor: ns-resize;
+    touch-action: none;
+  }
+
+  .yote-ta-field[data-disabled] .yote-ta-resize {
+    cursor: not-allowed;
+  }
+
+  .yote-message-icon-sm {
+    display: inline-flex;
+    width: 16px;
+    height: 16px;
+    margin-top: 4px;
+  }
+
+  .yote-message[data-disabled] {
+    color: var(--yote-text-disabled);
+  }
+
+  /* ---------------------------------------------------------------------
+   * Motion
+   *
+   * Never ease-in on UI: it delays the initial movement, which is the exact
+   * moment the user is watching. Transform and opacity only. Exact
+   * properties, never `transition: all`.
+   * ------------------------------------------------------------------- */
+
+  @keyframes yote-digit-in {
+    from {
+      opacity: 0;
+      /* Never from scale(0) — nothing in the real world appears from nothing. */
+      transform: scale(0.9);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  /* Never from scale(0) — a cell that appears from nothing reads as a glitch
+     rather than as a cell arriving. */
+  @keyframes yote-cell-in {
+    from {
+      opacity: 0;
+      transform: scale(0.94);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  @keyframes yote-blink {
+    0% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0;
+    }
+  }
+
+  /* Decaying amplitude, done inside 280ms. A rejected code should not feel slow. */
+  @keyframes yote-shake {
+    0% {
+      transform: translate3d(0, 0, 0);
+    }
+    15% {
+      transform: translate3d(-6px, 0, 0);
+    }
+    32% {
+      transform: translate3d(5px, 0, 0);
+    }
+    49% {
+      transform: translate3d(-3px, 0, 0);
+    }
+    66% {
+      transform: translate3d(2px, 0, 0);
+    }
+    83% {
+      transform: translate3d(-1px, 0, 0);
+    }
+    100% {
+      transform: translate3d(0, 0, 0);
+    }
+  }
+
+  @keyframes yote-fade-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  /*
+   * Reduced motion means gentler, not none. Positional motion goes; colour
+   * and opacity stay, because those are what carry the error meaning.
+   */
+  @media (prefers-reduced-motion: reduce) {
+    .yote-group[data-shaking] {
+      animation: none;
+    }
+
+    .yote-digit {
+      animation: yote-fade-in 140ms var(--yote-ease-out);
+    }
+
+    /* The cell still arrives, it just stops moving to get there. */
+    .yote-cell {
+      animation: yote-fade-in 180ms var(--yote-ease-out);
+    }
+
+    .yote-field {
+      transition: none;
+    }
+
+    .yote-caret {
+      animation: none;
+      opacity: 1;
+    }
+  }
+}
