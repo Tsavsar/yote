@@ -37,6 +37,7 @@
     --yote-info-base: #335cff;
     --yote-shadow-field: 0 2px 4px 0 rgba(54, 54, 54, 0.04);
     --yote-shadow-field-hover: 0 2px 4px 0 rgba(138, 138, 138, 0.08);
+    --yote-scroll-thumb: rgba(0, 0, 0, 0.16);
 
     --yote-radius-sm: 8px;
     --yote-radius-md: 12px;
@@ -79,6 +80,17 @@
       --yote-error-faint: rgba(255, 97, 112, 0.42);
 
       --yote-shadow-xs: 0 2px 4px -1px rgba(0, 0, 0, 0.3), 0 5px 13px -5px rgba(0, 0, 0, 0.5);
+
+      /* These have to be repeated here, not just in the attribute block
+         below. Without them a system dark preference kept the light
+         bg-layer and text-disabled, so the textarea's disabled text was
+         #d1d1d1 on near-black. */
+      --yote-bg-layer: #1c1c1c;
+      --yote-text-disabled: #4a4a4a;
+      --yote-info-base: #6e8bff;
+      --yote-shadow-field: 0 2px 4px 0 rgba(0, 0, 0, 0.35);
+      --yote-shadow-field-hover: 0 2px 4px 0 rgba(0, 0, 0, 0.45);
+      --yote-scroll-thumb: rgba(255, 255, 255, 0.18);
     }
   }
 
@@ -104,6 +116,7 @@
     --yote-info-base: #6e8bff;
     --yote-shadow-field: 0 2px 4px 0 rgba(0, 0, 0, 0.35);
     --yote-shadow-field-hover: 0 2px 4px 0 rgba(0, 0, 0, 0.45);
+    --yote-scroll-thumb: rgba(255, 255, 255, 0.18);
   }
 
   /* ---------------------------------------------------------------------
@@ -522,7 +535,27 @@
     /* The page never scrolls sideways because of a field. */
     overflow-x: hidden;
     overflow-y: auto;
+    /*
+     * The platform scrollbar is a 15px chrome-coloured slab, and inside an
+     * 8px-padded field it reads as a rendering fault. 6px, no track, thumb
+     * only, taking its colour from the tokens so it themes with everything
+     * else. Firefox only exposes width/colour; WebKit gets the full shape.
+     */
     scrollbar-width: thin;
+    scrollbar-color: var(--yote-scroll-thumb) transparent;
+  }
+
+  .yote-ta-input::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .yote-ta-input::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .yote-ta-input::-webkit-scrollbar-thumb {
+    border-radius: 999px;
+    background: var(--yote-scroll-thumb);
   }
 
   .yote-ta-input::placeholder {

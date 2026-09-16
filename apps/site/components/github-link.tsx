@@ -10,6 +10,14 @@ const REPO = 'Tsavsar/yote'
  * page down with it.
  */
 async function getStarCount(): Promise<number | null> {
+  /*
+   * Skipped in development. `revalidate` is a production cache directive, so
+   * `next dev` refetches on every render — which rate-limits the
+   * unauthenticated API within minutes and fills the console with 429s that
+   * look like a bug in the page. Production still gets one call an hour.
+   */
+  if (process.env.NODE_ENV === 'development') return null
+
   try {
     const res = await fetch(`https://api.github.com/repos/${REPO}`, {
       headers: { Accept: 'application/vnd.github+json' },

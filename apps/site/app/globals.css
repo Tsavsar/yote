@@ -50,6 +50,8 @@
     --code-expr: #6a6a6a;
     --code-punct: #b4b4b4;
     --page-max: 650px;
+    --scroll-thumb: rgba(0, 0, 0, 0.16);
+    --scroll-thumb-hover: rgba(0, 0, 0, 0.28);
   }
 
   @media (prefers-color-scheme: dark) {
@@ -59,6 +61,8 @@
       --code-str: #f2f2f2;
       --code-expr: #a3a3a3;
       --code-punct: #5c5c5c;
+      --scroll-thumb: rgba(255, 255, 255, 0.18);
+      --scroll-thumb-hover: rgba(255, 255, 255, 0.3);
     }
   }
 
@@ -68,6 +72,8 @@
     --code-str: #f2f2f2;
     --code-expr: #a3a3a3;
     --code-punct: #5c5c5c;
+    --scroll-thumb: rgba(255, 255, 255, 0.18);
+    --scroll-thumb-hover: rgba(255, 255, 255, 0.3);
   }
 
   body {
@@ -90,6 +96,25 @@
 
   html {
     scrollbar-gutter: stable;
+    scrollbar-width: thin;
+    scrollbar-color: var(--scroll-thumb) transparent;
+  }
+
+  body::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  body::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  body::-webkit-scrollbar-thumb {
+    border-radius: 999px;
+    background: var(--scroll-thumb);
+  }
+
+  body::-webkit-scrollbar-thumb:hover {
+    background: var(--scroll-thumb-hover);
   }
 
   /* ---- shell ---------------------------------------------------------- */
@@ -402,36 +427,6 @@
   }
 
   /*
-   * Fixed height, never min-height. A stage that resizes on a pill click
-   * moves the code panel and the whole page under the cursor.
-   */
-  /*
-   * Fixed height, never min-height: a stage that resizes on a pill click moves
-   * the code panel and everything under the cursor.
-   *
-   * The dot grid is 4.818px dots on a 38.541px pitch (33.723px gap in the
-   * frame, plus the dot) in bg-layer, drawn as one gradient instead of the
-   * 200-odd divs the export emits.
-   */
-  .stage {
-    display: grid;
-    place-items: center;
-    height: 300px;
-    padding: 24px;
-    border: 1px solid var(--yote-stroke-soft);
-    border-radius: 20px;
-    background-color: var(--yote-bg-default);
-    background-image: radial-gradient(
-      circle,
-      var(--yote-bg-layer) 2.409px,
-      transparent 2.409px
-    );
-    background-size: 38.541px 38.541px;
-    background-position: center;
-    overflow: clip;
-  }
-
-  /*
    * One line: states left, size or length right. nowrap because the two
    * groups are a pair — wrapping the second under the first reads as two
    * unrelated rows. Each group may wrap internally if it has to.
@@ -445,14 +440,11 @@
   }
 
   .control-row {
-    min-width: 0;
-  }
-
-  .control-row {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
     gap: 6px;
+    min-width: 0;
   }
 
   /* Borderless, 6px, and the active one is a surface fill rather than a dark
@@ -461,7 +453,7 @@
     padding: 4px 12px;
     border-radius: 6px;
     border: 0;
-    background: var(--yote-bg-default);
+    background: transparent;
     color: var(--yote-text-soft);
     font-size: 14px;
     line-height: 20px;
@@ -485,6 +477,63 @@
   .pill[data-active] {
     background: var(--yote-bg-surface);
     color: var(--yote-text-strong);
+  }
+
+  /*
+   * Fixed height, never min-height: a stage that resizes on a pill click moves
+   * the code panel and everything under the cursor.
+   *
+   * The dot grid is 4.818px dots on a 38.541px pitch (33.723px gap in the
+   * frame, plus the dot) in bg-layer, drawn as one gradient instead of the
+   * 200-odd divs the export emits.
+   */
+  /*
+   * The stage is one object: a toolbar on solid ground, then the component on
+   * the dot grid. The controls used to float above an unrelated box; inside,
+   * they read as belonging to the thing they change.
+   */
+  .stage {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--yote-stroke-soft);
+    border-radius: 20px;
+    background: var(--yote-bg-default);
+    overflow: clip;
+  }
+
+  .stage-bar {
+    display: flex;
+    flex-direction: column;
+    padding: 12px;
+    border-bottom: 1px solid var(--yote-stroke-soft);
+  }
+
+  /*
+   * Fixed height, never min-height: a body that resizes on a pill click moves
+   * the code panel and everything under the cursor.
+   *
+   * The dot grid is 4.818px dots on a 38.541px pitch (33.723px gap in the
+   * frame, plus the dot) in bg-layer, drawn as one gradient instead of the
+   * 200-odd divs the export emits.
+   */
+  .stage-body {
+    display: grid;
+    place-items: center;
+    height: 300px;
+    padding: 24px;
+    background-image: radial-gradient(circle, var(--yote-bg-layer) 2.409px, transparent 2.409px);
+    background-size: 38.541px 38.541px;
+    background-position: center;
+    overflow: clip;
+  }
+
+  .stage-tall .stage-body {
+    height: 340px;
+  }
+
+  .stage-inner {
+    width: 100%;
+    max-width: 340px;
   }
 
   /* ---- code ----------------------------------------------------------- */
@@ -752,7 +801,7 @@
   }
 
   .more-panel[data-open] .more-panel-inner {
-    padding-top: 2px;
+    padding-top: 12px;
   }
 
   /* ---- toggle --------------------------------------------------------- */
@@ -889,6 +938,80 @@
     .tooltip[data-open] {
       transform: none;
     }
+  }
+
+
+  /* ---- scrollbars ----------------------------------------------------- */
+
+  /*
+   * Nothing on this site shows a native scrollbar. The platform one is a
+   * 15px chrome-coloured slab that lands on top of a code panel and reads as
+   * a rendering fault rather than an affordance.
+   *
+   * 6px, no track, thumb only, and it takes the theme. Firefox gets the same
+   * shape through `scrollbar-width`/`scrollbar-color`, which is all it
+   * exposes; WebKit and Blink get the full treatment.
+   */
+  .scroll-thin {
+    scrollbar-width: thin;
+    scrollbar-color: var(--scroll-thumb) transparent;
+  }
+
+  .scroll-thin::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  .scroll-thin::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .scroll-thin::-webkit-scrollbar-thumb {
+    border-radius: 999px;
+    background: var(--scroll-thumb);
+  }
+
+  .scroll-thin::-webkit-scrollbar-thumb:hover {
+    background: var(--scroll-thumb-hover);
+  }
+
+  /* The corner where two bars meet is chrome-coloured by default. */
+  .scroll-thin::-webkit-scrollbar-corner {
+    background: transparent;
+  }
+
+
+  .code-pre::-webkit-scrollbar,
+  .table-wrap::-webkit-scrollbar,
+  .docs-sidebar::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  .code-pre::-webkit-scrollbar-track,
+  .table-wrap::-webkit-scrollbar-track,
+  .docs-sidebar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .code-pre::-webkit-scrollbar-thumb,
+  .table-wrap::-webkit-scrollbar-thumb,
+  .docs-sidebar::-webkit-scrollbar-thumb {
+    border-radius: 999px;
+    background: var(--scroll-thumb);
+  }
+
+  .code-pre::-webkit-scrollbar-thumb:hover,
+  .table-wrap::-webkit-scrollbar-thumb:hover,
+  .docs-sidebar::-webkit-scrollbar-thumb:hover {
+    background: var(--scroll-thumb-hover);
+  }
+
+  .code-pre,
+  .table-wrap,
+  .docs-sidebar {
+    scrollbar-width: thin;
+    scrollbar-color: var(--scroll-thumb) transparent;
   }
 
   /* ---- docs shell ----------------------------------------------------- */
@@ -1117,15 +1240,6 @@
 
   .code[data-titled] .copy {
     top: 6px;
-  }
-
-  .stage-tall {
-    height: 300px;
-  }
-
-  .stage-inner {
-    width: 100%;
-    max-width: 340px;
   }
 
   @media (max-width: 1080px) {

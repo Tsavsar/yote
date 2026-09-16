@@ -179,57 +179,68 @@ export function Preview({
         </div>
       ) : null}
 
-      {/* Controls above the stage: you pick a setting and then look down at
-          the result, rather than reaching past the thing you are changing. */}
-      <div className="controls">
-        <Row label="State">
-          {STATES.map((s) => (
-            <Pill key={s} active={state === s} onClick={() => pickState(s)}>
-              {s[0]!.toUpperCase() + s.slice(1)}
-            </Pill>
-          ))}
-        </Row>
-
-        <Row label="Length">
-          {LENGTHS.map((n) => (
-            <Pill key={n} active={length === n} onClick={() => dispatch({ type: 'length', length: n })}>
-              {n}
-            </Pill>
-          ))}
-        </Row>
-      </div>
-
-      <MorePanel open={paramsOpen}>
-        <Toggle
-          label="Mask as dots"
-          checked={mask}
-          onChange={(next) => dispatch({ type: 'mask', mask: next })}
-        />
-        <Toggle
-          label="Show label"
-          checked={showLabel}
-          onChange={(next) => dispatch({ type: 'showLabel', showLabel: next })}
-        />
-        <Toggle
-          label="Show hint"
-          checked={showHint}
-          onChange={(next) => dispatch({ type: 'showHint', showHint: next })}
-        />
-      </MorePanel>
-
+      {/*
+        The controls live inside the stage, as its toolbar. They belong to the
+        thing they change, so the panel reads as one object rather than a row
+        of buttons that happens to sit above a box.
+      */}
       <div className="stage">
-        <PinInput
-          ref={inputRef}
-          length={length}
-          value={value}
-          onChange={(next) => dispatch({ type: 'value', value: next })}
-          mask={mask}
-          label={showLabel ? 'Verification code' : undefined}
-          hint={showHint ? 'Enter the code we sent you.' : undefined}
-          error={state === 'error' ? ERROR_TEXT : undefined}
-          errorKey={errorKey}
-          disabled={state === 'disabled'}
-        />
+        <div className="stage-bar">
+          <div className="controls">
+            <Row label="State">
+              {STATES.map((s) => (
+                <Pill key={s} active={state === s} onClick={() => pickState(s)}>
+                  {s[0]!.toUpperCase() + s.slice(1)}
+                </Pill>
+              ))}
+            </Row>
+
+            <Row label="Length">
+              {LENGTHS.map((n) => (
+                <Pill
+                  key={n}
+                  active={length === n}
+                  onClick={() => dispatch({ type: 'length', length: n })}
+                >
+                  {n}
+                </Pill>
+              ))}
+            </Row>
+          </div>
+
+          <MorePanel open={paramsOpen}>
+            <Toggle
+              label="Mask as dots"
+              checked={mask}
+              onChange={(next) => dispatch({ type: 'mask', mask: next })}
+            />
+            <Toggle
+              label="Show label"
+              checked={showLabel}
+              onChange={(next) => dispatch({ type: 'showLabel', showLabel: next })}
+            />
+            <Toggle
+              label="Show hint"
+              checked={showHint}
+              onChange={(next) => dispatch({ type: 'showHint', showHint: next })}
+            />
+          </MorePanel>
+        </div>
+
+        <div className="stage-body">
+          <PinInput
+            ref={inputRef}
+            length={length}
+            value={value}
+            onChange={(next) => dispatch({ type: 'value', value: next })}
+            mask={mask}
+            label={showLabel ? 'Verification code' : undefined}
+            hint={showHint ? 'Enter the code we sent you.' : undefined}
+            error={state === 'error' ? ERROR_TEXT : undefined}
+            errorKey={errorKey}
+            disabled={state === 'disabled'}
+          />
+        </div>
       </div>
 
       <CodeBlock code={snippetFor(state, length, value, mask, showLabel, showHint)} />

@@ -82,8 +82,7 @@ export function TextareaPreview({
     counter: true,
     resize: true,
   })
-  const set = (key: keyof Flags) => (next: boolean) =>
-    setFlags((f) => ({ ...f, [key]: next }))
+  const set = (key: keyof Flags) => (next: boolean) => setFlags((f) => ({ ...f, [key]: next }))
 
   const pickState = (next: StateKey) => {
     setState(next)
@@ -106,51 +105,62 @@ export function TextareaPreview({
         </div>
       ) : null}
 
-      <div className="controls">
-        <div className="control-row" role="group" aria-label="State">
-          {STATES.map((s) => (
-            <Pill key={s} active={state === s} onClick={() => pickState(s)}>
-              {LABELS[s]}
-            </Pill>
-          ))}
-        </div>
-        <div className="control-row" role="group" aria-label="Size">
-          {SIZES.map((s) => (
-            <Pill key={s} active={size === s} onClick={() => setSize(s)}>
-              {s}
-            </Pill>
-          ))}
-        </div>
-      </div>
-
-      <MorePanel open={paramsOpen}>
-        <Toggle label="Important" checked={flags.required} onChange={set('required')} />
-        <Toggle label="Optional" checked={flags.optional} onChange={set('optional')} />
-        <Toggle label="Show label" checked={flags.label} onChange={set('label')} />
-        <Toggle label="Show info icon" checked={flags.info} onChange={set('info')} />
-        <Toggle label="Show hint" checked={flags.hint} onChange={set('hint')} />
-        <Toggle label="Show counter" checked={flags.counter} onChange={set('counter')} />
-        <Toggle label="Show resize handle" checked={flags.resize} onChange={set('resize')} />
-      </MorePanel>
-
+      {/*
+        The controls live inside the stage, as its toolbar. They belong to the
+        thing they change, so the panel reads as one object rather than a row
+        of buttons that happens to sit above a box.
+      */}
       <div className="stage stage-tall">
-        <div className="stage-inner">
-          <Textarea
-            size={size}
-            label={flags.label ? 'Input area' : undefined}
-            required={flags.required}
-            optional={flags.optional}
-            info={flags.info ? 'We only use this to improve the product.' : undefined}
-            maxLength={flags.counter ? 200 : undefined}
-            showCounter={flags.counter}
-            resizable={flags.resize}
-            value={value}
-            onChange={setValue}
-            hint={state === 'error' || !flags.hint ? undefined : 'This is a hint text to help users.'}
-            error={state === 'error' ? ERROR_TEXT : undefined}
-            disabled={state === 'disabled'}
-            readOnly={state === 'readOnly'}
-          />
+        <div className="stage-bar">
+          <div className="controls">
+            <div className="control-row" role="group" aria-label="State">
+              {STATES.map((s) => (
+                <Pill key={s} active={state === s} onClick={() => pickState(s)}>
+                  {LABELS[s]}
+                </Pill>
+              ))}
+            </div>
+            <div className="control-row" role="group" aria-label="Size">
+              {SIZES.map((s) => (
+                <Pill key={s} active={size === s} onClick={() => setSize(s)}>
+                  {s}
+                </Pill>
+              ))}
+            </div>
+          </div>
+
+          <MorePanel open={paramsOpen}>
+            <Toggle label="Important" checked={flags.required} onChange={set('required')} />
+            <Toggle label="Optional" checked={flags.optional} onChange={set('optional')} />
+            <Toggle label="Show label" checked={flags.label} onChange={set('label')} />
+            <Toggle label="Show info icon" checked={flags.info} onChange={set('info')} />
+            <Toggle label="Show hint" checked={flags.hint} onChange={set('hint')} />
+            <Toggle label="Show counter" checked={flags.counter} onChange={set('counter')} />
+            <Toggle label="Show resize handle" checked={flags.resize} onChange={set('resize')} />
+          </MorePanel>
+        </div>
+
+        <div className="stage-body">
+          <div className="stage-inner">
+            <Textarea
+              size={size}
+              label={flags.label ? 'Input area' : undefined}
+              required={flags.required}
+              optional={flags.optional}
+              info={flags.info ? 'We only use this to improve the product.' : undefined}
+              maxLength={flags.counter ? 200 : undefined}
+              showCounter={flags.counter}
+              resizable={flags.resize}
+              value={value}
+              onChange={setValue}
+              hint={
+                state === 'error' || !flags.hint ? undefined : 'This is a hint text to help users.'
+              }
+              error={state === 'error' ? ERROR_TEXT : undefined}
+              disabled={state === 'disabled'}
+              readOnly={state === 'readOnly'}
+            />
+          </div>
         </div>
       </div>
 
