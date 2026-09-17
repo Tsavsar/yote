@@ -23,7 +23,7 @@ const MARGIN = 12
 const MAX = 320
 const MIN = 180
 
-function placeFor(anchor: HTMLElement): Placement {
+function placeFor(anchor: HTMLElement, minWidth: number): Placement {
   const rect = anchor.getBoundingClientRect()
   const vw = document.documentElement.clientWidth
   const vh = document.documentElement.clientHeight
@@ -33,7 +33,10 @@ function placeFor(anchor: HTMLElement): Placement {
   const side: Placement['side'] = below >= MIN || below >= above ? 'bottom' : 'top'
 
   const room = Math.max(MIN, Math.min(MAX, side === 'bottom' ? below : above))
-  const width = Math.min(rect.width, vw - MARGIN * 2)
+  /* A panel is at least as wide as its anchor. `minWidth` raises that for a
+     trigger too narrow to hang a menu off — the inline selector is three
+     words wide and its options are longer. */
+  const width = Math.min(Math.max(rect.width, minWidth), vw - MARGIN * 2)
   const left = Math.max(MARGIN, Math.min(rect.left, vw - MARGIN - width))
 
   return {
@@ -59,6 +62,7 @@ function placeFor(anchor: HTMLElement): Placement {
 export function usePopoverPlacement(
   open: boolean,
   anchorRef: React.RefObject<HTMLElement | null>,
+  minWidth = 0,
 ): Placement | null {
   const [placement, setPlacement] = React.useState<Placement | null>(null)
 
@@ -70,7 +74,7 @@ export function usePopoverPlacement(
     const anchor = anchorRef.current
     if (!anchor) return
 
-    const reposition = () => setPlacement(placeFor(anchor))
+    const reposition = () => setPlacement(placeFor(anchor, minWidth))
     reposition()
 
     /* Capture, so a scroll in any ancestor moves it, not just the window. */
@@ -80,7 +84,7 @@ export function usePopoverPlacement(
       window.removeEventListener('scroll', reposition, true)
       window.removeEventListener('resize', reposition)
     }
-  }, [open, anchorRef])
+  }, [open, anchorRef, minWidth])
 
   return placement
 }

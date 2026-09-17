@@ -291,7 +291,7 @@ function CountrySelect({
   const listId = `${id}-list`
 
   return (
-    <div className="yote-cs" ref={rootRef} onKeyDown={onKeyDown}>
+    <div className="yote-pop" ref={rootRef} onKeyDown={onKeyDown}>
       <button
         type="button"
         id={id}
@@ -313,15 +313,15 @@ function CountrySelect({
         ? createPortal(
             <div
               ref={panelRef}
-              className="yote-cs-panel"
+              className="yote-pop-panel"
               data-side={placement.side}
               style={placement.style}
               onKeyDown={onKeyDown}
             >
-              <div className="yote-cs-search">
+              <div className="yote-pop-search">
                 <input
                   ref={searchRef}
-                  className="yote-cs-search-input"
+                  className="yote-pop-search-input"
                   value={query}
                   onChange={(e) => {
                     setQuery(e.target.value)
@@ -340,28 +340,28 @@ function CountrySelect({
                 <SearchIcon />
               </div>
 
-              <ul className="yote-cs-list" id={listId} role="listbox" ref={listRef}>
+              <ul className="yote-pop-list" id={listId} role="listbox" ref={listRef}>
                 {matches.map((c, i) => (
                   <li
                     key={c.code}
                     id={`${id}-opt-${c.code}`}
                     role="option"
                     aria-selected={c.code === selected.code}
-                    className="yote-cs-item"
+                    className="yote-pop-item"
                     data-active={i === activeIndex || undefined}
                     data-selected={c.code === selected.code || undefined}
                     onPointerDown={(e) => e.preventDefault()}
                     onClick={() => commit(c)}
                     onPointerEnter={() => setActiveIndex(i)}
                   >
-                    <span className="yote-cs-flag" aria-hidden="true">
+                    <span className="yote-country-flag" aria-hidden="true">
                       {markOf(c)}
                     </span>
-                    <span className="yote-cs-dial">{c.dial}</span>
-                    <span className="yote-cs-name">{c.name}</span>
+                    <span className="yote-country-dial">{c.dial}</span>
+                    <span className="yote-country-name">{c.name}</span>
                   </li>
                 ))}
-                {matches.length === 0 ? <li className="yote-cs-empty">No match</li> : null}
+                {matches.length === 0 ? <li className="yote-pop-empty">No match</li> : null}
               </ul>
             </div>,
             document.body,

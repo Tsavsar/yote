@@ -1,8 +1,11 @@
 import { Install } from '../components/install'
+import { InputPreview } from '../components/input-preview'
 import { PasswordPreview } from '../components/password-preview'
 import { PhonePreview } from '../components/phone-preview'
 import { Preview } from '../components/preview'
 import { SiteNav } from '../components/site-nav'
+import { SelectPreview } from '../components/select-preview'
+import { TagsPreview } from '../components/tags-preview'
 import { TextareaPreview } from '../components/textarea-preview'
 
 /**
@@ -21,12 +24,19 @@ export default function LandingPage() {
         <section className="hero">
           <h1 className="headline">input components for React.</h1>
           <p className="lede">
-            Every state designed, every transition tuned, every edge case handled. Install it and the
-            field already feels right.
+            Every state designed, every transition tuned, every edge case handled. Install it and
+            the field already feels right.
           </p>
         </section>
 
         <Install />
+
+        <section className="showcase">
+          <InputPreview
+            title="Text input"
+            description="One line, with room at either end for a mark or an affix"
+          />
+        </section>
 
         <section className="showcase">
           <Preview title="Digit input" description="Inputs for codes, keys, pins, passwords etcs" />
@@ -51,6 +61,30 @@ export default function LandingPage() {
             title="Phone number"
             description="A dialling country and a national number, in one field"
           />
+        </section>
+
+        <section className="showcase">
+          <div className="showcase-head">
+            <div className="showcase-text">
+              <h2 className="showcase-title">Select</h2>
+              <p className="showcase-note">
+                A field that is its own search, and a small inline one
+              </p>
+            </div>
+          </div>
+          <SelectPreview />
+        </section>
+
+        <section className="showcase">
+          <div className="showcase-head">
+            <div className="showcase-text">
+              <h2 className="showcase-title">Tags</h2>
+              <p className="showcase-note">
+                A list you build by typing, inside the field or under it
+              </p>
+            </div>
+          </div>
+          <TagsPreview />
         </section>
       </main>
 

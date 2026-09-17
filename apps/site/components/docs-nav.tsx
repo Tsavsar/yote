@@ -25,6 +25,8 @@ const GROUPS = [
       { href: '/docs/textarea', label: 'Text area' },
       { href: '/docs/password', label: 'Password' },
       { href: '/docs/phone', label: 'Phone number' },
+      { href: '/docs/select', label: 'Select' },
+      { href: '/docs/tags', label: 'Tags' },
     ],
   },
   {

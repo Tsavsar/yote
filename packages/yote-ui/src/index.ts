@@ -1,6 +1,15 @@
 export { Input } from './input'
 export type { InputProps, InputPart } from './input'
 
+export { SelectInput } from './select-input'
+export type { SelectInputProps, SelectInputPart, SelectOption } from './select-input'
+
+export { InlineSelect } from './inline-select'
+export type { InlineSelectProps } from './inline-select'
+
+export { TagsInput } from './tags-input'
+export type { TagsInputProps, TagsInputPart } from './tags-input'
+
 export { PinInput } from './pin-input'
 export type { PinInputProps, PinInputPart } from './pin-input'
 

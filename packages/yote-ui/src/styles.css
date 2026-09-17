@@ -1093,7 +1093,7 @@
 
   .yote-input-control {
     flex: 1 1 0;
-    min-width: 0;
+    min-width: var(--yote-input-min, 0);
     margin: 0;
     padding: 0;
     border: 0;
@@ -1116,6 +1116,161 @@
     color: var(--yote-text-disabled);
     -webkit-text-fill-color: var(--yote-text-disabled);
     cursor: not-allowed;
+  }
+
+  /* ---- inline selector, Figma 6:3434 ---------------------------------- */
+
+  /*
+   * A second decision attached to the value beside it, not a field of its
+   * own — which is why it sits inside the same box and carries no label.
+   */
+  .yote-inline-select {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: var(--yote-text-sub);
+    cursor: pointer;
+    font: inherit;
+    font-size: 14px;
+    line-height: 20px;
+    letter-spacing: 0.28px;
+    white-space: nowrap;
+  }
+
+  .yote-inline-select:disabled {
+    color: var(--yote-text-disabled);
+    cursor: not-allowed;
+  }
+
+  .yote-inline-select:focus-visible {
+    outline: 2px solid var(--yote-feature-base);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+
+  .yote-inline-select-value {
+    flex: none;
+  }
+
+  .yote-inline-select-chevron {
+    display: inline-grid;
+    place-items: center;
+    flex: none;
+    transition: transform 200ms var(--yote-ease-out);
+  }
+
+  .yote-inline-select-chevron[data-open] {
+    transform: rotate(180deg);
+  }
+
+  /* The select input's own chevron turns with the panel for the same reason:
+     the mark should report the state it controls. */
+  .yote-select-chevron {
+    transition: transform 200ms var(--yote-ease-out);
+  }
+
+  .yote-select-chevron[data-open] {
+    transform: rotate(180deg);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .yote-inline-select-chevron,
+    .yote-select-chevron {
+      transition: none;
+    }
+  }
+
+  /* ---- tags, Figma 6:4209 ---------------------------------------------
+   *
+   * Outside is the frame: a row under the field, so the field keeps one line
+   * and a form with twenty tags does not reflow as you add them. Inside puts
+   * them ahead of the caret, which reads as "these are the value".
+   * ------------------------------------------------------------------- */
+
+  .yote-tag-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: 8px;
+    width: 100%;
+  }
+
+  .yote-tag {
+    display: inline-flex;
+    align-items: center;
+    flex: none;
+    gap: 4px;
+    padding: 4px 4px 4px 8px;
+    border: 1px solid var(--yote-stroke-soft);
+    border-radius: var(--yote-radius-sm);
+    background: var(--yote-bg-default);
+    box-shadow: 0 2px 2px rgba(54, 54, 54, 0.04);
+    font-size: 12px;
+    line-height: 16px;
+    letter-spacing: 0.24px;
+    color: var(--yote-text-sub);
+  }
+
+  .yote-tag[data-disabled] {
+    background: var(--yote-bg-surface);
+    border-color: var(--yote-bg-surface);
+    box-shadow: none;
+    color: var(--yote-text-disabled);
+  }
+
+  .yote-tag-label {
+    white-space: nowrap;
+  }
+
+  .yote-tag-remove {
+    display: inline-grid;
+    place-items: center;
+    flex: none;
+    width: 14px;
+    height: 14px;
+    padding: 0;
+    border: 0;
+    border-radius: 4px;
+    background: transparent;
+    color: var(--yote-text-sub);
+    cursor: pointer;
+    transition:
+      color var(--yote-duration) ease,
+      background-color var(--yote-duration) ease;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .yote-tag-remove:hover {
+      color: var(--yote-text-strong);
+      background: var(--yote-bg-layer);
+    }
+  }
+
+  .yote-tag-remove:disabled {
+    color: var(--yote-text-disabled);
+    cursor: not-allowed;
+  }
+
+  .yote-tag-remove:focus-visible {
+    outline: 2px solid var(--yote-feature-base);
+    outline-offset: 2px;
+  }
+
+  /* Tags in the box wrap, so the field grows a line at a time instead of
+     scrolling sideways past what you have already chosen. */
+  .yote-input-field[data-tags='inside'] {
+    flex-wrap: wrap;
+    overflow: visible;
+  }
+
+  /* Enough room to type into once the tags have taken the width. Passed down
+     as a custom property rather than a descendant selector — the layer rule
+     is single class selectors only, so a consumer's utility can always win. */
+  .yote-input-field[data-tags='inside'] {
+    --yote-input-min: 6ch;
   }
 
   /* ---------------------------------------------------------------------
@@ -1188,9 +1343,15 @@
     box-shadow: none;
   }
 
-  /* ---- country dropdown, Figma 29:10460 ------------------------------- */
+  /* ---- popover surface, Figma 29:10460 --------------------------------
+   *
+   * Shared by every dropdown in the library: the country picker, the inline
+   * selector and the select input. The panel, the search row, the list and
+   * the option rows are one visual language, so they are one set of classes —
+   * each component renders its own row contents inside them.
+   * ------------------------------------------------------------------- */
 
-  .yote-cs {
+  .yote-pop {
     position: relative;
     display: inline-flex;
     flex: none;
@@ -1255,7 +1416,7 @@
    * placed against the viewport so no ancestor's overflow can clip it. Top,
    * left, width and max-height all arrive as inline style from the measure.
    */
-  .yote-cs-panel {
+  .yote-pop-panel {
     position: fixed;
     z-index: 60;
     display: flex;
@@ -1271,17 +1432,17 @@
     background: var(--yote-popover-bg);
     box-shadow: var(--yote-popover-shadow);
     overflow: clip;
-    animation: yote-cs-in 140ms var(--yote-ease-out) both;
+    animation: yote-pop-in 140ms var(--yote-ease-out) both;
   }
 
   /* Flipped above the field, so it grows from the field rather than towards
      it — the entrance direction has to follow the placement or it reads
      backwards. */
-  .yote-cs-panel[data-side='top'] {
-    animation-name: yote-cs-in-up;
+  .yote-pop-panel[data-side='top'] {
+    animation-name: yote-pop-in-up;
   }
 
-  @keyframes yote-cs-in {
+  @keyframes yote-pop-in {
     from {
       opacity: 0;
       transform: translateY(-4px) scale(0.99);
@@ -1292,7 +1453,7 @@
     }
   }
 
-  @keyframes yote-cs-in-up {
+  @keyframes yote-pop-in-up {
     from {
       opacity: 0;
       transform: translateY(4px) scale(0.99);
@@ -1303,7 +1464,7 @@
     }
   }
 
-  .yote-cs-search {
+  .yote-pop-search {
     display: flex;
     align-items: center;
     gap: 14px;
@@ -1319,7 +1480,7 @@
     color: var(--yote-text-soft);
   }
 
-  .yote-cs-search-input {
+  .yote-pop-search-input {
     flex: 1 1 0;
     min-width: 0;
     margin: 0;
@@ -1334,7 +1495,7 @@
     color: var(--yote-text-strong);
   }
 
-  .yote-cs-search-input::placeholder {
+  .yote-pop-search-input::placeholder {
     color: var(--yote-text-soft);
     opacity: 1;
   }
@@ -1344,7 +1505,7 @@
    * options move under it. Custom scrollbar, since nothing on this site
    * shows a native one.
    */
-  .yote-cs-list {
+  .yote-pop-list {
     display: flex;
     flex: 1 1 auto;
     flex-direction: column;
@@ -1360,20 +1521,20 @@
     scrollbar-color: var(--yote-scroll-thumb) transparent;
   }
 
-  .yote-cs-list::-webkit-scrollbar {
+  .yote-pop-list::-webkit-scrollbar {
     width: 6px;
   }
 
-  .yote-cs-list::-webkit-scrollbar-track {
+  .yote-pop-list::-webkit-scrollbar-track {
     background: transparent;
   }
 
-  .yote-cs-list::-webkit-scrollbar-thumb {
+  .yote-pop-list::-webkit-scrollbar-thumb {
     border-radius: 999px;
     background: var(--yote-scroll-thumb);
   }
 
-  .yote-cs-item {
+  .yote-pop-item {
     display: flex;
     align-items: center;
     gap: 8px;
@@ -1390,34 +1551,34 @@
   }
 
   /* Pointer and keyboard share one highlight, so the two never disagree. */
-  .yote-cs-item[data-active] {
+  .yote-pop-item[data-active] {
     background: var(--yote-popover-active);
     color: var(--yote-text-strong);
   }
 
-  .yote-cs-item[data-selected] {
+  .yote-pop-item[data-selected] {
     color: var(--yote-text-strong);
   }
 
-  .yote-cs-flag {
+  .yote-country-flag {
     display: inline-flex;
     flex: none;
     font-size: 18px;
     line-height: 1;
   }
 
-  .yote-cs-dial {
+  .yote-country-dial {
     flex: 1 1 0;
     min-width: 0;
   }
 
-  .yote-cs-name {
+  .yote-country-name {
     flex: none;
     text-align: right;
     white-space: nowrap;
   }
 
-  .yote-cs-empty {
+  .yote-pop-empty {
     padding: 10px;
     font-size: 14px;
     line-height: 20px;
