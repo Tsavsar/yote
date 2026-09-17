@@ -1,6 +1,6 @@
 import { Reveal } from '../components/reveal'
 import { Install } from '../components/install'
-import { LAST_UPDATED } from '../components/site-meta'
+import { BUNDLE_KB, LAST_UPDATED } from '../components/site-meta'
 import { InputPreview } from '../components/input-preview'
 import { CardPreview } from '../components/card-preview'
 import { DatePreview } from '../components/date-preview'
@@ -30,6 +30,22 @@ export default function LandingPage() {
           <p className="lede">
             Every state designed, every transition tuned, every edge case handled. Install it and
             the field already feels right.
+          </p>
+          {/*
+           * The three things an engineer scans for before anything else.
+           * The size is measured from the built file at build time rather
+           * than typed, so it cannot quietly stop being true.
+           */}
+          <p className="hero-facts">
+            <span>Zero dependencies</span>
+            <span className="hero-facts-dot" aria-hidden="true">
+              ·
+            </span>
+            <span>{BUNDLE_KB}KB</span>
+            <span className="hero-facts-dot" aria-hidden="true">
+              ·
+            </span>
+            <span>TypeScript</span>
           </p>
         </section>
 

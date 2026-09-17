@@ -1,7 +1,9 @@
 # Yöte
 
 Form inputs for React. Styled and animated out of the box, with one prop
-vocabulary shared by every field. Zero dependencies.
+vocabulary shared by every field.
+
+**Zero dependencies · 24KB gzipped · TypeScript**
 
 From the Finnish *syöte*, input. Pronounced "yoat".
 
@@ -54,6 +56,16 @@ from outside without a prop:
 ```jsx
 <PinInput classNames={{ cell: 'data-[active]:ring-4 data-[filled]:bg-neutral-50' }} />
 ```
+
+## Stability
+
+1.0 means the prop contract is settled. Every field takes the same props,
+`onChange` gives the value, `ref` lands on the real input, and the state
+attributes are part of the API — those will not change under you in a 1.x.
+
+The scope is closed too, which is the other half of why this is 1.0 rather
+than a long 0.x: there is no roadmap of features waiting to reshape the API,
+because the things a field does are the things this does.
 
 ## Scope
 

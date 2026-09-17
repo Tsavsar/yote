@@ -1,6 +1,6 @@
 {
   "name": "yote-ui",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Form inputs, done properly. Styled and animated out of the box.",
   "license": "MIT",
   "type": "module",

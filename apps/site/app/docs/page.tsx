@@ -98,8 +98,8 @@ export function VerifyForm() {
         correct, that is the line.
       </p>
 
-      <h2 id="founder" className="docs-h2">
-        A message from the founder
+      <h2 id="note" className="docs-h2">
+        A note from the author
       </h2>
       <div className="founder">
         <p className="founder-text">

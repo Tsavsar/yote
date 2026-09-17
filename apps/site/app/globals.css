@@ -441,6 +441,21 @@
     letter-spacing: 0.3px;
   }
 
+  /* Facts, not a pitch: set at the hint's size and colour so they read as a
+     caption under the sentence rather than a third headline. */
+  .hero-facts {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 14px;
+    font-size: 13px;
+    color: var(--yote-text-soft);
+  }
+
+  .hero-facts-dot {
+    color: var(--yote-text-disabled);
+  }
+
   .lede {
     max-width: 508px;
     font-size: 14px;
