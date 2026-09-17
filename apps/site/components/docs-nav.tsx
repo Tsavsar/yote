@@ -20,6 +20,7 @@ const GROUPS = [
   {
     title: 'Components',
     links: [
+      { href: '/docs/input', label: 'Text input' },
       { href: '/docs/digit-input', label: 'Digit input' },
       { href: '/docs/textarea', label: 'Text area' },
       { href: '/docs/password', label: 'Password' },

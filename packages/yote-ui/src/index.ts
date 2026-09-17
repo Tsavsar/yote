@@ -1,3 +1,6 @@
+export { Input } from './input'
+export type { InputProps, InputPart } from './input'
+
 export { PinInput } from './pin-input'
 export type { PinInputProps, PinInputPart } from './pin-input'
 
@@ -10,3 +13,5 @@ export type { PasswordInputProps, PasswordInputPart, PasswordRequirement } from 
 
 export { PhoneInput, DEFAULT_PHONE_COUNTRIES } from './phone-input'
 export type { PhoneInputProps, PhoneInputPart, PhoneCountry } from './phone-input'
+
+export { UserIcon, SearchIcon, CloseIcon, ChevronDownIcon, InfoIcon } from './icons'

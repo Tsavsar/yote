@@ -300,8 +300,12 @@
    * inputs break clipboard paste, autocomplete="one-time-code", and the
    * iOS/Android keyboard suggestion that fills the code straight from the
    * SMS. Do not refactor this.
+   *
+   * Named for the pin input rather than `.yote-input`, which is the text
+   * field's root. The two collided: every Input on the page inherited
+   * `position: absolute; opacity: 0` and vanished.
    */
-  .yote-input {
+  .yote-pin-control {
     position: absolute;
     inset: 0;
     z-index: 1;
@@ -974,6 +978,144 @@
     overflow: hidden;
     clip-path: inset(50%);
     white-space: nowrap;
+  }
+
+  /* ---------------------------------------------------------------------
+   * Text input — Figma 6:508, with the affix variant from 6:2010
+   *
+   * One box with slots. `leading` and `trailing` take a 20px mark; `prefix`
+   * and `suffix` take text, which the frame gives more room (12px in from
+   * the edge, 14px to the value) because an affix is read as part of the
+   * value rather than as an ornament beside it.
+   *
+   * The frame draws one geometry, which is this library's sm. md and lg
+   * follow the password input's ramp so the sizes agree library-wide.
+   * ------------------------------------------------------------------- */
+
+  .yote-input {
+    --yote-input-pad-y: 8px;
+    --yote-input-pad-left: 8px;
+    --yote-input-pad-right: 8px;
+    --yote-input-gap: 8px;
+    --yote-input-radius: var(--yote-radius-sm);
+  }
+
+  .yote-input[data-size='md'] {
+    --yote-input-pad-y: 10px;
+    --yote-input-pad-left: 10px;
+    --yote-input-pad-right: 10px;
+    --yote-input-radius: var(--yote-radius-md);
+  }
+
+  .yote-input[data-size='lg'] {
+    --yote-input-pad-y: 12px;
+    --yote-input-pad-left: 12px;
+    --yote-input-pad-right: 12px;
+    --yote-input-radius: var(--yote-radius-md);
+  }
+
+  /* An affix pushes the start padding out by 4 and widens the gap to 14, the
+     frame's values at sm, applied as a rule rather than three numbers. */
+  .yote-input[data-affix] {
+    --yote-input-pad-left: 12px;
+    --yote-input-gap: 14px;
+  }
+
+  .yote-input[data-affix][data-size='md'] {
+    --yote-input-pad-left: 14px;
+  }
+
+  .yote-input[data-affix][data-size='lg'] {
+    --yote-input-pad-left: 16px;
+  }
+
+  .yote-input-field {
+    display: flex;
+    align-items: center;
+    gap: var(--yote-input-gap);
+    width: 100%;
+    padding: var(--yote-input-pad-y) var(--yote-input-pad-right) var(--yote-input-pad-y)
+      var(--yote-input-pad-left);
+    border: 1px solid var(--yote-stroke-soft);
+    border-radius: var(--yote-input-radius);
+    background: var(--yote-bg-default);
+    box-shadow: var(--yote-shadow-field);
+    overflow: clip;
+    transition:
+      border-color var(--yote-duration) ease,
+      background-color var(--yote-duration) ease,
+      box-shadow var(--yote-duration) ease;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .yote-input-field:hover {
+      background: var(--yote-bg-surface);
+      border-color: var(--yote-bg-layer);
+      box-shadow: var(--yote-shadow-field-hover);
+    }
+  }
+
+  .yote-input-field[data-focused] {
+    background: var(--yote-bg-default);
+    border-color: var(--yote-feature-base);
+    box-shadow: var(--yote-focus-active);
+  }
+
+  .yote-input-field[data-invalid] {
+    background: var(--yote-bg-default);
+    border-color: var(--yote-error-base);
+    box-shadow: var(--yote-focus-error);
+  }
+
+  .yote-input-field[data-disabled] {
+    background: var(--yote-bg-surface);
+    border-color: var(--yote-bg-surface);
+    box-shadow: none;
+  }
+
+  .yote-input-icon {
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    color: var(--yote-text-soft);
+  }
+
+  .yote-input-affix {
+    flex: none;
+    font-size: 14px;
+    line-height: 20px;
+    letter-spacing: 0.28px;
+    color: var(--yote-text-soft);
+    white-space: nowrap;
+    /* An affix is a label for the value, not a thing to select through. */
+    user-select: none;
+  }
+
+  .yote-input-control {
+    flex: 1 1 0;
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    outline: none;
+    background: transparent;
+    font: inherit;
+    font-size: 14px;
+    line-height: 20px;
+    letter-spacing: 0.28px;
+    color: var(--yote-text-strong);
+  }
+
+  .yote-input-control::placeholder {
+    color: var(--yote-text-soft);
+    /* Firefox dims placeholders to 54% on its own. */
+    opacity: 1;
+  }
+
+  .yote-input-control:disabled {
+    color: var(--yote-text-disabled);
+    -webkit-text-fill-color: var(--yote-text-disabled);
+    cursor: not-allowed;
   }
 
   /* ---------------------------------------------------------------------

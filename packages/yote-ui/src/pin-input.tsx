@@ -267,7 +267,7 @@ export const PinInput = React.forwardRef<HTMLInputElement, PinInputProps>(functi
           {...rest}
           ref={composedRef}
           id={id}
-          className="yote-input"
+          className="yote-pin-control"
           type="text"
           inputMode={inputModeProp ?? 'numeric'}
           // A masked PIN is not a one-time code; offering the SMS suggestion
