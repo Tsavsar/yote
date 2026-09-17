@@ -5,14 +5,15 @@
   "license": "MIT",
   "type": "module",
   "sideEffects": ["**/*.css"],
-  "files": ["dist", "NOTICE"],
+  "files": ["dist", "NOTICE", "LICENSE", "README.md"],
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js",
       "require": "./dist/index.cjs"
     },
-    "./styles.css": "./dist/styles.css"
+    "./styles.css": "./dist/styles.css",
+    "./package.json": "./package.json"
   },
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",

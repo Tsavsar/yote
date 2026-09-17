@@ -245,6 +245,27 @@
     color: var(--yote-text-strong);
   }
 
+  .wordmark-row {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  /*
+   * A fact about the library, so it is set quietly beside the name rather
+   * than badged. Tabular figures, so the box does not change width between
+   * 0.9.9 and 0.10.0.
+   */
+  .version {
+    padding: 1px 6px;
+    border-radius: 6px;
+    background: var(--yote-bg-surface);
+    font-size: 11px;
+    line-height: 16px;
+    font-variant-numeric: tabular-nums;
+    color: var(--yote-text-soft);
+  }
+
   .wordmark-mark {
     width: 21px;
     height: 16px;
@@ -1725,6 +1746,163 @@
     color: var(--yote-text-soft);
   }
 
+  /* ---- search ----------------------------------------------------------- */
+
+  /*
+   * The button exists to teach the shortcut, which is why it wears it. Nobody
+   * discovers Cmd-K by guessing.
+   */
+  .search-trigger {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    height: 30px;
+    padding: 0 8px 0 10px;
+    border: 1px solid var(--yote-stroke-soft);
+    border-radius: 8px;
+    background: var(--yote-bg-default);
+    color: var(--yote-text-soft);
+    cursor: pointer;
+    font: inherit;
+    font-size: 13px;
+    transition:
+      color var(--yote-duration) ease,
+      background-color var(--yote-duration) ease,
+      border-color var(--yote-duration) ease;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .search-trigger:hover {
+      color: var(--yote-text-strong);
+      background: var(--yote-bg-surface);
+      border-color: var(--yote-bg-layer);
+    }
+  }
+
+  .search-trigger-label {
+    flex: 1 1 auto;
+    text-align: left;
+  }
+
+  .search-trigger-kbd {
+    flex: none;
+    padding: 1px 5px;
+    border-radius: 5px;
+    background: var(--yote-bg-surface);
+    font: inherit;
+    font-size: 11px;
+    line-height: 16px;
+    color: var(--yote-text-soft);
+  }
+
+  .search-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 80;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 12vh 16px 16px;
+    background: rgba(0, 0, 0, 0.32);
+  }
+
+  /*
+   * No entrance animation. This is opened dozens of times an hour, and
+   * anything that has to play first makes the whole site feel slower.
+   */
+  .search-panel {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 520px;
+    max-height: min(420px, 70vh);
+    border: 1px solid var(--yote-popover-border);
+    border-radius: 16px;
+    background: var(--yote-popover-bg);
+    box-shadow: var(--yote-popover-shadow);
+    overflow: clip;
+  }
+
+  .search-field {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex: none;
+    padding: 14px 14px 12px;
+    border-bottom: 1px solid var(--yote-popover-border);
+    color: var(--yote-text-soft);
+  }
+
+  .search-input {
+    flex: 1 1 0;
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    outline: none;
+    background: transparent;
+    font: inherit;
+    font-size: 15px;
+    color: var(--yote-text-strong);
+  }
+
+  .search-input::placeholder {
+    color: var(--yote-text-soft);
+    opacity: 1;
+  }
+
+  .search-results {
+    flex: 1 1 auto;
+    min-height: 0;
+    margin: 0;
+    padding: 6px;
+    list-style: none;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--scroll-thumb) transparent;
+  }
+
+  .search-results::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .search-results::-webkit-scrollbar-thumb {
+    border-radius: 999px;
+    background: var(--scroll-thumb);
+  }
+
+  .search-result {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 9px 10px;
+    border-radius: 10px;
+    cursor: pointer;
+  }
+
+  /* Pointer and keyboard share one highlight, so the two never disagree. */
+  .search-result[data-active] {
+    background: var(--yote-popover-active);
+  }
+
+  .search-result-title {
+    font-size: 14px;
+    color: var(--yote-text-strong);
+  }
+
+  .search-result-page {
+    flex: none;
+    font-size: 12px;
+    color: var(--yote-text-soft);
+  }
+
+  .search-empty {
+    padding: 14px 10px;
+    font-size: 14px;
+    color: var(--yote-text-soft);
+  }
+
   /* ---- prev / next ----------------------------------------------------- */
 
   .docs-pager {
@@ -1885,27 +2063,186 @@
     }
   }
 
+  /* The Browse control only exists on a phone. */
+  .docs-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .docs-menu-toggle {
+    display: none;
+  }
+
   @media (max-width: 720px) {
     .docs-shell {
       grid-template-columns: minmax(0, 1fr);
+      gap: 0;
+      padding: 0 16px;
     }
 
-    /* The sidebar stops being a rail and becomes a header strip. */
+    /*
+     * The rail becomes a bar that stays with you. Sticky rather than static,
+     * because on a phone the sidebar is the only way back out of a page and
+     * scrolling to the top to find it is not navigation.
+     */
     .docs-sidebar {
-      position: static;
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      flex-direction: row;
+      flex-wrap: wrap;
+      align-items: center;
       height: auto;
-      padding-bottom: 8px;
+      max-height: none;
+      gap: 10px;
+      padding: 12px 0 10px;
+      background: var(--yote-bg-default);
       border-bottom: 1px solid var(--yote-stroke-soft);
+      overflow: visible;
+    }
+
+    /* Two rows, not four: the name and the two icon controls share the first,
+       search and Browse take the second. */
+    .docs-wordmark {
+      flex: 1 1 auto;
+    }
+
+    .docs-sidebar-foot {
+      flex: none;
+      order: 1;
+      gap: 2px;
+    }
+
+    .docs-bar {
+      flex: 1 1 100%;
+      order: 2;
     }
 
     .docs-groups {
-      flex-direction: row;
-      flex-wrap: wrap;
-      gap: 12px;
+      flex: 1 1 100%;
+      order: 3;
+    }
+
+    .docs-wordmark {
+      padding-left: 0;
+    }
+
+    .docs-bar .search-trigger {
+      flex: 1 1 auto;
+    }
+
+    .docs-menu-toggle {
+      display: inline-flex;
+      align-items: center;
+      flex: none;
+      height: 30px;
+      padding: 0 12px;
+      border: 1px solid var(--yote-stroke-soft);
+      border-radius: 8px;
+      background: var(--yote-bg-default);
+      color: var(--yote-text-strong);
+      cursor: pointer;
+      font: inherit;
+      font-size: 13px;
+    }
+
+    /* Twelve links and three headings is most of a phone screen, so the list
+       is behind Browse until it is asked for. */
+    .docs-groups {
+      display: none;
+      gap: 16px;
+      max-height: 60vh;
+      padding-bottom: 6px;
+      overflow-y: auto;
+    }
+
+    .docs-groups[data-open] {
+      display: flex;
     }
 
     .docs-content {
-      padding-top: 32px;
+      padding: 28px 0 72px;
+    }
+
+    .docs-title {
+      font-size: 26px;
+    }
+
+    .docs-pager {
+      margin-top: 40px;
+    }
+  }
+
+  @media (max-width: 560px) {
+    /*
+     * The nav has five things in it and 375px to put them in, so the words go
+     * and the marks stay. The search button keeps its magnifier; ⌘K is not a
+     * shortcut anybody is pressing on a phone anyway.
+     */
+    .nav {
+      padding: 40px 16px 0;
+      gap: 10px;
+    }
+
+    .nav-links {
+      gap: 4px;
+    }
+
+    .nav-link-label,
+    .search-trigger-label,
+    .search-trigger-kbd,
+    .star-count {
+      display: none;
+    }
+
+    .search-trigger {
+      padding: 0 8px;
+    }
+
+    .page {
+      padding: 36px 16px 72px;
+      gap: 36px;
+    }
+
+    .showcase {
+      margin-top: 44px;
+    }
+
+    .headline {
+      font-size: 26px;
+      line-height: 34px;
+    }
+
+    .footer {
+      padding: 0 16px 40px;
+    }
+
+    /* Two pill groups will not share one line at this width. */
+    .controls {
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .showcase-head {
+      gap: 10px;
+    }
+
+    .stage {
+      height: 260px;
+      padding: 16px;
+    }
+
+    .stage-tall {
+      height: 300px;
+    }
+
+    .stage-taller {
+      height: 380px;
+    }
+
+    .search-overlay {
+      padding: 8vh 12px 12px;
     }
   }
 

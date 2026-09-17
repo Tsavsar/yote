@@ -2,7 +2,9 @@
   "name": "site",
   "private": true,
   "scripts": {
+    "predev": "node scripts/build-search-index.mjs",
     "dev": "next dev -p 3210",
+    "prebuild": "node scripts/build-search-index.mjs",
     "build": "next build",
     "start": "next start",
     "typecheck": "tsc --noEmit"

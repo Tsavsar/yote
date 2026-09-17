@@ -1253,9 +1253,26 @@
    * them ahead of the caret, which reads as "these are the value".
    * ------------------------------------------------------------------- */
 
-  .yote-tag-row {
+  /*
+   * A real <ul>, so the tags are a list to anything reading the page rather
+   * than three chips that happen to sit next to each other.
+   *
+   * A flex container rather than `display: contents`, which several browsers
+   * have at some point stripped list semantics from — the exact semantics
+   * this element exists to provide.
+   */
+  .yote-tag-list {
     display: flex;
     flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .yote-tag-row {
     align-items: flex-start;
     gap: 8px;
     width: 100%;

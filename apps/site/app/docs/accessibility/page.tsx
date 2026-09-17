@@ -61,6 +61,89 @@ export default function AccessibilityPage() {
         <li>Focus rings are always visible on keyboard focus and never removed.</li>
       </ul>
 
+      <h2 id="dropdowns" className="docs-h2">
+        Dropdowns
+      </h2>
+      <p className="docs-p">
+        Three fields open a list: the country picker inside{' '}
+        <code className="inline-code">PhoneInput</code>,{' '}
+        <code className="inline-code">SelectInput</code>, and{' '}
+        <code className="inline-code">InlineSelect</code>. They share one implementation, so they
+        answer to the same keys and report themselves the same way.
+      </p>
+      <ul className="bullets">
+        <li>
+          The control is a <code className="inline-code">combobox</code> with{' '}
+          <code className="inline-code">aria-expanded</code>, and the panel is a{' '}
+          <code className="inline-code">listbox</code> whose rows are{' '}
+          <code className="inline-code">option</code>s carrying{' '}
+          <code className="inline-code">aria-selected</code>.
+        </li>
+        <li>
+          The highlighted row is tracked with{' '}
+          <code className="inline-code">aria-activedescendant</code> rather than by moving focus, so
+          the field keeps it and typing never breaks mid-filter.
+        </li>
+        <li>
+          Arrows move and wrap, Home and End jump, Enter chooses, Escape closes. With the panel
+          shut, Down and Enter open it, which are the two things people try first.
+        </li>
+        <li>
+          Pointer and keyboard share one highlight, so hovering and arrowing can never disagree
+          about what Enter will pick.
+        </li>
+        <li>
+          The panel renders to <code className="inline-code">document.body</code> and positions
+          against the viewport, so no ancestor&apos;s overflow can clip it out of reach.
+        </li>
+      </ul>
+
+      <h2 id="tags" className="docs-h2">
+        Tags
+      </h2>
+      <ul className="bullets">
+        <li>
+          The tags are a real <code className="inline-code">&lt;ul&gt;</code> of{' '}
+          <code className="inline-code">&lt;li&gt;</code>, named by{' '}
+          <code className="inline-code">listLabel</code>, so they are a list to a screen reader
+          rather than chips that happen to sit next to each other.
+        </li>
+        <li>
+          Adding or removing one is announced in its own polite region, with the new total. The
+          message row cannot carry that, because it is holding the hint.
+        </li>
+        <li>
+          Each remove button has a real name from <code className="inline-code">removeLabel</code>,
+          and it keeps focus in the field so removing three in a row does not mean clicking back in
+          each time.
+        </li>
+        <li>
+          Backspace on an empty field removes the last tag, guarded on the field being empty so it
+          never eats one while you are still typing.
+        </li>
+      </ul>
+
+      <h2 id="masked" className="docs-h2">
+        Masked fields
+      </h2>
+      <ul className="bullets">
+        <li>
+          <code className="inline-code">DateInput</code> and{' '}
+          <code className="inline-code">CardInput</code> are ordinary text inputs with{' '}
+          <code className="inline-code">inputMode=&quot;numeric&quot;</code>, not a row of
+          single-character boxes, so selection, paste and a screen reader&apos;s own caret review
+          all behave normally.
+        </li>
+        <li>
+          Punctuation is only ever appended behind a digit, never ahead of the caret, so backspace
+          never has to step over a character you did not type.
+        </li>
+        <li>
+          The card mark is decorative and hidden, and its slot is a fixed width, so recognising a
+          card changes no layout and announces nothing.
+        </li>
+      </ul>
+
       <h2 id="motion" className="docs-h2">
         Motion
       </h2>

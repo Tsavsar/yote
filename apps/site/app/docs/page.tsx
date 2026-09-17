@@ -106,7 +106,11 @@ export function VerifyForm() {
           <a className="docs-a" href="mailto:shatermt@gmail.com">
             shatermt@gmail.com
           </a>{' '}
-          or shoot me a DM on Twitter. Don&apos;t forget to give the project a{' '}
+          or shoot me a DM on{' '}
+          <a className="docs-a" href="https://x.com/tsavsar_">
+            Twitter
+          </a>
+          . Don&apos;t forget to give the project a{' '}
           <a className="docs-a" href="https://github.com/Tsavsar/yote">
             star on GitHub
           </a>

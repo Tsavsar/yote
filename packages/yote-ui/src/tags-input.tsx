@@ -56,6 +56,8 @@ export interface TagsInputProps
   optional?: boolean
   info?: string
   removeLabel?: (tag: string) => string
+  /** Accessible name for the list of tags. */
+  listLabel?: string
 }
 
 function cx(...parts: Array<string | false | null | undefined>): string | undefined {
@@ -104,6 +106,7 @@ export const TagsInput = React.forwardRef<HTMLInputElement, TagsInputProps>(func
     optional = false,
     info,
     removeLabel = (tag) => `Remove ${tag}`,
+    listLabel = 'Selected',
     id: idProp,
     placeholder = 'Add a tag',
     'aria-describedby': ariaDescribedByProp,
@@ -127,9 +130,21 @@ export const TagsInput = React.forwardRef<HTMLInputElement, TagsInputProps>(func
 
   const [focused, setFocused] = React.useState(false)
 
+  /*
+   * What just happened to the list, announced.
+   *
+   * Adding a tag is otherwise silent: the text leaves the field and a chip
+   * appears somewhere a screen reader is not looking. The message row cannot
+   * carry this, because it holds the hint and overwriting it would trade one
+   * piece of information for another. So this is its own polite region,
+   * visually hidden and empty until something changes.
+   */
+  const [announcement, setAnnouncement] = React.useState('')
+
   const reactId = React.useId()
   const id = idProp ?? `yote-${reactId}`
   const messageId = `${id}-message`
+  const listId = `${id}-tags`
 
   const isInvalid = invalid ?? Boolean(error)
   const showError = isInvalid && error != null && error !== false
@@ -156,10 +171,13 @@ export const TagsInput = React.forwardRef<HTMLInputElement, TagsInputProps>(func
     if (validate !== undefined && !validate(tag, tags)) return
     setTags([...tags, tag])
     setText('')
+    setAnnouncement(`${tag} added, ${tags.length + 1} total`)
   }
 
   const removeAt = (index: number) => {
+    const tag = tags[index]
     setTags(tags.filter((_, i) => i !== index))
+    if (tag !== undefined) setAnnouncement(`${tag} removed, ${tags.length - 1} total`)
   }
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
@@ -184,11 +202,7 @@ export const TagsInput = React.forwardRef<HTMLInputElement, TagsInputProps>(func
   const describedBy = cx(ariaDescribedByProp, message != null ? messageId : undefined)
 
   const tagList = tags.map((tag, index) => (
-    <span
-      key={tag}
-      className={cx('yote-tag', classNames?.tag)}
-      data-disabled={disabled || undefined}
-    >
+    <li key={tag} className={cx('yote-tag', classNames?.tag)} data-disabled={disabled || undefined}>
       <span className={cx('yote-tag-label', classNames?.tagLabel)}>{tag}</span>
       {readOnly ? null : (
         <button
@@ -204,7 +218,7 @@ export const TagsInput = React.forwardRef<HTMLInputElement, TagsInputProps>(func
           <CloseIcon />
         </button>
       )}
-    </span>
+    </li>
   ))
 
   return (
@@ -265,7 +279,11 @@ export const TagsInput = React.forwardRef<HTMLInputElement, TagsInputProps>(func
           </span>
         ) : null}
 
-        {tagsPosition === 'inside' ? tagList : null}
+        {tagsPosition === 'inside' && tags.length > 0 ? (
+          <ul id={listId} className={cx('yote-tag-list', classNames?.tags)} aria-label={listLabel}>
+            {tagList}
+          </ul>
+        ) : null}
 
         <input
           {...rest}
@@ -288,6 +306,8 @@ export const TagsInput = React.forwardRef<HTMLInputElement, TagsInputProps>(func
           aria-required={required || undefined}
           aria-invalid={isInvalid || undefined}
           aria-describedby={describedBy}
+          /* So the field reports how many are already in it before you type. */
+          aria-owns={tags.length > 0 ? listId : undefined}
           onFocus={(event) => {
             setFocused(true)
             onFocus?.(event)
@@ -300,8 +320,18 @@ export const TagsInput = React.forwardRef<HTMLInputElement, TagsInputProps>(func
       </div>
 
       {tagsPosition === 'outside' && tags.length > 0 ? (
-        <div className={cx('yote-tag-row', classNames?.tags)}>{tagList}</div>
+        <ul
+          id={listId}
+          className={cx('yote-tag-row', 'yote-tag-list', classNames?.tags)}
+          aria-label={listLabel}
+        >
+          {tagList}
+        </ul>
       ) : null}
+
+      <span className="yote-sr-only" aria-live="polite">
+        {announcement}
+      </span>
 
       <div
         id={messageId}
