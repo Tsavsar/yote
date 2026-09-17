@@ -71,6 +71,17 @@
     --yote-radius-lg: 16px;
     --yote-radius-xl: 24px;
     --yote-shadow-xs: 0 2px 4px -1px rgba(0, 0, 0, 0.02), 0 5px 13px -5px rgba(0, 0, 0, 0.05);
+    /*
+     * These two compose other tokens, which means they have to be repeated in
+     * every theme block — see the dark ones below.
+     *
+     * A custom property substitutes its var()s at the element where it is
+     * declared, not where it is used, and the finished string is what
+     * inherits. Declared only here, `html` baked it to white and pale pink,
+     * and a container that flips to dark inherited that: every field inside a
+     * dark preview on a light page wore a white ring in its error state,
+     * while --yote-bg-default at that same element was correctly #0c0c0c.
+     */
     --yote-focus-active: 0 0 0 2px var(--yote-bg-default), 0 0 0 4px var(--yote-purple-alpha-24);
     --yote-focus-error: 0 0 0 2px var(--yote-bg-default), 0 0 0 4px var(--yote-error-faint);
 
@@ -115,6 +126,9 @@
 
       --yote-error-base: #ff6170;
       --yote-error-faint: rgba(255, 97, 112, 0.22);
+      /* Composed from the tokens above, so restated here. See the light block. */
+      --yote-focus-active: 0 0 0 2px var(--yote-bg-default), 0 0 0 4px var(--yote-purple-alpha-24);
+      --yote-focus-error: 0 0 0 2px var(--yote-bg-default), 0 0 0 4px var(--yote-error-faint);
 
       --yote-shadow-xs: 0 2px 4px -1px rgba(0, 0, 0, 0.3), 0 5px 13px -5px rgba(0, 0, 0, 0.5);
 
@@ -153,6 +167,9 @@
 
     --yote-error-base: #ff6170;
     --yote-error-faint: rgba(255, 97, 112, 0.22);
+    /* Composed from the tokens above, so restated here. See the light block. */
+    --yote-focus-active: 0 0 0 2px var(--yote-bg-default), 0 0 0 4px var(--yote-purple-alpha-24);
+    --yote-focus-error: 0 0 0 2px var(--yote-bg-default), 0 0 0 4px var(--yote-error-faint);
 
     --yote-shadow-xs: 0 2px 4px -1px rgba(0, 0, 0, 0.3), 0 5px 13px -5px rgba(0, 0, 0, 0.5);
 
