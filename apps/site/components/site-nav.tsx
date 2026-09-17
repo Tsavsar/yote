@@ -16,7 +16,8 @@ export function SiteNav() {
         <Version />
       </div>
       <div className="nav-links">
-        <Search />
+        {/* No button here, but ⌘K still opens it. */}
+        <Search trigger={false} />
         <Link className="nav-link" href="/docs">
           Docs
         </Link>

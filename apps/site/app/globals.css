@@ -1751,32 +1751,41 @@
   /*
    * The button exists to teach the shortcut, which is why it wears it. Nobody
    * discovers Cmd-K by guessing.
+   *
+   * Full width and no stroke: it only appears in the docs sidebar now, where
+   * it is the head of the column rather than a control sitting in a row, and
+   * an outline there read as a fifth box on a page already full of them. The
+   * fill is what says it is pressable.
    */
   .search-trigger {
-    display: inline-flex;
+    display: flex;
     align-items: center;
     gap: 8px;
-    height: 30px;
+    width: 100%;
+    height: 32px;
     padding: 0 8px 0 10px;
-    border: 1px solid var(--yote-stroke-soft);
+    border: 0;
     border-radius: 8px;
-    background: var(--yote-bg-default);
+    background: var(--yote-bg-surface);
     color: var(--yote-text-soft);
     cursor: pointer;
     font: inherit;
     font-size: 13px;
     transition:
       color var(--yote-duration) ease,
-      background-color var(--yote-duration) ease,
-      border-color var(--yote-duration) ease;
+      background-color var(--yote-duration) ease;
   }
 
   @media (hover: hover) and (pointer: fine) {
     .search-trigger:hover {
       color: var(--yote-text-strong);
-      background: var(--yote-bg-surface);
-      border-color: var(--yote-bg-layer);
+      background: var(--yote-bg-layer);
     }
+  }
+
+  .search-trigger:focus-visible {
+    outline: 2px solid var(--yote-text-strong);
+    outline-offset: 2px;
   }
 
   .search-trigger-label {
@@ -2190,14 +2199,13 @@
     }
 
     .nav-link-label,
-    .search-trigger-label,
-    .search-trigger-kbd,
     .star-count {
       display: none;
     }
 
-    .search-trigger {
-      padding: 0 8px;
+    /* Nobody is pressing ⌘K on a phone. */
+    .search-trigger-kbd {
+      display: none;
     }
 
     .page {

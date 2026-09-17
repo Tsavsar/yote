@@ -24,16 +24,32 @@ function score(entry: SearchEntry, words: string[]): number {
   const text = entry.text.toLowerCase()
 
   let total = 0
+  let named = false
   for (const word of words) {
-    if (title.startsWith(word)) total += 100
-    else if (title.includes(word)) total += 60
-    else if (section.startsWith(word)) total += 50
-    else if (section.includes(word)) total += 30
-    else if (text.includes(word)) total += 10
+    if (title.startsWith(word)) {
+      total += 100
+      named = true
+    } else if (title.includes(word)) {
+      total += 60
+      named = true
+    } else if (section.startsWith(word)) {
+      total += 50
+      named = true
+    } else if (section.includes(word)) {
+      total += 30
+      named = true
+    } else if (text.includes(word)) total += 10
     else return 0
   }
-  /* A page beats one of its own sections when both match equally. */
-  return entry.section === null ? total + 5 : total
+
+  /*
+   * Which of a page and its own sections wins depends on where the match
+   * was. "tags" names the page, so the page comes first. "backspace" is
+   * buried in the body of three of them, and the section that talks about it
+   * is a better answer than the page that mentions it.
+   */
+  if (named) return entry.section === null ? total + 5 : total
+  return entry.section === null ? total : total + 3
 }
 
 function useResults(query: string): SearchEntry[] {
@@ -53,15 +69,20 @@ function useResults(query: string): SearchEntry[] {
 /**
  * The search palette.
  *
- * Opened with ⌘K anywhere, or by the button in the nav — the shortcut is the
- * one people reach for and the button is how they learn it exists, which is
- * why the button wears the shortcut on its face.
+ * Opened with ⌘K anywhere, or by the button — the shortcut is the one people
+ * reach for and the button is how they learn it exists, which is why the
+ * button wears the shortcut on its face.
+ *
+ * `trigger={false}` mounts the shortcut and the palette without the button.
+ * The landing page uses that: it is a page you read rather than search, its
+ * nav is already five things wide, and the shortcut still works for anyone
+ * who learned it in the docs.
  *
  * No open or close animation. This is a thing you hit dozens of times an
  * hour; anything that has to play first makes the whole site feel slower, and
  * Raycast is right about that.
  */
-export function Search() {
+export function Search({ trigger = true }: { trigger?: boolean }) {
   const router = useRouter()
   const [open, setOpen] = React.useState(false)
   const [query, setQuery] = React.useState('')
@@ -139,13 +160,15 @@ export function Search() {
 
   return (
     <>
-      <button type="button" className="search-trigger" onClick={() => setOpen(true)}>
-        <SearchIcon size={15} />
-        <span className="search-trigger-label">Search</span>
-        <kbd className="search-trigger-kbd" aria-hidden="true">
-          ⌘K
-        </kbd>
-      </button>
+      {trigger ? (
+        <button type="button" className="search-trigger" onClick={() => setOpen(true)}>
+          <SearchIcon size={15} />
+          <span className="search-trigger-label">Search</span>
+          <kbd className="search-trigger-kbd" aria-hidden="true">
+            ⌘K
+          </kbd>
+        </button>
+      ) : null}
 
       {/*
        * Portalled to the body. The trigger lives in the docs sidebar, which is

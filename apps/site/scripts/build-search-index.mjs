@@ -1,10 +1,19 @@
 /**
  * Builds the search index from the docs pages themselves.
  *
- * Reading the headings out of the source rather than maintaining a list by
+ * Reading the content out of the source rather than maintaining a list by
  * hand, for the same reason the sidebar and the pager share one table: an
- * index that is written separately from the pages is an index that goes
- * wrong, quietly, the first time somebody adds a section.
+ * index written separately from the pages is an index that goes wrong,
+ * quietly, the first time somebody adds a section.
+ *
+ * It indexes everything on a page, not just the headings — prose, bullet
+ * lists, table rows, prop names and the code samples. Searching "visa" has to
+ * find the card page even though no heading says visa.
+ *
+ * Body text is stored as a deduplicated bag of words rather than the prose
+ * itself. The matcher only ever asks "does this contain that", so the
+ * sentences are dead weight on every page load, and one copy of "validation"
+ * answers as well as nine.
  *
  * Runs as `prebuild` and `predev`, so it cannot be stale in either.
  */
@@ -15,7 +24,32 @@ import { fileURLToPath } from 'node:url'
 const root = join(dirname(fileURLToPath(import.meta.url)), '..')
 const docsDir = join(root, 'app', 'docs')
 
-/** Strips JSX out of heading text: entities, elements, expressions. */
+/** Words that are in every page and so rank nothing. */
+const STOP = new Set(
+  `a an and are as at be been but by can for from has have if in into is it its of on or so than
+   that the their them then there these they this to too was were what when which while who why
+   with you your it's not no do does`.split(/\s+/),
+)
+
+/** Strips JSX and JS syntax down to the words a reader would see. */
+function words(source) {
+  return source
+    .replace(/^import .*$/gm, '')
+    .replace(/className=(".*?"|\{.*?\})/gs, ' ')
+    .replace(/(href|id|filename|key|rows|head)=(".*?"|\{.*?\})/gs, ' ')
+    .replace(/&apos;|&quot;|&ldquo;|&rdquo;|&amp;|&times;/g, ' ')
+    .replace(/<[^>]*>/g, ' ')
+    .replace(/[^A-Za-z0-9-]+/g, ' ')
+    .toLowerCase()
+    .split(/\s+/)
+    .filter((word) => word.length > 1 && word.length < 32 && !STOP.has(word))
+}
+
+function unique(list) {
+  return [...new Set(list)].sort().join(' ')
+}
+
+/** Heading text, with the JSX taken out. */
 function plain(text) {
   return text
     .replace(/\{'\s*'\}/g, ' ')
@@ -42,14 +76,25 @@ async function pageFiles(dir, prefix = '/docs') {
 const entries = []
 for (const { href, path } of await pageFiles(docsDir)) {
   const src = await readFile(path, 'utf8')
-
   const title = plain(src.match(/className="docs-title">([\s\S]*?)<\/h1>/)?.[1] ?? href)
-  const lede = plain(src.match(/className="docs-lede">([\s\S]*?)<\/p>/)?.[1] ?? '')
-  entries.push({ href, title, section: null, text: lede })
 
-  for (const m of src.matchAll(/id="([^"]+)" className="docs-h2">([\s\S]*?)<\/h2>/g)) {
-    entries.push({ href: `${href}#${m[1]}`, title, section: plain(m[2]), text: '' })
-  }
+  /* The page entry carries every word on it, including the data declared
+     above the JSX — the props tables and the brand table live there. */
+  entries.push({ href, title, section: null, text: unique(words(src)) })
+
+  /* Then one per section, holding only what falls under that heading, so a
+     hit can land on the part of the page that answers it. */
+  const headings = [...src.matchAll(/id="([^"]+)" className="docs-h2">([\s\S]*?)<\/h2>/g)]
+  headings.forEach((match, i) => {
+    const start = match.index + match[0].length
+    const end = i + 1 < headings.length ? headings[i + 1].index : src.length
+    entries.push({
+      href: `${href}#${match[1]}`,
+      title,
+      section: plain(match[2]),
+      text: unique(words(src.slice(start, end))),
+    })
+  })
 }
 
 /* Stable order, so the file only changes when the docs do. */
@@ -60,10 +105,13 @@ export interface SearchEntry {
   href: string
   title: string
   section: string | null
+  /** Deduplicated words from that page or section, for matching only. */
   text: string
 }
 
-export const SEARCH_INDEX: SearchEntry[] = ${JSON.stringify(entries, null, 2)}
+export const SEARCH_INDEX: SearchEntry[] = ${JSON.stringify(entries)}
 `
 await writeFile(join(root, 'components', 'search-index.ts'), file)
-console.log(`search index: ${entries.length} entries`)
+console.log(
+  `search index: ${entries.length} entries, ${(Buffer.byteLength(file) / 1024).toFixed(1)}KB`,
+)
