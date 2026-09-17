@@ -3,6 +3,9 @@ import { CodeBlock } from '../../components/code-block'
 import { DOCS_COMPONENTS } from '../../components/docs-routes'
 import { Install } from '../../components/install'
 import { Signature } from '../../components/signature'
+import { docsMetadata } from './metadata'
+
+export const metadata = docsMetadata('/docs')
 
 export default function GettingStartedPage() {
   return (

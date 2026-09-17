@@ -15,7 +15,13 @@ export interface DocsLink {
 export const DOCS_GROUPS: { title: string; links: DocsLink[] }[] = [
   {
     title: 'Basics',
-    links: [{ href: '/docs', label: 'Getting started' }],
+    links: [
+      {
+        href: '/docs',
+        label: 'Getting started',
+        blurb: 'install it, import the stylesheet, render a field. Nothing else to wire up.',
+      },
+    ],
   },
   {
     title: 'Components',
@@ -70,8 +76,16 @@ export const DOCS_GROUPS: { title: string; links: DocsLink[] }[] = [
   {
     title: 'Guides',
     links: [
-      { href: '/docs/styling', label: 'Styling' },
-      { href: '/docs/accessibility', label: 'Accessibility' },
+      {
+        href: '/docs/styling',
+        label: 'Styling',
+        blurb: 'cascade layers, the Tailwind order that matters, tokens and per-part class names.',
+      },
+      {
+        href: '/docs/accessibility',
+        label: 'Accessibility',
+        blurb: 'what every field does without being asked. None of it is opt-in.',
+      },
     ],
   },
 ]

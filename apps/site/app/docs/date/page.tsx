@@ -1,6 +1,7 @@
 import { CodeBlock } from '../../../components/code-block'
 import { DatePreview } from '../../../components/date-preview'
 import { PropsTable, SHARED_PROPS } from '../../../components/props-table'
+import { docsMetadata } from '../metadata'
 
 const OWN_PROPS = [
   ['pattern', 'string', "'00/00/0000'", '`0` is a digit slot; everything else is typed for you.'],
@@ -11,6 +12,8 @@ const OWN_PROPS = [
   ['optional', 'boolean', 'false', 'Renders the muted "(Optional)" note.'],
   ['info', 'string', '—', 'Info marker beside the label, with this as its tooltip.'],
 ]
+
+export const metadata = docsMetadata('/docs/date')
 
 export default function DateDocsPage() {
   return (

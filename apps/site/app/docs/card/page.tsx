@@ -2,6 +2,7 @@ import { AmexMark, DiscoverMark, MastercardMark, VisaMark } from 'yote-ui'
 import { CardPreview } from '../../../components/card-preview'
 import { CodeBlock } from '../../../components/code-block'
 import { PropsTable, SHARED_PROPS } from '../../../components/props-table'
+import { docsMetadata } from '../metadata'
 
 const OWN_PROPS = [
   ['brand', 'ReactNode', 'the detected mark', 'Overrides the mark at the start of the field.'],
@@ -18,6 +19,8 @@ const BRANDS: { value: string; starts: string; groups: string; mark: React.React
   { value: 'discover', starts: '6011, 65', groups: '4-4-4-4', mark: <DiscoverMark /> },
   { value: 'unknown', starts: 'anything else', groups: '4-4-4-4', mark: null },
 ]
+
+export const metadata = docsMetadata('/docs/card')
 
 export default function CardDocsPage() {
   return (

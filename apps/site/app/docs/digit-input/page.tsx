@@ -1,6 +1,7 @@
 import { CodeBlock } from '../../../components/code-block'
 import { Preview } from '../../../components/preview'
 import { PropsTable, SHARED_PROPS } from '../../../components/props-table'
+import { docsMetadata } from '../metadata'
 
 const OWN_PROPS = [
   ['length', 'number', '4', 'Cell count. Also sets maxLength.'],
@@ -15,6 +16,8 @@ const STATE_ATTRS = [
   ['data-disabled', 'root and cells', 'Disabled.'],
   ['data-focused', 'root', 'The field has focus.'],
 ]
+
+export const metadata = docsMetadata('/docs/digit-input')
 
 export default function DigitInputPage() {
   return (

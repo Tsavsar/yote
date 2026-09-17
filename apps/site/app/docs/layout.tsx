@@ -4,8 +4,12 @@ import { DocsPager } from '../../components/docs-pager'
 import { GithubLink } from '../../components/github-link'
 import { OnThisPage } from '../../components/on-this-page'
 
+/*
+ * No title here. A layout title wins over the pages beneath it, which is how
+ * all thirteen docs routes came to share one. Each page sets its own now, and
+ * the root template wraps it.
+ */
 export const metadata: Metadata = {
-  title: 'Yöte Docs',
   description: 'Documentation for Yöte, form inputs for React.',
 }
 

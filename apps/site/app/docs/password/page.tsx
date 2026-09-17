@@ -1,6 +1,7 @@
 import { CodeBlock } from '../../../components/code-block'
 import { PasswordPreview } from '../../../components/password-preview'
 import { PropsTable, SHARED_PROPS } from '../../../components/props-table'
+import { docsMetadata } from '../metadata'
 
 const OWN_PROPS = [
   [
@@ -23,6 +24,8 @@ const STRENGTH = [
   ['strong', 'Green', 'Every rule passes.'],
   ['invalid', 'Red', 'The consumer says the entry is wrong. Colours the whole bar.'],
 ]
+
+export const metadata = docsMetadata('/docs/password')
 
 export default function PasswordDocsPage() {
   return (

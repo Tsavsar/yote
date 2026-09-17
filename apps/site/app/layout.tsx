@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { SITE_DESCRIPTION, SITE_NAME, SITE_TAGLINE, SITE_URL } from '../lib/site'
 import { IBM_Plex_Mono } from 'next/font/google'
 // globals.css first, and the order is not cosmetic. It opens with the
 // `@layer` statement that fixes the cascade order, and a layer's position is
@@ -26,8 +27,27 @@ const plexMono = IBM_Plex_Mono({
 })
 
 export const metadata: Metadata = {
-  title: 'Yöte',
-  description: 'Input components for React.',
+  metadataBase: SITE_URL,
+  /*
+   * `default` is what the landing page gets; `template` wraps every page that
+   * sets its own. A middle dot rather than a dash, and the name second, so a
+   * tab strip of open docs pages reads as the page you are on.
+   */
+  title: { default: `${SITE_NAME}, ${SITE_TAGLINE.toLowerCase()}`, template: `%s · ${SITE_NAME}` },
+  description: SITE_DESCRIPTION,
+  applicationName: SITE_NAME,
+  alternates: { canonical: '/' },
+  openGraph: {
+    type: 'website',
+    siteName: SITE_NAME,
+    url: '/',
+    title: SITE_NAME,
+    description: SITE_DESCRIPTION,
+  },
+  twitter: { card: 'summary_large_image', creator: '@tsavsar_' },
+  /* The site is light by default and says so, rather than letting a browser
+     guess a dark form control onto a light page. */
+  other: { 'color-scheme': 'light dark' },
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

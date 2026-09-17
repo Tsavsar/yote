@@ -1,6 +1,7 @@
 import { CodeBlock } from '../../../components/code-block'
 import { PropsTable, SHARED_PROPS } from '../../../components/props-table'
 import { TagsPreview } from '../../../components/tags-preview'
+import { docsMetadata } from '../metadata'
 
 const OWN_PROPS = [
   ['value', 'string[]', '—', 'The tags, controlled. `onChange` gives the next array.'],
@@ -27,6 +28,8 @@ const PLACEMENTS = [
     'Reads as "these are the value". The field grows a line at a time.',
   ],
 ]
+
+export const metadata = docsMetadata('/docs/tags')
 
 export default function TagsDocsPage() {
   return (

@@ -1,6 +1,7 @@
 import { CodeBlock } from '../../../components/code-block'
 import { PropsTable, SHARED_PROPS } from '../../../components/props-table'
 import { TextareaPreview } from '../../../components/textarea-preview'
+import { docsMetadata } from '../metadata'
 
 const OWN_PROPS = [
   ['required', 'boolean', 'false', 'Renders the asterisk and sets aria-required.'],
@@ -24,6 +25,8 @@ const VARS = [
   ['--yote-ta-pad-left', 'Left padding.'],
   ['--yote-ta-pad-right', 'Right padding. Tighter than the left, to sit the handle near the edge.'],
 ]
+
+export const metadata = docsMetadata('/docs/textarea')
 
 export default function TextareaPage() {
   return (

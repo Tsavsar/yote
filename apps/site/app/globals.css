@@ -1746,6 +1746,19 @@
     color: var(--yote-text-soft);
   }
 
+  /* A key cap in prose, matching the one in the date field. */
+  .kbd {
+    display: inline-flex;
+    align-items: center;
+    padding: 1px 6px;
+    border: 1px solid var(--yote-stroke-soft);
+    border-radius: 6px;
+    background: var(--yote-bg-surface);
+    font: inherit;
+    font-size: 12px;
+    color: var(--yote-text-sub);
+  }
+
   /* ---- search ----------------------------------------------------------- */
 
   /*

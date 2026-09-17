@@ -1,6 +1,7 @@
 import { CodeBlock } from '../../../components/code-block'
 import { PropsTable, SHARED_PROPS } from '../../../components/props-table'
 import { SelectPreview } from '../../../components/select-preview'
+import { docsMetadata } from '../metadata'
 
 const OWN_PROPS = [
   [
@@ -23,6 +24,8 @@ const INLINE_PROPS = [
   ['onChange', '(value: string) => void', '—', 'Fires on selection.'],
   ['aria-label', 'string', '—', 'Required: it has no visible label of its own.'],
 ]
+
+export const metadata = docsMetadata('/docs/select')
 
 export default function SelectDocsPage() {
   return (

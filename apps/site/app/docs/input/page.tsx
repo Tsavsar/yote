@@ -1,6 +1,7 @@
 import { CodeBlock } from '../../../components/code-block'
 import { InputPreview } from '../../../components/input-preview'
 import { PropsTable, SHARED_PROPS } from '../../../components/props-table'
+import { docsMetadata } from '../metadata'
 
 const OWN_PROPS = [
   ['leading', 'ReactNode', '—', 'A mark at the start of the field. 20px in the frame.'],
@@ -17,6 +18,8 @@ const SIZES = [
   ['md', '12px', '10px', 'The default.'],
   ['lg', '12px', '12px', ''],
 ]
+
+export const metadata = docsMetadata('/docs/input')
 
 export default function InputDocsPage() {
   return (

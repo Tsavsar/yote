@@ -1,6 +1,7 @@
 import { CodeBlock } from '../../../components/code-block'
 import { PhonePreview } from '../../../components/phone-preview'
 import { PropsTable, SHARED_PROPS } from '../../../components/props-table'
+import { docsMetadata } from '../metadata'
 
 const OWN_PROPS = [
   ['countries', 'PhoneCountry[]', 'eight common ones', 'The selectable dialling countries.'],
@@ -17,6 +18,8 @@ const SIZES = [
   ['md', '12px', '14px / 8px', 'Figma 26:9410. The default.'],
   ['lg', '12px', '16px / 8px', 'Figma 26:9411.'],
 ]
+
+export const metadata = docsMetadata('/docs/phone')
 
 export default function PhoneDocsPage() {
   return (

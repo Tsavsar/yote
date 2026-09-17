@@ -1,4 +1,7 @@
 import { CodeBlock } from '../../../components/code-block'
+import { docsMetadata } from '../metadata'
+
+export const metadata = docsMetadata('/docs/styling')
 
 export default function StylingPage() {
   return (

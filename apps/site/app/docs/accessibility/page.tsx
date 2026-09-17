@@ -1,3 +1,7 @@
+import { docsMetadata } from '../metadata'
+
+export const metadata = docsMetadata('/docs/accessibility')
+
 export default function AccessibilityPage() {
   return (
     <>
