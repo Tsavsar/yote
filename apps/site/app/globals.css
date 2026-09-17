@@ -2149,21 +2149,25 @@
     }
 
     /*
-     * The rail becomes a bar that stays with you. Sticky rather than static,
-     * because on a phone the sidebar is the only way back out of a page and
-     * scrolling to the top to find it is not navigation.
+     * The rail becomes a bar, and it scrolls away like the landing page's nav
+     * rather than sticking. Two reasons: the two pages should start at the
+     * same place and behave the same way, and a sticky header costs a phone
+     * 100px of an 812px viewport on every page. Getting back out is still
+     * one gesture — Browse at the top, the pager at the foot, ⌘K anywhere.
+     *
+     * 36px, not 40: this row is 38px tall against the landing nav's 30px, so
+     * the wordmark centres 4px lower. The number that matters is where the
+     * wordmark lands, and that is 44px on both.
      */
     .docs-sidebar {
-      position: sticky;
-      top: 0;
-      z-index: 20;
+      position: static;
       flex-direction: row;
       flex-wrap: wrap;
       align-items: center;
       height: auto;
       max-height: none;
-      gap: 10px;
-      padding: 12px 0 10px;
+      gap: 12px;
+      padding: 36px 0 14px;
       background: var(--yote-bg-default);
       border-bottom: 1px solid var(--yote-stroke-soft);
       overflow: visible;
@@ -2175,10 +2179,12 @@
       flex: 1 1 auto;
     }
 
+    /* The two marks need air between them at this size; 2px read as one
+       control with a seam in it. */
     .docs-sidebar-foot {
       flex: none;
       order: 1;
-      gap: 2px;
+      gap: 10px;
     }
 
     .docs-bar {
@@ -2252,8 +2258,10 @@
       gap: 10px;
     }
 
+    /* Docs, the mark and the toggle are three separate things. At 4px they
+       read as one cluster, and the icons are already unlabelled here. */
     .nav-links {
-      gap: 4px;
+      gap: 14px;
     }
 
     .nav-link-label,
