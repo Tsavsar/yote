@@ -1129,6 +1129,41 @@
     cursor: not-allowed;
   }
 
+  /* ---- date and card fields, Figma 6:734 and 6:3156 -------------------- */
+
+  /* The keyboard hint at the end of a date field (Figma 6:562). */
+  .yote-kbd {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: none;
+    gap: 1px;
+    padding: 2px 6px;
+    border: 1px solid var(--yote-stroke-soft);
+    border-radius: var(--yote-radius-sm);
+    background: var(--yote-bg-default);
+    font: inherit;
+    font-size: 12px;
+    line-height: 16px;
+    letter-spacing: 0.24px;
+    color: var(--yote-text-sub);
+    white-space: nowrap;
+  }
+
+  /*
+   * The brand plate is white in the frame and stays white in dark mode: a
+   * card network's mark is its own artwork and recolouring it is not ours to
+   * do. The hairline keeps it from floating on a light field.
+   */
+  .yote-card-brand {
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    border-radius: 4px;
+    box-shadow: inset 0 0 0 0.5px var(--yote-flag-ring);
+    overflow: hidden;
+  }
+
   /* ---- inline selector, Figma 6:3434 ---------------------------------- */
 
   /*

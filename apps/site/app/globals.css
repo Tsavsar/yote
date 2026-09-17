@@ -191,6 +191,14 @@
     color: #ffffff;
   }
 
+  /* Jumping from the contents rail should travel, so you see which way the
+     page moved. Honoured only where the reader has not asked for less. */
+  @media (prefers-reduced-motion: no-preference) {
+    html {
+      scroll-behavior: smooth;
+    }
+  }
+
   html {
     scrollbar-gutter: stable;
     scrollbar-width: thin;
@@ -410,15 +418,6 @@
     line-height: 38px;
     font-weight: 400;
     letter-spacing: 0.3px;
-  }
-
-  /*
-   * The live field under the pitch. Left-aligned with the column rather than
-   * centred: it is a sample of the product, not a poster of it, and centring
-   * would make it an illustration.
-   */
-  .hero-demo {
-    margin-top: 6px;
   }
 
   .lede {
@@ -1544,6 +1543,12 @@
     padding: 56px 0 120px;
   }
 
+  /* A jump from the contents rail lands with air above the heading rather
+     than flush against the viewport edge. */
+  .docs-h2 {
+    scroll-margin-top: 32px;
+  }
+
   .docs-title {
     font-size: 30px;
     font-weight: 500;
@@ -1605,19 +1610,68 @@
 
   /* ---- contents rail -------------------------------------------------- */
 
+  /*
+   * A sticky rail taller than the viewport hides its own bottom entries, and
+   * there is no way to reach them: the page scroll moves the content, not
+   * the rail. It scrolls itself instead, with the same thin bar everything
+   * else here uses.
+   */
   .docs-toc {
     position: sticky;
-    top: 56px;
+    top: 0;
     display: flex;
     flex-direction: column;
     gap: 2px;
-    padding: 56px 0;
+    max-height: 100vh;
+    padding: 56px 0 24px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--scroll-thumb) transparent;
+  }
+
+  .docs-toc::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .docs-toc::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .docs-toc::-webkit-scrollbar-thumb {
+    border-radius: 999px;
+    background: var(--scroll-thumb);
   }
 
   .docs-toc-title {
     padding-bottom: 8px;
     font-size: 12px;
     color: var(--yote-text-soft);
+  }
+
+  .docs-toc-list {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  /* One element that travels the rail, rather than a border lighting up on
+     whichever entry is active. */
+  .docs-toc-marker {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 1px;
+    background: var(--yote-text-strong);
+    transition:
+      transform 280ms var(--yote-ease-out),
+      height 280ms var(--yote-ease-out);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .docs-toc-marker {
+      transition: none;
+    }
   }
 
   .docs-toc-link {
@@ -1627,14 +1681,94 @@
     border-left: 1px solid var(--yote-stroke-soft);
     font-size: 13px;
     color: var(--yote-text-soft);
-    transition:
-      color var(--yote-duration) ease,
-      border-color var(--yote-duration) ease;
+    transition: color var(--yote-duration) ease;
   }
 
   .docs-toc-link[data-active] {
     color: var(--yote-text-strong);
-    border-left-color: var(--yote-text-strong);
+  }
+
+  /* ---- prev / next ----------------------------------------------------- */
+
+  .docs-pager {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-top: 64px;
+    padding-top: 28px;
+    border-top: 1px solid var(--yote-stroke-soft);
+  }
+
+  .docs-pager-link {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 14px;
+    border: 1px solid var(--yote-stroke-soft);
+    border-radius: 12px;
+    color: var(--yote-text-soft);
+    text-decoration: none;
+    transition:
+      color var(--yote-duration) ease,
+      background-color var(--yote-duration) ease,
+      border-color var(--yote-duration) ease,
+      transform 140ms var(--yote-ease-out);
+  }
+
+  /* Next sits on the right and reads right-aligned, so the two point outward
+     from the page rather than both leaning left. */
+  .docs-pager-link[data-side='next'] {
+    grid-column: 2;
+    justify-content: flex-end;
+    text-align: right;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .docs-pager-link:hover {
+      color: var(--yote-text-strong);
+      background: var(--yote-bg-surface);
+      border-color: var(--yote-bg-layer);
+    }
+  }
+
+  .docs-pager-link:active {
+    transform: scale(0.99);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .docs-pager-link:active {
+      transform: none;
+    }
+  }
+
+  .docs-pager-text {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+  }
+
+  .docs-pager-kicker {
+    font-size: 12px;
+    line-height: 16px;
+    color: var(--yote-text-soft);
+  }
+
+  .docs-pager-label {
+    font-size: 14px;
+    line-height: 20px;
+    letter-spacing: 0.28px;
+    color: var(--yote-text-strong);
+  }
+
+  @media (max-width: 560px) {
+    .docs-pager {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .docs-pager-link[data-side='next'] {
+      grid-column: 1;
+    }
   }
 
   /* ---- docs tables ---------------------------------------------------- */

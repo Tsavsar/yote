@@ -1,6 +1,12 @@
 export { Input } from './input'
 export type { InputProps, InputPart } from './input'
 
+export { DateInput } from './date-input'
+export type { DateInputProps, DateInputPart } from './date-input'
+
+export { CardInput, cardBrandOf } from './card-input'
+export type { CardInputProps, CardInputPart, CardBrand } from './card-input'
+
 export { SelectInput } from './select-input'
 export type { SelectInputProps, SelectInputPart, SelectOption } from './select-input'
 
@@ -23,4 +29,13 @@ export type { PasswordInputProps, PasswordInputPart, PasswordRequirement } from 
 export { PhoneInput, DEFAULT_PHONE_COUNTRIES } from './phone-input'
 export type { PhoneInputProps, PhoneInputPart, PhoneCountry } from './phone-input'
 
-export { UserIcon, SearchIcon, CloseIcon, ChevronDownIcon, InfoIcon } from './icons'
+export {
+  UserIcon,
+  SearchIcon,
+  CloseIcon,
+  ChevronDownIcon,
+  InfoIcon,
+  CalendarIcon,
+  CardIcon,
+  MastercardMark,
+} from './icons'

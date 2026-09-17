@@ -297,3 +297,85 @@ export function CloseIcon({ size = 14 }: { size?: number }) {
     </svg>
   )
 }
+
+/** The calendar, from the date field's export (Figma 6:560, 20px). */
+export function CalendarIcon({ size = 20 }: { size?: number }) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 20 20"
+      fill="none"
+      aria-hidden="true"
+      focusable="false"
+    >
+      <path
+        d="M12.5003 3.33359V1.66692M12.5003 3.33359V5.00025M12.5003 3.33359H8.75026M2.50026 8.33359V15.8336C2.50026 16.2756 2.67585 16.6995 2.98841 17.0121C3.30098 17.3247 3.7249 17.5003 4.16693 17.5003H15.8336C16.2756 17.5003 16.6995 17.3247 17.0121 17.0121C17.3247 16.6995 17.5003 16.2756 17.5003 15.8336V8.33359M2.50026 8.33359H17.5003M2.50026 8.33359V5.00025C2.50026 4.55823 2.67585 4.1343 2.98841 3.82174C3.30098 3.50918 3.7249 3.33359 4.16693 3.33359H5.83359M17.5003 8.33359V5.00025C17.5003 4.55823 17.3247 4.1343 17.0121 3.82174C16.6995 3.50918 16.2756 3.33359 15.8336 3.33359H15.4169M5.83359 1.66692V5.00025"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  )
+}
+
+/** The card, from the card field's export (Figma 6:3156, 20px). */
+export function CardIcon({ size = 20 }: { size?: number }) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 20 20"
+      fill="none"
+      aria-hidden="true"
+      focusable="false"
+    >
+      <path
+        d="M18.3335 7.50025V14.1669C18.3335 14.6089 18.1579 15.0329 17.8454 15.3454C17.5328 15.658 17.1089 15.8336 16.6669 15.8336H3.33354C2.89151 15.8336 2.46759 15.658 2.15503 15.3454C1.84247 15.0329 1.66687 14.6089 1.66687 14.1669V5.83359C1.66687 5.39156 1.84247 4.96764 2.15503 4.65508C2.46759 4.34252 2.89151 4.16692 3.33354 4.16692H16.6669C17.1089 4.16692 17.5328 4.34252 17.8454 4.65508C18.1579 4.96764 18.3335 5.39156 18.3335 5.83359V7.50025ZM18.3335 7.50025H5.00021"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  )
+}
+
+/**
+ * The Mastercard mark, from Figma 6:2943 — a 29x20 white plate with the
+ * symbol inset 18.57% left, 20.83% top, 17.14% right, 21.64% bottom.
+ *
+ * Shipped because the design draws it, and because a card field with no
+ * brand on it is missing the one piece of feedback that tells you the number
+ * was read correctly. It is Mastercard's trademark, used to indicate
+ * acceptance; the `brand` prop takes any node, so everything else is yours.
+ */
+export function MastercardMark() {
+  return (
+    <svg
+      width="29"
+      height="20"
+      viewBox="0 0 29 20"
+      fill="none"
+      aria-hidden="true"
+      focusable="false"
+    >
+      <rect width="29" height="20" rx="4" fill="#ffffff" />
+      <g transform="translate(5.385 4.166)">
+        <path
+          d="M12.9893 0C16.1117 0.000207908 18.6426 2.57605 18.6426 5.75293C18.6423 8.92961 16.1115 11.5047 12.9893 11.5049C11.5891 11.5049 10.3088 10.9856 9.32129 10.1279C8.33388 10.9855 7.05425 11.5048 5.6543 11.5049C2.53183 11.5049 0.000234535 8.92974 0 5.75293C0 2.57592 2.53169 0 5.6543 0C7.054 7.78034e-05 8.33395 0.518724 9.32129 1.37598C10.3087 0.518576 11.5894 0 12.9893 0Z"
+          fill="#ED0006"
+        />
+        <path
+          d="M12.9884 6.35783e-07C16.111 6.35783e-07 18.6427 2.57592 18.6427 5.75293C18.6425 8.92974 16.1109 11.5049 12.9884 11.5049C11.5885 11.5048 10.3088 10.9855 9.32142 10.1279C10.5362 9.07292 11.3076 7.50525 11.3078 5.75293C11.3078 4.00017 10.5366 2.43108 9.32142 1.37598C10.3087 0.518712 11.5887 0.000113697 12.9884 6.35783e-07Z"
+          fill="#F9A000"
+        />
+        <path
+          d="M9.32127 1.37585C10.5365 2.43095 11.3076 3.99997 11.3076 5.7528C11.3075 7.50519 10.5361 9.07276 9.32127 10.1278C8.10658 9.07276 7.33503 7.50509 7.33494 5.7528C7.33494 4.00007 8.10612 2.43095 9.32127 1.37585Z"
+          fill="#FF5E00"
+        />
+      </g>
+    </svg>
+  )
+}

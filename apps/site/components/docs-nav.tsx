@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import { DOCS_GROUPS } from './docs-routes'
 import { Logo } from './logo'
 import { ThemeToggle } from './theme-toggle'
 
@@ -11,42 +12,9 @@ import { ThemeToggle } from './theme-toggle'
  * Grouped rather than flat, after Sonner: Basics / Components / Guides. A flat
  * list stops being scannable the moment a second component lands, and the
  * whole point of this library is that more are coming.
- */
-const GROUPS = [
-  {
-    title: 'Basics',
-    links: [{ href: '/docs', label: 'Getting started' }],
-  },
-  {
-    title: 'Components',
-    links: [
-      { href: '/docs/input', label: 'Text input' },
-      { href: '/docs/digit-input', label: 'Digit input' },
-      { href: '/docs/textarea', label: 'Text area' },
-      { href: '/docs/password', label: 'Password' },
-      { href: '/docs/phone', label: 'Phone number' },
-      { href: '/docs/select', label: 'Select' },
-      { href: '/docs/tags', label: 'Tags' },
-    ],
-  },
-  {
-    title: 'Guides',
-    links: [
-      { href: '/docs/styling', label: 'Styling' },
-      { href: '/docs/accessibility', label: 'Accessibility' },
-    ],
-  },
-]
-
-/**
- * `github` arrives as a prop rather than an import.
  *
- * This file is a client component — it reads the pathname to mark the active
- * link — and GithubLink is an async server component that fetches the star
- * count. Rendering one inside the other made React treat it as an async
- * *client* component, which is not a thing: it threw on every docs page and
- * suspended on an uncached promise. Passing it down as an already-rendered
- * element keeps it on the server where it belongs.
+ * The order itself lives in docs-routes, shared with the pager at the foot of
+ * each page, so the two can never disagree about what comes next.
  */
 export function DocsNav({ github }: { github: React.ReactNode }) {
   const pathname = usePathname()
@@ -59,7 +27,7 @@ export function DocsNav({ github }: { github: React.ReactNode }) {
       </Link>
 
       <div className="docs-groups">
-        {GROUPS.map((group) => (
+        {DOCS_GROUPS.map((group) => (
           <div key={group.title} className="docs-group">
             <span className="docs-group-title">{group.title}</span>
             {group.links.map((link) => (

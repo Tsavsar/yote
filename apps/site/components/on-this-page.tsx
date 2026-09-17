@@ -14,6 +14,8 @@ import { usePathname } from 'next/navigation'
 export function OnThisPage() {
   const [items, setItems] = React.useState<{ id: string; text: string }[]>([])
   const [active, setActive] = React.useState<string | null>(null)
+  const listRef = React.useRef<HTMLDivElement>(null)
+  const [marker, setMarker] = React.useState<{ y: number; h: number } | null>(null)
   /*
    * Keyed on the path, because this component lives in the docs layout and
    * the layout survives navigation between docs pages. Without it the rail
@@ -43,21 +45,52 @@ export function OnThisPage() {
     return () => observer.disconnect()
   }, [pathname])
 
+  /*
+   * The rule down the side of the rail is one element that travels, not a
+   * border that lights up on whichever entry is active. Same reasoning as the
+   * control pills: a marker that moves takes your eye to the new section,
+   * where one that blinks somewhere else makes you find it.
+   *
+   * Measured after every render, since `active` changes from an observer
+   * rather than from anything this render can see, and bailing out on an
+   * unchanged box is what stops that being a loop.
+   */
+  React.useLayoutEffect(() => {
+    const list = listRef.current
+    if (!list) return
+    const el = list.querySelector<HTMLElement>('.docs-toc-link[data-active]')
+    if (el === null) {
+      setMarker(null)
+      return
+    }
+    const next = { y: el.offsetTop, h: el.offsetHeight }
+    setMarker((prev) => (prev && prev.y === next.y && prev.h === next.h ? prev : next))
+  })
+
   if (items.length === 0) return null
 
   return (
     <aside className="docs-toc" aria-label="On this page">
       <span className="docs-toc-title">On this page</span>
-      {items.map((item) => (
-        <a
-          key={item.id}
-          href={`#${item.id}`}
-          className="docs-toc-link"
-          data-active={active === item.id || undefined}
-        >
-          {item.text}
-        </a>
-      ))}
+      <div className="docs-toc-list" ref={listRef}>
+        {marker !== null ? (
+          <span
+            className="docs-toc-marker"
+            aria-hidden="true"
+            style={{ transform: `translateY(${marker.y}px)`, height: `${marker.h}px` }}
+          />
+        ) : null}
+        {items.map((item) => (
+          <a
+            key={item.id}
+            href={`#${item.id}`}
+            className="docs-toc-link"
+            data-active={active === item.id || undefined}
+          >
+            {item.text}
+          </a>
+        ))}
+      </div>
     </aside>
   )
 }

@@ -22,12 +22,13 @@ type StateKey = (typeof STATES)[number]
 const LENGTHS = [4, 5, 6] as const
 type Length = (typeof LENGTHS)[number]
 
-const SEED = '482159'
+/* One per length rather than a slice: these are not prefixes of each other. */
+const SEEDS: Record<number, string> = { 4: '1738', 5: '17396', 6: '173867' }
 /** Figma node 6:4770. */
 const ERROR_TEXT = 'That code is incorrect. Try again.'
 
 const seedFor = (state: StateKey, length: number) =>
-  state === 'idle' || state === 'active' ? '' : SEED.slice(0, length)
+  state === 'idle' || state === 'active' ? '' : (SEEDS[length] ?? '')
 
 /**
  * Always the multi-line form, and always an explicit `length`.

@@ -1,7 +1,8 @@
-import { HeroDemo } from '../components/hero-demo'
 import { Reveal } from '../components/reveal'
 import { Install } from '../components/install'
 import { InputPreview } from '../components/input-preview'
+import { CardPreview } from '../components/card-preview'
+import { DatePreview } from '../components/date-preview'
 import { PasswordPreview } from '../components/password-preview'
 import { PhonePreview } from '../components/phone-preview'
 import { Preview } from '../components/preview'
@@ -30,8 +31,6 @@ export default function LandingPage() {
             the field already feels right.
           </p>
         </section>
-
-        <HeroDemo />
 
         <Install />
 
@@ -77,6 +76,17 @@ export default function LandingPage() {
             </div>
           </div>
           <SelectPreview />
+        </Reveal>
+
+        <Reveal>
+          <DatePreview title="Date" description="Typed, not picked — the field types the slashes" />
+        </Reveal>
+
+        <Reveal>
+          <CardPreview
+            title="Card number"
+            description="Regroups itself as it recognises the card"
+          />
         </Reveal>
 
         <Reveal>
