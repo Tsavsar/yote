@@ -225,6 +225,15 @@
   /* ---- shell ---------------------------------------------------------- */
 
   /* The nav row starts at 82px in the frame. */
+  /*
+   * The wordmark lands 56px from the top, the same as the docs sidebar's, so
+   * the name sits on one line across the site. The padding is 52 rather than
+   * 56 because the row is centred on its tallest item, the 30px icon button,
+   * which drops the 22px wordmark by the 4px difference. It stays inside the
+   * 650px column rather than spanning the page: on the landing page the name
+   * belongs above the sentence it introduces, and the docs rail belongs at
+   * the edge of the grid it heads. Same height, each in its own column.
+   */
   .nav {
     display: flex;
     align-items: center;
@@ -232,7 +241,7 @@
     gap: 16px;
     max-width: var(--page-max);
     margin: 0 auto;
-    padding: 82px 24px 0;
+    padding: 52px 24px 0;
   }
 
   .wordmark {
@@ -380,7 +389,9 @@
   .page {
     max-width: var(--page-max);
     margin: 0 auto;
-    padding: 123px 24px 120px;
+    /* 153 = the frame's 123 plus the 30 the nav no longer takes, so the
+       headline lands exactly where it did. */
+    padding: 153px 24px 120px;
     display: flex;
     flex-direction: column;
     gap: 44px;
