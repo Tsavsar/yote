@@ -100,12 +100,21 @@
       --yote-text-sub: #a3a3a3;
       --yote-text-soft: #6f6f6f;
 
+      /*
+       * The focus and error rings are alpha over the page, and dark needs
+       * *less* of it, not more. A pale tint on white barely registers; the
+       * same tint on near-black is a bright halo, because the contrast
+       * against the ground is far higher. These were 0.45 and 0.42, derived
+       * by assuming dark needed boosting, and every field in error mode
+       * glowed — on the digit input the 6px rings of adjacent cells
+       * overlapped in the 10px gap and welded into one red blob.
+       */
       --yote-feature-base: #9a78f7;
       --yote-feature-dark: #c4aefa;
-      --yote-purple-alpha-24: rgba(154, 120, 247, 0.45);
+      --yote-purple-alpha-24: rgba(154, 120, 247, 0.28);
 
       --yote-error-base: #ff6170;
-      --yote-error-faint: rgba(255, 97, 112, 0.42);
+      --yote-error-faint: rgba(255, 97, 112, 0.22);
 
       --yote-shadow-xs: 0 2px 4px -1px rgba(0, 0, 0, 0.3), 0 5px 13px -5px rgba(0, 0, 0, 0.5);
 
@@ -140,10 +149,10 @@
 
     --yote-feature-base: #9a78f7;
     --yote-feature-dark: #c4aefa;
-    --yote-purple-alpha-24: rgba(154, 120, 247, 0.45);
+    --yote-purple-alpha-24: rgba(154, 120, 247, 0.28);
 
     --yote-error-base: #ff6170;
-    --yote-error-faint: rgba(255, 97, 112, 0.42);
+    --yote-error-faint: rgba(255, 97, 112, 0.22);
 
     --yote-shadow-xs: 0 2px 4px -1px rgba(0, 0, 0, 0.3), 0 5px 13px -5px rgba(0, 0, 0, 0.5);
 
