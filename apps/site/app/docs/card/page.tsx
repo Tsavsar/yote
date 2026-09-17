@@ -75,17 +75,26 @@ export default function CardDocsPage() {
         card.
       </p>
       <p className="docs-p">
-        Only Mastercard&apos;s symbol ships, because that is the one the design draws. Every other
-        network&apos;s is its own trademark and yours to supply. The detected brand is handed to
-        you, so you do not have to redo the detection.
+        The slot it sits in is a fixed 29px whatever is in it, including nothing. That is not a
+        detail: the plain glyph is 20px square and the network plates are 29px wide, so a slot sized
+        to its contents shunted every digit sideways the moment the card was recognised. A field
+        that jolts as it understands you is worse than one that never noticed.
+      </p>
+      <p className="docs-p">
+        All four marks ship, drawn on one 780&times;500 plate so they read as a family rather than
+        four different treatments. They are the networks&apos; trademarks, shown to say which card
+        was recognised. A real checkout should use the assets each network distributes under its own
+        brand guidelines, and <code className="inline-code">brand</code> takes any node for that.
+        The detected brand is handed to you either way, so you never have to redo the detection.
       </p>
       <CodeBlock
         filename="checkout.tsx"
         code={`const [brand, setBrand] = useState<CardBrand>('unknown')
 
+// Your own artwork, or your processor's:
 <CardInput
   onBrandChange={setBrand}
-  brand={brand === 'visa' ? <VisaMark /> : undefined}
+  brand={<img src={\`/brands/\${brand}.svg\`} alt="" width={29} />}
 />`}
       />
 
