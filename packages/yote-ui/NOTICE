@@ -14,3 +14,24 @@ The paths for the eight flags in DEFAULT_PHONE_COUNTRIES (US, GB, FI, NG,
 DE, FR, IN, JP) are taken from that project's 4x3 set and inlined as React
 components in src/flags.tsx. No flag-icons code is bundled and the package
 has no dependency on it.
+
+--------------------------------------------------------------------------
+
+This product includes card network artwork derived from
+svg-credit-card-payment-icons.
+
+  svg-credit-card-payment-icons
+  https://github.com/aaronfagan/svg-credit-card-payment-icons
+  Licensed under the Apache License, Version 2.0.
+  http://www.apache.org/licenses/LICENSE-2.0
+
+The Visa, Mastercard, American Express and Discover marks in
+src/card-marks.tsx are taken from that project's flat set and inlined as
+React components. No upstream code is bundled and the package has no
+dependency on it.
+
+Visa, Mastercard, American Express and Discover are trademarks of their
+respective owners. They are reproduced here to indicate which card a number
+belongs to. A production checkout should use the assets each network
+distributes under its own brand guidelines; the CardInput component's
+`brand` prop accepts any node for that purpose.

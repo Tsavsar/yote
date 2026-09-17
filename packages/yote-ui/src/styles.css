@@ -1151,15 +1151,32 @@
   }
 
   /*
-   * The brand plate is white in the frame and stays white in dark mode: a
-   * card network's mark is its own artwork and recolouring it is not ours to
-   * do. The hairline keeps it from floating on a light field.
+   * A fixed-width slot, whatever is in it.
+   *
+   * This is the whole point: the plain card glyph is 20px square and the
+   * network plates are 29px wide, so a slot sized to its contents moved every
+   * digit sideways the moment the card was recognised. The slot is 29px
+   * always, and the mark changes inside it.
    */
-  .yote-card-brand {
+  .yote-card-mark {
     display: inline-flex;
     flex: none;
     align-items: center;
-    border-radius: 4px;
+    justify-content: center;
+    width: 29px;
+    color: var(--yote-text-soft);
+  }
+
+  /*
+   * The plates keep their own colours in both themes. A card network's mark
+   * is its artwork, and recolouring it is not ours to do — the hairline is
+   * there so a white-cornered one does not float on a light field.
+   */
+  .yote-card-plate {
+    width: 29px;
+    /* Height follows the 780x500 viewBox, so all four are one size. */
+    height: auto;
+    border-radius: 3px;
     box-shadow: inset 0 0 0 0.5px var(--yote-flag-ring);
     overflow: hidden;
   }

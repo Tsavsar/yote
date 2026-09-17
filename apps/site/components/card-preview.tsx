@@ -13,6 +13,15 @@ type StateKey = (typeof STATES)[number]
 const SIZES = ['sm', 'md', 'lg'] as const
 type Size = (typeof SIZES)[number]
 
+/* The networks spell their own names; lowercase them and it reads as a slug. */
+const BRAND_NAMES: Record<CardBrand, string> = {
+  visa: 'Visa',
+  mastercard: 'Mastercard',
+  amex: 'American Express',
+  discover: 'Discover',
+  unknown: 'an unknown network',
+}
+
 const LABELS: Record<StateKey, string> = {
   idle: 'Idle',
   used: 'Used',
@@ -118,8 +127,8 @@ export function CardPreview({
               : brand === 'unknown'
                 ? 'The mark follows the number. Try 5555 5555 5555 4444.'
                 : brand === 'amex'
-                  ? 'Recognised as Amex, so the groups are 4-6-5.'
-                  : `Recognised as ${brand}. Try an Amex to see it regroup.`
+                  ? 'American Express, so the groups are 4-6-5.'
+                  : `${BRAND_NAMES[brand]}. Try an Amex to see it regroup.`
           }
           invalid={state === 'error'}
           error={state === 'error' && flags.hint ? ERROR_TEXT : undefined}

@@ -1,3 +1,4 @@
+import { AmexMark, DiscoverMark, MastercardMark, VisaMark } from 'yote-ui'
 import { CardPreview } from '../../../components/card-preview'
 import { CodeBlock } from '../../../components/code-block'
 import { PropsTable, SHARED_PROPS } from '../../../components/props-table'
@@ -10,12 +11,12 @@ const OWN_PROPS = [
   ['info', 'string', '—', 'Info marker beside the label, with this as its tooltip.'],
 ]
 
-const BRANDS = [
-  ['visa', '4', '4-4-4-4'],
-  ['mastercard', '51–55, 22–27', '4-4-4-4'],
-  ['amex', '34, 37', '4-6-5'],
-  ['discover', '6011, 65', '4-4-4-4'],
-  ['unknown', 'anything else', '4-4-4-4'],
+const BRANDS: { value: string; starts: string; groups: string; mark: React.ReactNode }[] = [
+  { value: 'visa', starts: '4', groups: '4-4-4-4', mark: <VisaMark /> },
+  { value: 'mastercard', starts: '51-55, 22-27', groups: '4-4-4-4', mark: <MastercardMark /> },
+  { value: 'amex', starts: '34, 37', groups: '4-6-5', mark: <AmexMark /> },
+  { value: 'discover', starts: '6011, 65', groups: '4-4-4-4', mark: <DiscoverMark /> },
+  { value: 'unknown', starts: 'anything else', groups: '4-4-4-4', mark: null },
 ]
 
 export default function CardDocsPage() {
@@ -37,7 +38,32 @@ export default function CardDocsPage() {
         moment it recognises the card is the clearest signal it could give that it read them. You
         get the confirmation for free, from the thing you were doing anyway.
       </p>
-      <PropsTable head={['CardBrand', 'Starts with', 'Groups']} rows={BRANDS} />
+      <div className="table-wrap">
+        <table className="props">
+          <thead>
+            <tr>
+              <th>CardBrand</th>
+              <th>Mark</th>
+              <th>Starts with</th>
+              <th>Groups</th>
+            </tr>
+          </thead>
+          <tbody>
+            {BRANDS.map((brand) => (
+              <tr key={brand.value}>
+                <td>
+                  <code className="inline-code">{brand.value}</code>
+                </td>
+                <td>
+                  <span className="yote-card-mark">{brand.mark}</span>
+                </td>
+                <td>{brand.starts}</td>
+                <td>{brand.groups}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
 
       <h2 id="mark" className="docs-h2">
         The mark is on the left

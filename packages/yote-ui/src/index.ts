@@ -5,6 +5,7 @@ export { DateInput } from './date-input'
 export type { DateInputProps, DateInputPart } from './date-input'
 
 export { CardInput, cardBrandOf } from './card-input'
+export { VisaMark, MastercardMark, AmexMark, DiscoverMark, BRAND_MARKS } from './card-marks'
 export type { CardInputProps, CardInputPart, CardBrand } from './card-input'
 
 export { SelectInput } from './select-input'
@@ -37,5 +38,4 @@ export {
   InfoIcon,
   CalendarIcon,
   CardIcon,
-  MastercardMark,
 } from './icons'

@@ -2,7 +2,8 @@ import * as React from 'react'
 import type { YoteFieldProps } from './types'
 import { useComposedRef } from './lib/use-composed-ref'
 import { applyMask, digitsOf } from './lib/mask'
-import { AlertIcon, CardIcon, InfoIcon, MastercardMark } from './icons'
+import { AlertIcon, InfoIcon } from './icons'
+import { BRAND_MARKS } from './card-marks'
 
 export type CardInputPart =
   | 'root'
@@ -51,10 +52,8 @@ type NativeInputProps = Omit<
 
 export interface CardInputProps extends YoteFieldProps<CardInputPart>, NativeInputProps {
   /**
-   * The mark at the start of the field. Left unset it shows the built-in
-   * Mastercard symbol once the number is one, and the generic card glyph
-   * until then — every other network's mark is its own trademark and yours
-   * to supply.
+   * The mark at the start of the field. Left unset it shows the network the
+   * number belongs to, and a plain card glyph until it knows.
    */
   brand?: React.ReactNode
   /** Fires when the detected brand changes, so you can render your own mark. */
@@ -149,11 +148,14 @@ export const CardInput = React.forwardRef<HTMLInputElement, CardInputProps>(func
   /*
    * One mark, at the start, and it changes. The frame draws a generic card
    * glyph on the left and the network's plate on the right, which says the
-   * same thing twice — and the left is where your eye already is, because it
-   * is where the number begins. So the glyph becomes the card.
+   * same thing twice, and the left is where your eye already is because it is
+   * where the number begins. So the glyph becomes the card.
+   *
+   * The slot it sits in is a fixed width, so recognising the card swaps the
+   * mark without moving a single digit. A field that jolts sideways the
+   * moment it understands you is worse than one that never noticed.
    */
-  const mark = brand ?? (detected === 'mastercard' ? <MastercardMark /> : <CardIcon />)
-  const isPlate = brand === undefined && detected === 'mastercard'
+  const mark = brand ?? BRAND_MARKS[detected] ?? BRAND_MARKS.unknown
   const describedBy = cx(ariaDescribedByProp, message != null ? messageId : undefined)
 
   return (
@@ -208,10 +210,7 @@ export const CardInput = React.forwardRef<HTMLInputElement, CardInputProps>(func
         }}
       >
         {mark != null ? (
-          <span
-            className={cx(isPlate ? 'yote-card-brand' : 'yote-input-icon', classNames?.leading)}
-            aria-hidden="true"
-          >
+          <span className={cx('yote-card-mark', classNames?.leading)} aria-hidden="true">
             {mark}
           </span>
         ) : null}
