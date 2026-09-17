@@ -5,7 +5,7 @@ import { GithubLink } from '../../components/github-link'
 import { OnThisPage } from '../../components/on-this-page'
 
 export const metadata: Metadata = {
-  title: 'Yöte — Docs',
+  title: 'Yöte Docs',
   description: 'Documentation for Yöte, form inputs for React.',
 }
 

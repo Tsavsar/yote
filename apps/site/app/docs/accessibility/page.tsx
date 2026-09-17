@@ -39,7 +39,10 @@ export default function AccessibilityPage() {
           It is always in the DOM, even when empty, so an error appearing never moves the form and
           the live region is a stable node rather than one inserted with its content.
         </li>
-        <li>Error and hint marks are decorative and hidden from assistive tech — the text carries the meaning.</li>
+        <li>
+          Error and hint marks are decorative and hidden from assistive tech, because the text
+          carries the meaning.
+        </li>
       </ul>
 
       <h2 id="input" className="docs-h2">
@@ -63,14 +66,14 @@ export default function AccessibilityPage() {
       </h2>
       <ul className="bullets">
         <li>
-          Under <code className="inline-code">prefers-reduced-motion</code> the movement goes and the
-          meaning stays: the shake stops, entrances become plain fades, the caret stops blinking.
-          Colour changes are kept, because those are what carry the error.
+          Under <code className="inline-code">prefers-reduced-motion</code> the movement goes and
+          the meaning stays: the shake stops, entrances become plain fades, the caret stops
+          blinking. Colour changes are kept, because those are what carry the error.
         </li>
         <li>
           Hover treatments sit behind{' '}
-          <code className="inline-code">@media (hover: hover) and (pointer: fine)</code>, so a tap on
-          a touch device cannot latch a hover state.
+          <code className="inline-code">@media (hover: hover) and (pointer: fine)</code>, so a tap
+          on a touch device cannot latch a hover state.
         </li>
       </ul>
     </>

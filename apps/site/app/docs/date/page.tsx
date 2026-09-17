@@ -28,8 +28,8 @@ export default function DateDocsPage() {
       </h2>
       <p className="docs-p">
         And there will not be one. The scope rule for this library is inputs, and a date picker is a
-        different product — locales, ranges, a month grid, keyboard navigation across weeks, a
-        popover that has to know about the viewport. This is the field half, done properly, and it
+        different product, with locales, ranges, a month grid, keyboard navigation across weeks and
+        a popover that has to know about the viewport. This is the field half, done properly, and it
         sits happily under whichever picker you already use.
       </p>
 
@@ -63,7 +63,7 @@ export default function DateDocsPage() {
       <p className="docs-p">
         <code className="inline-code">onChange</code> gives the masked string exactly as displayed,
         never a <code className="inline-code">Date</code>. &ldquo;31/02/2026&rdquo; is a real thing
-        somebody can type, and deciding whether that is an error is validation — which this library
+        somebody can type, and deciding whether that is an error is validation, which this library
         does not own. <code className="inline-code">onComplete</code> fires when every slot is full,
         which is the moment to hand it to whatever does.
       </p>

@@ -22,7 +22,7 @@ const VARS = [
   ['--yote-ta-radius', 'Corner radius.'],
   ['--yote-ta-pad-y', 'Vertical padding.'],
   ['--yote-ta-pad-left', 'Left padding.'],
-  ['--yote-ta-pad-right', 'Right padding — runs tighter than the left, to sit the handle near the edge.'],
+  ['--yote-ta-pad-right', 'Right padding. Tighter than the left, to sit the handle near the edge.'],
 ]
 
 export default function TextareaPage() {
@@ -31,7 +31,7 @@ export default function TextareaPage() {
       <h1 className="docs-title">Text area</h1>
       <p className="docs-lede">
         Multi-line entry, with an optional character counter and a drag handle. Hover the field to
-        see the hover state — it is a real pointer state, not a pill.
+        see the hover state. It is a real pointer state, not a pill.
       </p>
 
       <TextareaPreview />
@@ -57,7 +57,7 @@ export default function TextareaPage() {
       </h2>
       <p className="docs-p">
         The handle is a real drag, not the browser&apos;s native{' '}
-        <code className="inline-code">resize</code> — which draws its own corner widget on top of the
+        <code className="inline-code">resize</code>, which draws its own corner widget on top of the
         mark and only works from the bottom-right corner. Dragging writes to{' '}
         <code className="inline-code">--yote-ta-height</code>, which means you can set the same
         property yourself to pick a starting height.

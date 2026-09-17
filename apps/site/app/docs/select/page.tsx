@@ -42,8 +42,8 @@ export default function SelectDocsPage() {
       <p className="docs-p">
         The country picker in the phone field puts a search box inside its panel, because the thing
         you clicked was a flag and a dial code, not somewhere to type. Here the thing you clicked is
-        already a text field — so it filters, and a second text box below the first would only be
-        asking which one you meant.
+        already a text field, so it filters. A second text box below the first would only be asking
+        which one you meant.
       </p>
       <p className="docs-p">
         <code className="inline-code">value</code> is the option&apos;s value, never the label on
@@ -67,7 +67,7 @@ export default function SelectDocsPage() {
         Inline selector
       </h2>
       <p className="docs-p">
-        A second decision attached to the value beside it — an access level on a name, a unit on a
+        A second decision attached to the value beside it: an access level on a name, a unit on a
         number. It goes in another field&apos;s <code className="inline-code">trailing</code> slot,
         which is why it has no label of its own and why{' '}
         <code className="inline-code">aria-label</code> is not optional.
@@ -101,7 +101,7 @@ export default function SelectDocsPage() {
         InlineSelect props
       </h2>
       <p className="docs-p">
-        Not a field, so it does not take the shared contract — it has no label, hint, error or size.
+        Not a field, so it does not take the shared contract. It has no label, hint, error or size.
       </p>
       <PropsTable head={['Prop', 'Type', 'Default', 'Notes']} rows={INLINE_PROPS} />
     </>

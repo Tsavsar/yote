@@ -3,7 +3,12 @@ import { PasswordPreview } from '../../../components/password-preview'
 import { PropsTable, SHARED_PROPS } from '../../../components/props-table'
 
 const OWN_PROPS = [
-  ['requirements', 'PasswordRequirement[]', 'the four below', 'Rules to report on. Pass [] to hide the block.'],
+  [
+    'requirements',
+    'PasswordRequirement[]',
+    'the four below',
+    'Rules to report on. Pass [] to hide the block.',
+  ],
   ['requirementsTitle', 'ReactNode', '"Must contain at least;"', 'Heading above the list.'],
   ['showRequirements', 'boolean', 'true', 'Show the strength bar and list.'],
   ['revealable', 'boolean', 'true', 'Show the reveal toggle.'],
@@ -34,7 +39,7 @@ export default function PasswordDocsPage() {
         Requirements
       </h2>
       <p className="docs-p">
-        This is the part worth reading. Yöte does not decide what a good password is — the rules are
+        This is the part worth reading. Yöte does not decide what a good password is. The rules are
         yours, passed in as <code className="inline-code">{'{ label, test }'}</code> pairs. The
         component runs each <code className="inline-code">test</code> against the current value,
         renders whether it passes, and counts how many do. That is the same line the rest of the
@@ -75,7 +80,7 @@ export default function PasswordDocsPage() {
       <p className="docs-p">
         Pass <code className="inline-code">requirements={'{[]}'}</code>, or{' '}
         <code className="inline-code">showRequirements={'{false}'}</code>, and the whole block
-        disappears — a sign-in field wants the input and nothing else.
+        disappears. A sign-in field wants the input and nothing else.
       </p>
 
       <h2 id="strength" className="docs-h2">
@@ -106,9 +111,9 @@ export default function PasswordDocsPage() {
         Accessibility
       </h2>
       <p className="docs-p">
-        The rule list is the accessible source of truth: each item announces its label and whether it
-        is met, and the bar above it is hidden from assistive tech because it says the same thing in
-        colour. The reveal control is a real toggle with{' '}
+        The rule list is the accessible source of truth: each item announces its label and whether
+        it is met, and the bar above it is hidden from assistive tech because it says the same thing
+        in colour. The reveal control is a real toggle with{' '}
         <code className="inline-code">aria-pressed</code>, and the input keeps{' '}
         <code className="inline-code">autocomplete=&quot;current-password&quot;</code> so managers
         still work.

@@ -39,14 +39,14 @@ export default function VerifyTextarea() {
     <main className="page" style={{ maxWidth: 760 }}>
       <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <h1 className="headline" style={{ fontSize: 28 }}>
-          Textarea — verification
+          Textarea: verification
         </h1>
         <button type="button" className="pill" onClick={() => setDark((d) => !d)}>
           {dark ? 'Light' : 'Dark'}
         </button>
       </header>
 
-      <Row title="Sizes — sm 113px / md 127px / lg 141px">
+      <Row title="Sizes: sm 113px / md 127px / lg 141px">
         <div style={{ display: 'grid', gap: 24, gridTemplateColumns: 'repeat(3, 1fr)' }}>
           {SIZES.map((s) => (
             <Textarea key={s} {...common} size={s} defaultValue="" />
@@ -58,15 +58,19 @@ export default function VerifyTextarea() {
         <Textarea {...common} />
       </Row>
 
-      <Row title="Used — has a value">
+      <Row title="Used: has a value">
         <Textarea {...common} defaultValue="Twelve chars" />
       </Row>
 
       <Row title="Error">
-        <Textarea {...common} defaultValue="Twelve chars" error="That entry is incorrect. Try again." />
+        <Textarea
+          {...common}
+          defaultValue="Twelve chars"
+          error="That entry is incorrect. Try again."
+        />
       </Row>
 
-      <Row title="Disabled — no border, no shadow, muted text">
+      <Row title="Disabled: no border, no shadow, muted text">
         <Textarea {...common} defaultValue="Twelve chars" disabled />
       </Row>
 
@@ -78,12 +82,10 @@ export default function VerifyTextarea() {
         <Textarea label="Input area" showCounter={false} resizable={false} hint="Plain." />
       </Row>
 
-      <Row title="Per-instance override — height and radius via custom properties">
+      <Row title="Per-instance override: height and radius via custom properties">
         <Textarea
           {...common}
-          style={
-            { '--yote-ta-height': '200px', '--yote-ta-radius': '2px' } as React.CSSProperties
-          }
+          style={{ '--yote-ta-height': '200px', '--yote-ta-radius': '2px' } as React.CSSProperties}
         />
       </Row>
     </main>

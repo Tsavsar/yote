@@ -21,7 +21,7 @@ export default function DigitInputPage() {
     <>
       <h1 className="docs-title">Digit input</h1>
       <p className="docs-lede">
-        A one-time code field. Type in it — the pills seed a state, but the component underneath is
+        A one-time code field. Type in it: the pills seed a state, but the component underneath is
         the real thing.
       </p>
 
@@ -33,9 +33,10 @@ export default function DigitInputPage() {
       <p className="docs-p">
         The cells are presentation. Underneath sits a single real{' '}
         <code className="inline-code">&lt;input&gt;</code> spanning the whole group. That is what
-        makes pasting a code, <code className="inline-code">autocomplete=&quot;one-time-code&quot;</code>{' '}
-        and the iOS and Android SMS keyboard suggestion work — all three break the moment you render
-        one input per cell, which is how most hand-rolled versions are built.
+        makes pasting a code,{' '}
+        <code className="inline-code">autocomplete=&quot;one-time-code&quot;</code> and the iOS and
+        Android SMS keyboard suggestion work. All three break the moment you render one input per
+        cell, which is how most hand-rolled versions are built.
       </p>
 
       <h2 id="props" className="docs-h2">

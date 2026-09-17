@@ -42,7 +42,7 @@ export default function TagsDocsPage() {
         Two placements
       </h2>
       <p className="docs-p">
-        Not a taste setting — they are two different jobs. Outside is what the design draws: the
+        Not a taste setting: they are two different jobs. Outside is what the design draws: the
         field stays one line forever and the list grows downward, so a form holding twenty tags does
         not reflow every time you add one. Inside puts them ahead of the caret, which reads as
         &ldquo;these are the value&rdquo; and is right when there will be three of them, not thirty.
@@ -56,7 +56,7 @@ export default function TagsDocsPage() {
         Enter or a comma commits; <code className="inline-code">commitKeys</code> changes that.
         Leaving the field commits too, because losing a half-typed tag to a click elsewhere is the
         most annoying bug this component can have. Backspace on an empty field removes the last tag
-        — the one behaviour everybody tries and most implementations miss — and it is guarded on the
+        , the one behaviour everybody tries and most implementations miss, and it is guarded on the
         field being empty so it never eats a tag while you are still typing one.
       </p>
       <p className="docs-p">

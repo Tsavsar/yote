@@ -15,12 +15,12 @@ export default function StylingPage() {
       <p className="docs-p">
         Everything lives in <code className="inline-code">@layer yote</code>. On Tailwind v4 that is
         not enough on its own: v4 emits real cascade layers, so what decides the winner is layer
-        order, not specificity — and order is set the first time a layer name appears.
+        order, not specificity, and order is set the first time a layer name appears.
       </p>
       <p className="docs-p">
         Declare it before importing anything. <code className="inline-code">yote</code> has to sit
-        after <code className="inline-code">base</code>, because Tailwind&apos;s preflight resets form
-        controls with <code className="inline-code">color: inherit; opacity: 1</code> — put yote
+        after <code className="inline-code">base</code>, because Tailwind&apos;s preflight resets
+        form controls with <code className="inline-code">color: inherit; opacity: 1</code>. Put yote
         first and preflight wins, which un-hides the invisible input inside the digit input and
         paints the raw value over the cells. It has to sit before{' '}
         <code className="inline-code">utilities</code>, so your own classes still override ours.
@@ -36,7 +36,7 @@ export default function StylingPage() {
 }`}
       />
       <p className="docs-p">
-        Import order matters for the same reason — the file holding that statement has to be read
+        Import order matters for the same reason: the file holding that statement has to be read
         first.
       </p>
       <CodeBlock
@@ -80,8 +80,8 @@ import 'yote-ui/styles.css'`}
       <p className="docs-p">
         Dark values are declared under both{' '}
         <code className="inline-code">prefers-color-scheme</code> and{' '}
-        <code className="inline-code">[data-theme=&quot;dark&quot;]</code>, so a system preference and
-        an explicit toggle both work. Those values are provisional until the dark frames are
+        <code className="inline-code">[data-theme=&quot;dark&quot;]</code>, so a system preference
+        and an explicit toggle both work. Those values are provisional until the dark frames are
         designed.
       </p>
     </>

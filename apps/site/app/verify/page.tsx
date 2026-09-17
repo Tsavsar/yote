@@ -38,7 +38,7 @@ export default function VerificationPage() {
     >
       <div className="mx-auto flex max-w-3xl flex-col gap-12">
         <header className="flex items-center justify-between gap-4">
-          <h1 className="text-2xl font-medium">Yöte pin input — verification</h1>
+          <h1 className="text-2xl font-medium">Yöte pin input: verification</h1>
           <button
             type="button"
             onClick={() => setDark((d) => !d)}
@@ -48,15 +48,15 @@ export default function VerificationPage() {
           </button>
         </header>
 
-        <Row title="Idle — 4 cells, uncontrolled">
+        <Row title="Idle: 4 cells, uncontrolled">
           <PinInput label="Verification code" hint="Enter the code we sent you." />
         </Row>
 
-        <Row title="Used — seeded value, unfocused">
+        <Row title="Used: seeded value, unfocused">
           <PinInput defaultValue="4821" label="Verification code" />
         </Row>
 
-        <Row title="Error — shake replays on every attempt">
+        <Row title="Error: shake replays on every attempt">
           <PinInput
             defaultValue="4821"
             label="Verification code"
@@ -72,27 +72,27 @@ export default function VerificationPage() {
           </button>
         </Row>
 
-        <Row title="Disabled — digits hidden, no border, no shadow">
+        <Row title="Disabled: digits hidden, no border, no shadow">
           <PinInput defaultValue="4821" label="Verification code" disabled />
         </Row>
 
-        <Row title="Read only — reads as filled, stays focusable">
+        <Row title="Read only: reads as filled, stays focusable">
           <PinInput defaultValue="4821" label="Verification code" readOnly />
         </Row>
 
-        <Row title="Masked — dots, autoComplete off">
+        <Row title="Masked: dots, autoComplete off">
           <PinInput defaultValue="4821" label="PIN" mask />
         </Row>
 
-        <Row title="Five cells — group grows to 477.5px">
+        <Row title="Five cells: group grows to 477.5px">
           <PinInput length={5} />
         </Row>
 
-        <Row title="Six cells — group grows to 575px">
+        <Row title="Six cells: group grows to 575px">
           <PinInput length={6} />
         </Row>
 
-        <Row title="Controlled — onChange gives the value, onComplete fires once">
+        <Row title="Controlled: onChange gives the value, onComplete fires once">
           <PinInput
             value={live}
             onChange={setLive}
@@ -102,7 +102,7 @@ export default function VerificationPage() {
           />
         </Row>
 
-        <Row title="Tailwind override — utilities must win over @layer yote">
+        <Row title="Tailwind override: utilities must win over @layer yote">
           <PinInput classNames={{ cell: 'bg-amber-100 data-[active]:bg-amber-200' }} />
         </Row>
       </div>

@@ -34,7 +34,7 @@ export default function CardDocsPage() {
       </h2>
       <p className="docs-p">
         Amex is 4-6-5 and everything else is four fours. A field that regroups your digits the
-        moment it recognises the card is the clearest signal it could give that it read them — you
+        moment it recognises the card is the clearest signal it could give that it read them. You
         get the confirmation for free, from the thing you were doing anyway.
       </p>
       <PropsTable head={['CardBrand', 'Starts with', 'Groups']} rows={BRANDS} />
@@ -50,8 +50,8 @@ export default function CardDocsPage() {
       </p>
       <p className="docs-p">
         Only Mastercard&apos;s symbol ships, because that is the one the design draws. Every other
-        network&apos;s is its own trademark and yours to supply — the detected brand is handed to
-        you so you do not have to redo the detection.
+        network&apos;s is its own trademark and yours to supply. The detected brand is handed to
+        you, so you do not have to redo the detection.
       </p>
       <CodeBlock
         filename="checkout.tsx"

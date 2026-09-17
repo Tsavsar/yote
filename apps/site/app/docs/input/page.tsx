@@ -34,10 +34,10 @@ export default function InputDocsPage() {
       </h2>
       <p className="docs-p">
         Four, and the pairing is deliberate. <code className="inline-code">leading</code> and{' '}
-        <code className="inline-code">trailing</code> take a mark — an icon, a spinner, a button.{' '}
+        <code className="inline-code">trailing</code> take a mark: an icon, a spinner, a button.{' '}
         <code className="inline-code">prefix</code> and <code className="inline-code">suffix</code>{' '}
         take text that is read as part of the value: a currency symbol, a protocol, a unit. They are
-        separate props because the design spaces them differently — an affix sits 12px in from the
+        separate props because the design spaces them differently. An affix sits 12px in from the
         edge with 14px to the value, because it belongs to the value rather than sitting beside it.
       </p>
       <CodeBlock
@@ -50,7 +50,7 @@ export default function InputDocsPage() {
       />
       <p className="docs-p">
         Nothing is rendered for a slot you leave unset, so the field collapses to a plain box with
-        no stray padding — the gap belongs to the slot, not to the field.
+        no stray padding. The gap belongs to the slot, not to the field.
       </p>
 
       <h2 id="sizes" className="docs-h2">

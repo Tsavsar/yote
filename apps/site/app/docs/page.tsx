@@ -9,7 +9,7 @@ export default function GettingStartedPage() {
     <>
       <h1 className="docs-title">Getting started</h1>
       <p className="docs-lede">
-        Yöte is a small set of form inputs for React — styled and animated out of the box, with one
+        Yöte is a small set of form inputs for React, styled and animated out of the box, with one
         prop vocabulary shared by every field. Zero dependencies.
       </p>
 
@@ -64,7 +64,7 @@ export function VerifyForm() {
       </h2>
       <p className="docs-p">
         {DOCS_COMPONENTS.length} so far. They all take the same props, so every one after the first
-        needs no new learning — the vocabulary is the whole API, and each page only documents what
+        needs no new learning. The vocabulary is the whole API, and each page only documents what
         that field adds to it.
       </p>
       {/* Rendered from the same list the sidebar and the pager read, so a
@@ -74,8 +74,8 @@ export function VerifyForm() {
           <li key={component.href}>
             <Link className="docs-inline-link" href={component.href}>
               {component.label}
-            </Link>{' '}
-            — {component.blurb}
+            </Link>
+            : {component.blurb}
           </li>
         ))}
       </ul>
@@ -86,8 +86,8 @@ export function VerifyForm() {
       <p className="docs-p">
         Yöte does fields. Not form state, not validation logic, and not the things that sit on top
         of a field rather than in it: there is a date field but no calendar, a select field but no
-        combobox library, a card field but no card validator. Validation state is accepted as a prop
-        — the library renders your error and never decides what one is.
+        combobox library, a card field but no card validator. Validation state is accepted as a
+        prop, and the library renders your error without ever deciding what one is.
       </p>
       <p className="docs-p">
         A narrow library that is finished beats a broad one that is forty percent done. When a

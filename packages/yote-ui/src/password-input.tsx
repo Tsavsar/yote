@@ -307,7 +307,7 @@ export const PasswordInput = React.forwardRef<HTMLInputElement, PasswordInputPro
                       it passes, as words. */}
                   <span className="yote-pw-req-label">{r.label}</span>
                   <span className="yote-sr-only">
-                    {disabled ? ' — unavailable' : r.met ? ' — met' : ' — not met'}
+                    {disabled ? ', unavailable' : r.met ? ', met' : ', not met'}
                   </span>
                 </li>
               ))}

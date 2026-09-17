@@ -79,7 +79,7 @@ export default function LandingPage() {
         </Reveal>
 
         <Reveal>
-          <DatePreview title="Date" description="Typed, not picked — the field types the slashes" />
+          <DatePreview title="Date" description="Typed, not picked. The field types the slashes" />
         </Reveal>
 
         <Reveal>
@@ -104,7 +104,7 @@ export default function LandingPage() {
 
       <footer className="footer">
         <span>
-          Yöte — from the Finnish <em>syöte</em>, input.
+          Yöte, from the Finnish <em>syöte</em>, input.
         </span>
       </footer>
     </>
