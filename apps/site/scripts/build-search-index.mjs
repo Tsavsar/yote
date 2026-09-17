@@ -47,6 +47,10 @@ function prose(source) {
       .replace(/className=(".*?"|\{.*?\})/gs, ' ')
       .replace(/(href|id|filename|key|rows|head|dateTime)=(".*?"|\{.*?\})/gs, ' ')
       .replace(/<[^>]*>/g, ' ')
+      /* A section ends where the next heading's `id=` begins, which leaves the
+         `<h2` that preceded it dangling with no closing bracket for the rule
+         above to match. */
+      .replace(/<[^>]*$/, ' ')
       .replace(/&apos;/g, "'")
       .replace(/&quot;/g, '"')
       .replace(/&amp;/g, '&')

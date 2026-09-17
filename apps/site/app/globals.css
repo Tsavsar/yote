@@ -1845,13 +1845,14 @@
     overflow: clip;
   }
 
+  /* No rule under the field. The gap does the separating, and a line across
+     a panel this small cuts it in two rather than organising it. */
   .search-field {
     display: flex;
     align-items: center;
     gap: 10px;
     flex: none;
-    padding: 14px 14px 12px;
-    border-bottom: 1px solid var(--yote-popover-border);
+    padding: 14px 14px 10px;
     color: var(--yote-text-soft);
   }
 
