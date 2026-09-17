@@ -43,7 +43,7 @@ export default function LandingPage() {
         </Reveal>
 
         <Reveal>
-          <Preview title="Digit input" description="Inputs for codes, keys, pins, passwords etcs" />
+          <Preview title="Digit input" description="One-time codes and PINs, one cell at a time" />
         </Reveal>
 
         <Reveal>

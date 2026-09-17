@@ -1,6 +1,7 @@
 import * as React from 'react'
 import type { YoteFieldProps } from './types'
 import { useComposedRef } from './lib/use-composed-ref'
+import { useRequiredOptionalWarning } from './lib/warn-exclusive'
 import { AlertIcon, InfoIcon, ResizeIcon } from './icons'
 
 export type TextareaPart =
@@ -85,6 +86,8 @@ export const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(fun
   const value = isControlled ? valueProp : uncontrolled
 
   const [focused, setFocused] = React.useState(false)
+
+  useRequiredOptionalWarning('Textarea', required, optional)
 
   const reactId = React.useId()
   const id = idProp ?? `yote-${reactId}`

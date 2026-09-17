@@ -1,6 +1,7 @@
 import * as React from 'react'
 import type { YoteFieldProps } from './types'
 import { useComposedRef } from './lib/use-composed-ref'
+import { useRequiredOptionalWarning } from './lib/warn-exclusive'
 import { AlertIcon, CloseIcon, InfoIcon } from './icons'
 
 export type TagsInputPart =
@@ -129,6 +130,8 @@ export const TagsInput = React.forwardRef<HTMLInputElement, TagsInputProps>(func
   const text = textControlled ? inputValueProp : ownText
 
   const [focused, setFocused] = React.useState(false)
+
+  useRequiredOptionalWarning('TagsInput', required, optional)
 
   /*
    * What just happened to the list, announced.

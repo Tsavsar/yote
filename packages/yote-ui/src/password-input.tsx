@@ -88,7 +88,7 @@ export const PasswordInput = React.forwardRef<HTMLInputElement, PasswordInputPro
       className,
       style,
       requirements = DEFAULT_PASSWORD_REQUIREMENTS,
-      requirementsTitle = 'Must contain at least;',
+      requirementsTitle = 'Must contain at least:',
       showRequirements = true,
       info,
       forgotHref,

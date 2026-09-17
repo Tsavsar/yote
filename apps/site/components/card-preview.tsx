@@ -33,9 +33,26 @@ const LABELS: Record<StateKey, string> = {
 const SEED = '5555555555554444'
 const ERROR_TEXT = 'That card was declined. Try another.'
 
+/*
+ * The hint follows the detected brand, so the snippet has to read it from the
+ * same function the field does. It was a separate string before, which meant
+ * the demo told you to try one number while the code under it named another.
+ */
+function hintFor(brand: CardBrand): string {
+  if (brand === 'unknown') return 'The mark follows the number. Try 5555 5555 5555 4444.'
+  if (brand === 'amex') return 'American Express, so the groups are 4-6-5.'
+  return `${BRAND_NAMES[brand]}. Try an Amex to see it regroup.`
+}
+
 type Flags = { required: boolean; optional: boolean; info: boolean; hint: boolean }
 
-function snippetFor(state: StateKey, size: Size, value: string, f: Flags): string {
+function snippetFor(
+  state: StateKey,
+  size: Size,
+  value: string,
+  f: Flags,
+  brand: CardBrand,
+): string {
   const props = [`size="${size}"`, 'label="Card number"']
   if (f.required) props.push('required')
   if (f.optional) props.push('optional')
@@ -45,7 +62,7 @@ function snippetFor(state: StateKey, size: Size, value: string, f: Flags): strin
     props.push('invalid')
     if (f.hint) props.push(`error="${ERROR_TEXT}"`)
   } else if (f.hint) {
-    props.push('hint="The mark follows the number. Try 3782 822463 10005."')
+    props.push(`hint="${hintFor(brand)}"`)
   }
   if (state === 'disabled') props.push('disabled')
   return `<CardInput\n${props.map((p) => `  ${p}`).join('\n')}\n/>`
@@ -66,7 +83,7 @@ export function CardPreview({
   const [brand, setBrand] = React.useState<CardBrand>('unknown')
   const [flags, setFlags] = React.useState<Flags>({
     required: true,
-    optional: true,
+    optional: false,
     info: true,
     hint: true,
   })
@@ -121,22 +138,14 @@ export function CardPreview({
           value={value}
           onChange={setValue}
           onBrandChange={setBrand}
-          hint={
-            state === 'error' || !flags.hint
-              ? undefined
-              : brand === 'unknown'
-                ? 'The mark follows the number. Try 5555 5555 5555 4444.'
-                : brand === 'amex'
-                  ? 'American Express, so the groups are 4-6-5.'
-                  : `${BRAND_NAMES[brand]}. Try an Amex to see it regroup.`
-          }
+          hint={state === 'error' || !flags.hint ? undefined : hintFor(brand)}
           invalid={state === 'error'}
           error={state === 'error' && flags.hint ? ERROR_TEXT : undefined}
           disabled={state === 'disabled'}
         />
       </Stage>
 
-      <CodeBlock code={snippetFor(state, size, value, flags)} />
+      <CodeBlock code={snippetFor(state, size, value, flags, brand)} />
     </div>
   )
 }

@@ -1,6 +1,7 @@
 import * as React from 'react'
 import type { YoteFieldProps } from './types'
 import { useComposedRef } from './lib/use-composed-ref'
+import { useRequiredOptionalWarning } from './lib/warn-exclusive'
 import { applyMask, digitsOf } from './lib/mask'
 import { AlertIcon, InfoIcon } from './icons'
 import { BRAND_MARKS } from './card-marks'
@@ -121,6 +122,8 @@ export const CardInput = React.forwardRef<HTMLInputElement, CardInputProps>(func
   const value = applyMask(raw, GROUPING[detected])
 
   const [focused, setFocused] = React.useState(false)
+
+  useRequiredOptionalWarning('CardInput', required, optional)
 
   /* Reported rather than returned, so a consumer can swap in their own mark
      without reimplementing the detection. */

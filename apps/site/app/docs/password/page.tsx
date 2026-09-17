@@ -10,7 +10,7 @@ const OWN_PROPS = [
     'the four below',
     'Rules to report on. Pass [] to hide the block.',
   ],
-  ['requirementsTitle', 'ReactNode', '"Must contain at least;"', 'Heading above the list.'],
+  ['requirementsTitle', 'ReactNode', '"Must contain at least:"', 'Heading above the list.'],
   ['showRequirements', 'boolean', 'true', 'Show the strength bar and list.'],
   ['revealable', 'boolean', 'true', 'Show the reveal toggle.'],
   ['forgotHref', 'string', '—', 'Renders the forgot link under the field.'],

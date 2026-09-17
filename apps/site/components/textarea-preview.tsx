@@ -55,7 +55,7 @@ function snippetFor(state: StateKey, size: Size, value: string, f: Flags): strin
     props.push('invalid')
     if (f.hint) props.push(`error="${ERROR_TEXT}"`)
   } else if (f.hint) {
-    props.push('hint="This is a hint text to help users."')
+    props.push('hint="Drag the corner to resize. The counter is yours to cap."')
   }
   if (state === 'disabled') props.push('disabled')
   if (state === 'readOnly') props.push('readOnly')
@@ -79,7 +79,7 @@ export function TextareaPreview({
      snippet and the field, and never independently. */
   const [flags, setFlags] = React.useState<Flags>({
     required: true,
-    optional: true,
+    optional: false,
     info: true,
     label: true,
     hint: true,
@@ -142,7 +142,11 @@ export function TextareaPreview({
           resizable={flags.resize}
           value={value}
           onChange={setValue}
-          hint={state === 'error' || !flags.hint ? undefined : 'This is a hint text to help users.'}
+          hint={
+            state === 'error' || !flags.hint
+              ? undefined
+              : 'Drag the corner to resize. The counter is yours to cap.'
+          }
           invalid={state === 'error'}
           error={state === 'error' && flags.hint ? ERROR_TEXT : undefined}
           disabled={state === 'disabled'}

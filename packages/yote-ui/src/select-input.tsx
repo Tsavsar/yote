@@ -2,6 +2,7 @@ import * as React from 'react'
 import { createPortal } from 'react-dom'
 import type { YoteFieldProps } from './types'
 import { useComposedRef } from './lib/use-composed-ref'
+import { useRequiredOptionalWarning } from './lib/warn-exclusive'
 import {
   useDismiss,
   useListboxKeys,
@@ -111,6 +112,8 @@ export const SelectInput = React.forwardRef<HTMLInputElement, SelectInputProps>(
     const [query, setQuery] = React.useState('')
     const [activeIndex, setActiveIndex] = React.useState(0)
     const [focused, setFocused] = React.useState(false)
+
+    useRequiredOptionalWarning('SelectInput', required, optional)
 
     const selected = options.find((o) => o.value === value)
 

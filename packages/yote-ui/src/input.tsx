@@ -1,6 +1,7 @@
 import * as React from 'react'
 import type { YoteFieldProps } from './types'
 import { useComposedRef } from './lib/use-composed-ref'
+import { useRequiredOptionalWarning } from './lib/warn-exclusive'
 import { AlertIcon, InfoIcon } from './icons'
 
 export type InputPart =
@@ -99,6 +100,8 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(function Inp
   const value = isControlled ? valueProp : uncontrolled
 
   const [focused, setFocused] = React.useState(false)
+
+  useRequiredOptionalWarning('Input', required, optional)
 
   const reactId = React.useId()
   const id = idProp ?? `yote-${reactId}`

@@ -36,7 +36,7 @@ function snippetFor(state: StateKey, size: Size, value: string, f: Flags): strin
     props.push('invalid')
     if (f.hint) props.push(`error="${ERROR_TEXT}"`)
   } else if (f.hint) {
-    props.push('hint="This is a hint text to help users."')
+    props.push('hint="The country and the number come back as two values."')
   }
   if (state === 'disabled') props.push('disabled')
 
@@ -57,7 +57,7 @@ export function PhonePreview({
   const [value, setValue] = React.useState('')
   const [flags, setFlags] = React.useState<Flags>({
     required: true,
-    optional: true,
+    optional: false,
     info: true,
     hint: true,
   })
@@ -111,7 +111,11 @@ export function PhonePreview({
           info={flags.info ? 'We only use this to secure your account.' : undefined}
           value={value}
           onChange={setValue}
-          hint={state === 'error' || !flags.hint ? undefined : 'This is a hint text to help users.'}
+          hint={
+            state === 'error' || !flags.hint
+              ? undefined
+              : 'The country and the number come back as two values.'
+          }
           invalid={state === 'error'}
           error={state === 'error' && flags.hint ? ERROR_TEXT : undefined}
           disabled={state === 'disabled'}

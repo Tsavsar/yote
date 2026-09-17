@@ -46,7 +46,7 @@ function snippetFor(state: StateKey, size: Size, value: string, f: Flags): strin
     props.push('invalid')
     if (f.hint) props.push(`error="${ERROR_TEXT}"`)
   } else if (f.hint) {
-    props.push('hint="This is a hint text to help users."')
+    props.push('hint="As it appears on your card."')
   }
   if (state === 'disabled') props.push('disabled')
 
@@ -67,7 +67,7 @@ export function InputPreview({
   const [value, setValue] = React.useState('')
   const [flags, setFlags] = React.useState<Flags>({
     required: true,
-    optional: true,
+    optional: false,
     info: true,
     hint: true,
     leading: true,
@@ -130,7 +130,7 @@ export function InputPreview({
           prefix={flags.affix ? 'https://' : undefined}
           value={value}
           onChange={setValue}
-          hint={state === 'error' || !flags.hint ? undefined : 'This is a hint text to help users.'}
+          hint={state === 'error' || !flags.hint ? undefined : 'As it appears on your card.'}
           invalid={state === 'error'}
           error={state === 'error' && flags.hint ? ERROR_TEXT : undefined}
           disabled={state === 'disabled'}

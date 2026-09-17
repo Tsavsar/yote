@@ -1,6 +1,7 @@
 import * as React from 'react'
 import type { YoteFieldProps } from './types'
 import { useComposedRef } from './lib/use-composed-ref'
+import { useRequiredOptionalWarning } from './lib/warn-exclusive'
 import { applyMask, digitsOf, slotCount } from './lib/mask'
 import { AlertIcon, CalendarIcon, InfoIcon } from './icons'
 
@@ -97,6 +98,8 @@ export const DateInput = React.forwardRef<HTMLInputElement, DateInputProps>(func
   const value = isControlled ? applyMask(valueProp, pattern) : uncontrolled
 
   const [focused, setFocused] = React.useState(false)
+
+  useRequiredOptionalWarning('DateInput', required, optional)
 
   const reactId = React.useId()
   const id = idProp ?? `yote-${reactId}`

@@ -62,7 +62,7 @@ export function DatePreview({
   const [value, setValue] = React.useState('')
   const [flags, setFlags] = React.useState<Flags>({
     required: true,
-    optional: true,
+    optional: false,
     info: true,
     hint: true,
     shortcut: true,

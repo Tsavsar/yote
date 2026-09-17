@@ -2,6 +2,7 @@ import * as React from 'react'
 import { createPortal } from 'react-dom'
 import type { YoteFieldProps } from './types'
 import { useComposedRef } from './lib/use-composed-ref'
+import { useRequiredOptionalWarning } from './lib/warn-exclusive'
 import { AlertIcon, ChevronDownIcon, InfoIcon, SearchIcon } from './icons'
 import { BUILT_IN_FLAGS } from './flags'
 
@@ -417,6 +418,8 @@ export const PhoneInput = React.forwardRef<HTMLInputElement, PhoneInputProps>(fu
   const selected = countries.find((c) => c.code === countryCode) ?? countries[0] ?? FALLBACK_COUNTRY
 
   const [focused, setFocused] = React.useState(false)
+
+  useRequiredOptionalWarning('PhoneInput', required, optional)
 
   const reactId = React.useId()
   const id = idProp ?? `yote-${reactId}`

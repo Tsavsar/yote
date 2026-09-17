@@ -28,7 +28,7 @@ function snippetFor(state: StateKey, size: Size, value: string, f: Flags): strin
   const props = [`size="${size}"`, 'label="Password"']
   if (value) props.push(`defaultValue="${value}"`)
   if (f.info) props.push('info="Use something you have not used elsewhere."')
-  if (f.forgot) props.push('forgotHref="/reset"')
+  if (f.forgot) props.push('forgotHref="/docs/password#requirements"')
   if (!f.requirements) props.push('showRequirements={false}')
   if (!f.reveal) props.push('revealable={false}')
   // No message on error for now — the red field and bar carry it.
@@ -106,7 +106,8 @@ export function PasswordPreview({
           size={size}
           label="Password"
           info={flags.info ? 'Use something you have not used elsewhere.' : undefined}
-          forgotHref={flags.forgot ? '/reset' : undefined}
+          /* A real page rather than /reset, which does not exist here. */
+          forgotHref={flags.forgot ? '/docs/password#requirements' : undefined}
           showRequirements={flags.requirements}
           revealable={flags.reveal}
           value={value}
