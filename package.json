@@ -2,10 +2,16 @@
   "name": "yote-monorepo",
   "private": true,
   "type": "module",
-  "workspaces": ["packages/*", "apps/*"],
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
   "scripts": {
-    "build": "npm run build --workspace=yote-ui",
-    "dev": "npm run dev --workspace=yote-ui",
-    "typecheck": "npm run typecheck --workspaces --if-present"
+    "build": "npm run build --workspace=site",
+    "build:lib": "npm run build --workspace=yote-ui",
+    "dev": "npm run dev --workspace=site",
+    "start": "npm run start --workspace=site",
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "format": "prettier --write ."
   }
 }
