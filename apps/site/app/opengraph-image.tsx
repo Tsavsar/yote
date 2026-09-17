@@ -1,39 +1,80 @@
 import { ImageResponse } from 'next/og'
-import { SITE_DESCRIPTION, SITE_NAME, SITE_TAGLINE } from '../lib/site'
+import { SITE_NAME } from '../lib/site'
 
-export const alt = `${SITE_NAME}, ${SITE_TAGLINE}`
+export const alt = `${SITE_NAME}, input components for React`
 export const size = { width: 1200, height: 630 }
 export const contentType = 'image/png'
+
+/* The preview stage's grid: 4.8px dots on a 38.5px pitch, scaled to this
+   canvas. Drawn as circles rather than a tiled radial-gradient, because
+   satori paints the gradient once and does not repeat it.
+   It stops above the field rather than running behind it — the grid is the
+   ground the hero sits on, and a dot showing through the card it is under
+   reads as a mistake. */
+const GRID = { pitch: 34, radius: 2.4, height: 200 }
+const DOTS: { x: number; y: number }[] = []
+for (let y = GRID.pitch / 2; y < GRID.height; y += GRID.pitch) {
+  for (let x = GRID.pitch / 2; x < size.width; x += GRID.pitch) DOTS.push({ x, y })
+}
 
 /**
  * The card a link to this site renders as.
  *
- * Generated rather than drawn, so it cannot fall out of step with the
- * tagline, and so there is no binary in the repo to remember to update.
+ * It is the hero: the dot grid the previews sit on, the name inside one of
+ * the fields the library makes, then the pitch. A component library's link
+ * preview should be a component — the pill is the real geometry, the same
+ * radius, hairline and shadow the Input renders, rather than a logo lockup
+ * that could belong to anything.
  *
- * Deliberately the same page the site is: near-black on white, the mark, the
- * sentence. A link preview that looks like the thing it links to is doing the
- * one job it has.
+ * Generated rather than drawn, so it cannot fall out of step with the words
+ * on the page, and so there is no binary in the repo to remember to update.
+ * The mark's paths are copied from public/yote-mark.svg rather than redrawn:
+ * satori cannot rasterise an external file, and the card every link renders
+ * is the wrong place to approximate a logo.
  *
- * The mark's paths are copied from public/yote-mark.svg rather than redrawn.
- * satori cannot rasterise an external file here, and a hand-approximated logo
- * on the card every link renders is the wrong place to be approximate.
+ * Every element states `display: flex`. satori refuses any node with more
+ * than one child that does not, and the error it throws does not say which
+ * node it meant.
  */
 export default function OpengraphImage() {
   return new ImageResponse(
     <div
       style={{
-        width: '100%',
-        height: '100%',
         display: 'flex',
         flexDirection: 'column',
-        justifyContent: 'space-between',
+        justifyContent: 'flex-end',
+        position: 'relative',
+        width: '100%',
+        height: '100%',
         background: '#ffffff',
-        padding: '80px',
+        padding: '0 76px 74px',
       }}
     >
-      <div style={{ display: 'flex', alignItems: 'center', gap: '18px' }}>
-        <svg width="66" height="50" viewBox="0 0 25 19" fill="none">
+      <svg
+        width={size.width}
+        height={GRID.height}
+        style={{ position: 'absolute', top: 0, left: 0 }}
+      >
+        {DOTS.map((dot) => (
+          <circle key={`${dot.x}-${dot.y}`} cx={dot.x} cy={dot.y} r={GRID.radius} fill="#ededed" />
+        ))}
+      </svg>
+
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: '18px',
+          width: '772px',
+          height: '78px',
+          padding: '0 28px',
+          border: '1px solid rgba(0, 0, 0, 0.06)',
+          borderRadius: '20px',
+          background: '#ffffff',
+          boxShadow: '0 2px 4px 0 rgba(54, 54, 54, 0.04)',
+        }}
+      >
+        <svg width="44" height="33" viewBox="0 0 25 19" fill="none">
           <path
             d="M24.0356 10.8833L15.5507 7.82976L15.5451 7.82821C15.0001 7.63366 14.4092 7.76571 14.0008 8.16944C13.5921 8.5728 13.4622 9.15561 13.6618 9.68817L16.7616 18.0496C16.9751 18.6213 17.5275 19 18.1428 19H18.1749C18.8028 18.9862 19.3538 18.5814 19.5435 17.9926L20.3947 15.3738C20.5355 14.9407 20.88 14.6013 21.3196 14.4626L23.9742 13.6251C24.5755 13.4375 24.9871 12.8948 24.9996 12.2736C25.0136 11.6538 24.6244 11.0943 24.0356 10.8833Z"
             fill="#171717"
@@ -43,17 +84,35 @@ export default function OpengraphImage() {
             fill="#171717"
           />
         </svg>
-        <div style={{ fontSize: 58, fontWeight: 600, color: '#171717', letterSpacing: '-0.5px' }}>
-          {SITE_NAME}
-        </div>
+        <div style={{ display: 'flex', fontSize: 32, color: '#171717' }}>{SITE_NAME} inputs</div>
       </div>
 
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-        <div style={{ fontSize: 62, color: '#171717', letterSpacing: '-1px', lineHeight: 1.12 }}>
-          {SITE_TAGLINE.replace(/\.$/, '')}
+      <div
+        style={{
+          display: 'flex',
+          fontSize: 66,
+          color: '#171717',
+          letterSpacing: '-1.6px',
+          marginTop: '44px',
+        }}
+      >
+        input components for React.
+      </div>
+
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          fontSize: 27,
+          color: '#5c5c5c',
+          marginTop: '22px',
+        }}
+      >
+        <div style={{ display: 'flex' }}>
+          Every state designed, every transition tuned, every edge case handled.
         </div>
-        <div style={{ fontSize: 28, color: '#5c5c5c', lineHeight: 1.4, maxWidth: 820 }}>
-          {SITE_DESCRIPTION}
+        <div style={{ display: 'flex', marginTop: '10px' }}>
+          Install it and the field already feels right.
         </div>
       </div>
     </div>,
