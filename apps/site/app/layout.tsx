@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { Analytics } from '@vercel/analytics/next'
 import { SITE_DESCRIPTION, SITE_NAME, SITE_TAGLINE, SITE_URL } from '../lib/site'
 import { IBM_Plex_Mono } from 'next/font/google'
 // globals.css first, and the order is not cosmetic. It opens with the
@@ -73,7 +74,16 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <head>
         <script dangerouslySetInnerHTML={{ __html: THEME_SCRIPT }} />
       </head>
-      <body>{children}</body>
+      <body>
+        {children}
+        {/*
+         * Vercel's own analytics: a page-view beacon, no cookies and no
+         * cross-site identifier, so there is nothing here that needs a
+         * consent banner in front of it. It is inert outside a Vercel
+         * deployment, so local development sends nothing.
+         */}
+        <Analytics />
+      </body>
     </html>
   )
 }
