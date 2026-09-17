@@ -5,6 +5,7 @@ import { PinInput } from 'yote-ui'
 import { CodeBlock } from './code-block'
 import { MoreMenu, Toggle } from './more-controls'
 import { Pill } from './state-switcher'
+import { Stage } from './stage'
 
 /**
  * The preview shell, shared by the landing page and (later) the docs.
@@ -49,8 +50,12 @@ function snippetFor(
   if (value) props.push(`defaultValue="${value}"`)
   if (mask) props.push('mask')
   if (state === 'active') props.push('autoFocus')
-  if (state === 'error') props.push(`error="${ERROR_TEXT}"`)
-  else if (showHint) props.push('hint="Enter the code we sent you."')
+  if (state === 'error') {
+    props.push('invalid')
+    if (showHint) props.push(`error="${ERROR_TEXT}"`)
+  } else if (showHint) {
+    props.push('hint="Enter the code we sent you."')
+  }
   if (state === 'disabled') props.push('disabled')
   props.push('onComplete={verify}')
 
@@ -212,7 +217,7 @@ export function Preview({
         </Row>
       </div>
 
-      <div className="stage">
+      <Stage inner={false}>
         <PinInput
           ref={inputRef}
           length={length}
@@ -221,11 +226,12 @@ export function Preview({
           mask={mask}
           label={showLabel ? 'Verification code' : undefined}
           hint={showHint ? 'Enter the code we sent you.' : undefined}
-          error={state === 'error' ? ERROR_TEXT : undefined}
+          invalid={state === 'error'}
+          error={state === 'error' && showHint ? ERROR_TEXT : undefined}
           errorKey={errorKey}
           disabled={state === 'disabled'}
         />
-      </div>
+      </Stage>
 
       <CodeBlock code={snippetFor(state, length, value, mask, showLabel, showHint)} />
     </div>

@@ -5,6 +5,7 @@ import { Textarea } from 'yote-ui'
 import { CodeBlock } from './code-block'
 import { MoreMenu, Toggle } from './more-controls'
 import { Pill } from './state-switcher'
+import { Stage } from './stage'
 
 /**
  * The textarea's live preview, built on the same shell as the digit input's.
@@ -50,8 +51,12 @@ function snippetFor(state: StateKey, size: Size, value: string, f: Flags): strin
   if (f.counter) props.push('maxLength={200}')
   else props.push('showCounter={false}')
   if (!f.resize) props.push('resizable={false}')
-  if (state === 'error') props.push(`error="${ERROR_TEXT}"`)
-  else if (f.hint) props.push('hint="This is a hint text to help users."')
+  if (state === 'error') {
+    props.push('invalid')
+    if (f.hint) props.push(`error="${ERROR_TEXT}"`)
+  } else if (f.hint) {
+    props.push('hint="This is a hint text to help users."')
+  }
   if (state === 'disabled') props.push('disabled')
   if (state === 'readOnly') props.push('readOnly')
 
@@ -125,28 +130,25 @@ export function TextareaPreview({
         </div>
       </div>
 
-      <div className="stage stage-tall">
-        <div className="stage-inner">
-          <Textarea
-            size={size}
-            label={flags.label ? 'Input area' : undefined}
-            required={flags.required}
-            optional={flags.optional}
-            info={flags.info ? 'We only use this to improve the product.' : undefined}
-            maxLength={flags.counter ? 200 : undefined}
-            showCounter={flags.counter}
-            resizable={flags.resize}
-            value={value}
-            onChange={setValue}
-            hint={
-              state === 'error' || !flags.hint ? undefined : 'This is a hint text to help users.'
-            }
-            error={state === 'error' ? ERROR_TEXT : undefined}
-            disabled={state === 'disabled'}
-            readOnly={state === 'readOnly'}
-          />
-        </div>
-      </div>
+      <Stage className="stage-tall">
+        <Textarea
+          size={size}
+          label={flags.label ? 'Input area' : undefined}
+          required={flags.required}
+          optional={flags.optional}
+          info={flags.info ? 'We only use this to improve the product.' : undefined}
+          maxLength={flags.counter ? 200 : undefined}
+          showCounter={flags.counter}
+          resizable={flags.resize}
+          value={value}
+          onChange={setValue}
+          hint={state === 'error' || !flags.hint ? undefined : 'This is a hint text to help users.'}
+          invalid={state === 'error'}
+          error={state === 'error' && flags.hint ? ERROR_TEXT : undefined}
+          disabled={state === 'disabled'}
+          readOnly={state === 'readOnly'}
+        />
+      </Stage>
 
       <CodeBlock code={snippetFor(state, size, value, flags)} />
     </div>

@@ -5,6 +5,7 @@ import { PasswordInput } from 'yote-ui'
 import { CodeBlock } from './code-block'
 import { MoreMenu, Toggle } from './more-controls'
 import { Pill } from './state-switcher'
+import { Stage } from './stage'
 
 const STATES = ['idle', 'used', 'error', 'disabled'] as const
 type StateKey = (typeof STATES)[number]
@@ -100,22 +101,20 @@ export function PasswordPreview({
         </div>
       </div>
 
-      <div className="stage stage-taller">
-        <div className="stage-inner">
-          <PasswordInput
-            size={size}
-            label="Password"
-            info={flags.info ? 'Use something you have not used elsewhere.' : undefined}
-            forgotHref={flags.forgot ? '/reset' : undefined}
-            showRequirements={flags.requirements}
-            revealable={flags.reveal}
-            value={value}
-            onChange={setValue}
-            invalid={state === 'error'}
-            disabled={state === 'disabled'}
-          />
-        </div>
-      </div>
+      <Stage className="stage-taller">
+        <PasswordInput
+          size={size}
+          label="Password"
+          info={flags.info ? 'Use something you have not used elsewhere.' : undefined}
+          forgotHref={flags.forgot ? '/reset' : undefined}
+          showRequirements={flags.requirements}
+          revealable={flags.reveal}
+          value={value}
+          onChange={setValue}
+          invalid={state === 'error'}
+          disabled={state === 'disabled'}
+        />
+      </Stage>
 
       <CodeBlock code={snippetFor(state, size, value, flags)} />
     </div>

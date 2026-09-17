@@ -13,7 +13,20 @@
  */
 
 @layer yote {
-  :root {
+  /*
+   * `[data-theme='light']` sits beside `:root` rather than under it so the
+   * palette can be scoped to a container, not only to the document. That is
+   * what lets a single preview be flipped to the other theme while the page
+   * around it stays put — the container redeclares the whole set, and every
+   * token below it resolves against the container instead of the root.
+   *
+   * It has to work in both directions, which is why light is a real block and
+   * not just the absence of dark: a light preview inside a dark page cannot
+   * inherit its way back to the root's values once an ancestor has overridden
+   * them.
+   */
+  :root,
+  [data-theme='light'] {
     /* Surfaces and text */
     --yote-bg-default: #ffffff;
     --yote-bg-surface: #f7f7f7;
@@ -117,7 +130,7 @@
     }
   }
 
-  :root[data-theme='dark'] {
+  [data-theme='dark'] {
     --yote-bg-default: #0c0c0c;
     --yote-bg-surface: #161616;
     --yote-stroke-soft: rgba(255, 255, 255, 0.08);

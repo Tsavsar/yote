@@ -5,6 +5,7 @@ import { PhoneInput } from 'yote-ui'
 import { CodeBlock } from './code-block'
 import { MoreMenu, Toggle } from './more-controls'
 import { Pill } from './state-switcher'
+import { Stage } from './stage'
 
 const STATES = ['idle', 'used', 'error', 'disabled'] as const
 type StateKey = (typeof STATES)[number]
@@ -31,8 +32,12 @@ function snippetFor(state: StateKey, size: Size, value: string, f: Flags): strin
   if (f.info) props.push('info="We only use this to secure your account."')
   if (value) props.push(`defaultValue="${value}"`)
   props.push('defaultCountry="US"')
-  if (state === 'error') props.push(`error="${ERROR_TEXT}"`)
-  else if (f.hint) props.push('hint="This is a hint text to help users."')
+  if (state === 'error') {
+    props.push('invalid')
+    if (f.hint) props.push(`error="${ERROR_TEXT}"`)
+  } else if (f.hint) {
+    props.push('hint="This is a hint text to help users."')
+  }
   if (state === 'disabled') props.push('disabled')
 
   return `<PhoneInput\n${props.map((p) => `  ${p}`).join('\n')}\n/>`
@@ -97,24 +102,21 @@ export function PhonePreview({
         </div>
       </div>
 
-      <div className="stage">
-        <div className="stage-inner">
-          <PhoneInput
-            size={size}
-            label="Phone number"
-            required={flags.required}
-            optional={flags.optional}
-            info={flags.info ? 'We only use this to secure your account.' : undefined}
-            value={value}
-            onChange={setValue}
-            hint={
-              state === 'error' || !flags.hint ? undefined : 'This is a hint text to help users.'
-            }
-            error={state === 'error' ? ERROR_TEXT : undefined}
-            disabled={state === 'disabled'}
-          />
-        </div>
-      </div>
+      <Stage>
+        <PhoneInput
+          size={size}
+          label="Phone number"
+          required={flags.required}
+          optional={flags.optional}
+          info={flags.info ? 'We only use this to secure your account.' : undefined}
+          value={value}
+          onChange={setValue}
+          hint={state === 'error' || !flags.hint ? undefined : 'This is a hint text to help users.'}
+          invalid={state === 'error'}
+          error={state === 'error' && flags.hint ? ERROR_TEXT : undefined}
+          disabled={state === 'disabled'}
+        />
+      </Stage>
 
       <CodeBlock code={snippetFor(state, size, value, flags)} />
     </div>
