@@ -2270,10 +2270,42 @@
   /* ---- footer --------------------------------------------------------- */
 
   .footer {
+    display: flex;
+    align-items: center;
+    gap: 10px;
     max-width: var(--page-max);
     margin: 0 auto;
     padding: 0 24px 48px;
     font-size: 13px;
+    color: var(--yote-text-soft);
+  }
+
+  /* The one outbound link on the page, underlined rather than coloured: the
+     page has no accent and colour would be the only one on it. */
+  .footer-link {
+    color: var(--yote-text-sub);
+    text-decoration: underline;
+    text-decoration-color: var(--yote-text-disabled);
+    text-underline-offset: 3px;
+    transition: text-decoration-color var(--yote-duration) ease;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .footer-link:hover {
+      color: var(--yote-text-strong);
+      text-decoration-color: var(--yote-text-strong);
+    }
+  }
+
+  /* Same chip as the version beside the wordmark, since it says the same kind
+     of thing: a fact about the project rather than something to press. */
+  .footer-stamp {
+    padding: 1px 6px;
+    border-radius: 6px;
+    background: var(--yote-bg-surface);
+    font-size: 11px;
+    line-height: 16px;
+    font-variant-numeric: tabular-nums;
     color: var(--yote-text-soft);
   }
 

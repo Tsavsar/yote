@@ -2,11 +2,13 @@
   "name": "site",
   "private": true,
   "scripts": {
-    "predev": "npm run build --workspace=yote-ui && node scripts/build-search-index.mjs",
+    "generate": "node scripts/build-search-index.mjs && node scripts/build-site-meta.mjs",
+    "predev": "npm run build --workspace=yote-ui && node scripts/build-search-index.mjs && node scripts/build-site-meta.mjs",
     "dev": "next dev -p 3210",
-    "prebuild": "npm run build --workspace=yote-ui && node scripts/build-search-index.mjs",
+    "prebuild": "npm run build --workspace=yote-ui && node scripts/build-search-index.mjs && node scripts/build-site-meta.mjs",
     "build": "next build",
     "start": "next start",
+    "pretypecheck": "node scripts/build-search-index.mjs && node scripts/build-site-meta.mjs",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {

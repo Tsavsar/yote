@@ -1,5 +1,6 @@
 import { Reveal } from '../components/reveal'
 import { Install } from '../components/install'
+import { LAST_UPDATED } from '../components/site-meta'
 import { InputPreview } from '../components/input-preview'
 import { CardPreview } from '../components/card-preview'
 import { DatePreview } from '../components/date-preview'
@@ -104,8 +105,24 @@ export default function LandingPage() {
 
       <footer className="footer">
         <span>
-          Yöte, from the Finnish <em>syöte</em>, input.
+          Yöte by{' '}
+          <a className="footer-link" href="https://shatermt.com">
+            Tsavsar
+          </a>
         </span>
+        {/*
+         * The commit date, stamped at build time. `dateTime` carries the full
+         * timestamp for anything reading the page, while the text stays the
+         * short form a person actually wants.
+         */}
+        <time className="footer-stamp" dateTime={LAST_UPDATED}>
+          Updated{' '}
+          {new Date(LAST_UPDATED).toLocaleDateString('en-GB', {
+            day: 'numeric',
+            month: 'short',
+            year: 'numeric',
+          })}
+        </time>
       </footer>
     </>
   )

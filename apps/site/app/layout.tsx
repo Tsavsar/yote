@@ -34,7 +34,11 @@ export const metadata: Metadata = {
    * sets its own. A middle dot rather than a dash, and the name second, so a
    * tab strip of open docs pages reads as the page you are on.
    */
-  title: { default: `${SITE_NAME}, ${SITE_TAGLINE.toLowerCase()}`, template: `%s · ${SITE_NAME}` },
+  title: {
+    /* Not lowercased: it swallowed the capital in React. */
+    default: `${SITE_NAME}, ${SITE_TAGLINE.replace(/\.$/, '')}`,
+    template: `%s · ${SITE_NAME}`,
+  },
   description: SITE_DESCRIPTION,
   applicationName: SITE_NAME,
   alternates: { canonical: '/' },
