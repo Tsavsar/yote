@@ -1837,7 +1837,7 @@
     flex-direction: column;
     width: 100%;
     max-width: 520px;
-    max-height: min(420px, 70vh);
+    max-height: min(480px, 74vh);
     border: 1px solid var(--yote-popover-border);
     border-radius: 16px;
     background: var(--yote-popover-bg);
@@ -1893,11 +1893,16 @@
     background: var(--scroll-thumb);
   }
 
+  /*
+   * Three columns: what kind of thing it is, the thing itself with the
+   * sentence your term appears in, and which page it lives on. The snippet is
+   * the point — a title alone makes you open a page to find out whether it
+   * was the right one.
+   */
   .search-result {
     display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-    gap: 12px;
+    align-items: flex-start;
+    gap: 10px;
     padding: 9px 10px;
     border-radius: 10px;
     cursor: pointer;
@@ -1908,14 +1913,53 @@
     background: var(--yote-popover-active);
   }
 
+  .search-result-icon {
+    display: inline-grid;
+    place-items: center;
+    flex: none;
+    /* Optically centres the 15px mark against the title's line box. */
+    margin-top: 2px;
+    color: var(--yote-text-soft);
+  }
+
+  .search-result-body {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
   .search-result-title {
     font-size: 14px;
+    line-height: 20px;
+    color: var(--yote-text-strong);
+  }
+
+  /* One line, clipped. Two lines of context per result turns seven results
+     into a wall and stops you scanning them. */
+  .search-result-snippet {
+    overflow: hidden;
+    font-size: 12px;
+    line-height: 17px;
+    color: var(--yote-text-soft);
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  /* The match, carried by weight and ink rather than a highlighter: a filled
+     background on every hit turns the list into a smear. */
+  .search-mark {
+    background: none;
+    font-weight: 500;
     color: var(--yote-text-strong);
   }
 
   .search-result-page {
     flex: none;
+    margin-top: 2px;
     font-size: 12px;
+    line-height: 17px;
     color: var(--yote-text-soft);
   }
 

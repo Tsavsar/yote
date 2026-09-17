@@ -10,10 +10,11 @@
  * lists, table rows, prop names and the code samples. Searching "visa" has to
  * find the card page even though no heading says visa.
  *
- * Body text is stored as a deduplicated bag of words rather than the prose
- * itself. The matcher only ever asks "does this contain that", so the
- * sentences are dead weight on every page load, and one copy of "validation"
- * answers as well as nine.
+ * Body text is the real prose now, not a deduplicated bag of words. Words
+ * were enough to decide whether something matched, but not to show what
+ * matched — a result that quotes the sentence your term appears in tells you
+ * whether to open it. The index is loaded on demand when the palette first
+ * opens, so the extra weight never lands on a page view that does not search.
  *
  * Runs as `prebuild` and `predev`, so it cannot be stale in either.
  */
@@ -24,29 +25,45 @@ import { fileURLToPath } from 'node:url'
 const root = join(dirname(fileURLToPath(import.meta.url)), '..')
 const docsDir = join(root, 'app', 'docs')
 
-/** Words that are in every page and so rank nothing. */
-const STOP = new Set(
-  `a an and are as at be been but by can for from has have if in into is it its of on or so than
-   that the their them then there these they this to too was were what when which while who why
-   with you your it's not no do does`.split(/\s+/),
-)
-
-/** Strips JSX and JS syntax down to the words a reader would see. */
-function words(source) {
-  return source
-    .replace(/^import .*$/gm, '')
-    .replace(/className=(".*?"|\{.*?\})/gs, ' ')
-    .replace(/(href|id|filename|key|rows|head)=(".*?"|\{.*?\})/gs, ' ')
-    .replace(/&apos;|&quot;|&ldquo;|&rdquo;|&amp;|&times;/g, ' ')
-    .replace(/<[^>]*>/g, ' ')
-    .replace(/[^A-Za-z0-9-]+/g, ' ')
-    .toLowerCase()
-    .split(/\s+/)
-    .filter((word) => word.length > 1 && word.length < 32 && !STOP.has(word))
-}
-
-function unique(list) {
-  return [...new Set(list)].sort().join(' ')
+/**
+ * Reduces a page's source to the words a reader would see.
+ *
+ * Two kinds of content live in these files: JSX, where the text sits between
+ * tags, and plain data arrays above it holding the rows of every table on the
+ * page. Both matter — "visa" only appears on the card page as a table row —
+ * so declaration lines are dropped and the quoted strings inside them kept.
+ */
+function prose(source) {
+  return (
+    source
+      .replace(/^import .*$/gm, ' ')
+      .replace(/^export (const metadata|default function).*$/gm, ' ')
+      /* Declaration openers: `const OWN_PROPS = [`, `const X: T[] = [`. The
+         rows underneath are content and stay. */
+      .replace(
+        /^\s*(export\s+)?(const|let|var|interface|type|function)\s+[\w$]+[^\n]*?[=[{(]\s*$/gm,
+        ' ',
+      )
+      .replace(/className=(".*?"|\{.*?\})/gs, ' ')
+      .replace(/(href|id|filename|key|rows|head|dateTime)=(".*?"|\{.*?\})/gs, ' ')
+      .replace(/<[^>]*>/g, ' ')
+      .replace(/&apos;/g, "'")
+      .replace(/&quot;/g, '"')
+      .replace(/&amp;/g, '&')
+      .replace(/&times;/g, '×')
+      .replace(/&ldquo;|&rdquo;/g, '"')
+      .replace(/&lt;/g, '<')
+      .replace(/&gt;/g, '>')
+      /* Syntax the eye never sees: brackets, quotes, the separators between
+         array cells. */
+      .replace(/[[\]{}()`|]/g, ' ')
+      .replace(/['"]/g, '')
+      .replace(/\s*,\s*/g, ', ')
+      .replace(/\s+/g, ' ')
+      .replace(/(,\s*)+/g, ', ')
+      .replace(/^[\s,.]+/, '')
+      .trim()
+  )
 }
 
 /** Heading text, with the JSX taken out. */
@@ -80,7 +97,7 @@ for (const { href, path } of await pageFiles(docsDir)) {
 
   /* The page entry carries every word on it, including the data declared
      above the JSX — the props tables and the brand table live there. */
-  entries.push({ href, title, section: null, text: unique(words(src)) })
+  entries.push({ href, title, section: null, text: prose(src) })
 
   /* Then one per section, holding only what falls under that heading, so a
      hit can land on the part of the page that answers it. */
@@ -92,7 +109,7 @@ for (const { href, path } of await pageFiles(docsDir)) {
       href: `${href}#${match[1]}`,
       title,
       section: plain(match[2]),
-      text: unique(words(src.slice(start, end))),
+      text: prose(src.slice(start, end)),
     })
   })
 }
@@ -105,7 +122,7 @@ export interface SearchEntry {
   href: string
   title: string
   section: string | null
-  /** Deduplicated words from that page or section, for matching only. */
+  /** The page or section's own prose, for matching and for quoting back. */
   text: string
 }
 

@@ -4,9 +4,42 @@ import * as React from 'react'
 import { createPortal } from 'react-dom'
 import { useRouter } from 'next/navigation'
 import { SearchIcon } from 'yote-ui'
-import { SEARCH_INDEX, type SearchEntry } from './search-index'
+import type { SearchEntry } from './search-index'
 
-const MAX_RESULTS = 8
+const MAX_RESULTS = 7
+const SNIPPET = 130
+
+/** A page, versus a section inside one. */
+function PageIcon() {
+  return (
+    <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+      <path
+        d="M9.5 1.75H4.5A1.25 1.25 0 0 0 3.25 3v10A1.25 1.25 0 0 0 4.5 14.25h7A1.25 1.25 0 0 0 12.75 13V5m-3.25-3.25L12.75 5m-3.25-3.25V5h3.25"
+        stroke="currentColor"
+        strokeWidth="1.2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  )
+}
+
+function SectionIcon() {
+  return (
+    <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+      <path
+        d="M6.25 2.5 4.75 13.5M11.25 2.5l-1.5 11M2.75 5.75h11M2.25 10.25h11"
+        stroke="currentColor"
+        strokeWidth="1.2"
+        strokeLinecap="round"
+      />
+    </svg>
+  )
+}
+
+function escapeRegExp(value: string): string {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+}
 
 /**
  * Scores an entry against a query.
@@ -52,18 +85,44 @@ function score(entry: SearchEntry, words: string[]): number {
   return entry.section === null ? total : total + 3
 }
 
-function useResults(query: string): SearchEntry[] {
-  return React.useMemo(() => {
-    const words = query.toLowerCase().split(/\s+/).filter(Boolean)
-    if (words.length === 0) {
-      return SEARCH_INDEX.filter((entry) => entry.section === null).slice(0, MAX_RESULTS)
-    }
-    return SEARCH_INDEX.map((entry) => ({ entry, rank: score(entry, words) }))
-      .filter((hit) => hit.rank > 0)
-      .sort((a, b) => b.rank - a.rank)
-      .slice(0, MAX_RESULTS)
-      .map((hit) => hit.entry)
-  }, [query])
+/**
+ * The sentence the match sits in, cut to fit.
+ *
+ * Centred slightly left of the hit so there is room to read forward, which is
+ * the direction the answer usually lies. Falls back to the opening of the
+ * text when the match was in the title and the body has nothing to show.
+ */
+function snippet(text: string, words: string[]): string {
+  const lower = text.toLowerCase()
+  let at = -1
+  for (const word of words) {
+    const found = lower.indexOf(word)
+    if (found >= 0 && (at < 0 || found < at)) at = found
+  }
+
+  if (at < 0) return text.length > SNIPPET ? `${text.slice(0, SNIPPET).trimEnd()}…` : text
+
+  const start = Math.max(0, at - Math.floor(SNIPPET / 3))
+  const end = Math.min(text.length, start + SNIPPET)
+  return `${start > 0 ? '…' : ''}${text.slice(start, end).trim()}${end < text.length ? '…' : ''}`
+}
+
+function Highlight({ text, words }: { text: string; words: string[] }) {
+  if (words.length === 0) return <>{text}</>
+  const pattern = new RegExp(`(${words.map(escapeRegExp).join('|')})`, 'ig')
+  return (
+    <>
+      {text.split(pattern).map((part, index) =>
+        words.includes(part.toLowerCase()) ? (
+          <mark key={index} className="search-mark">
+            {part}
+          </mark>
+        ) : (
+          <React.Fragment key={index}>{part}</React.Fragment>
+        ),
+      )}
+    </>
+  )
 }
 
 /**
@@ -81,16 +140,55 @@ function useResults(query: string): SearchEntry[] {
  * No open or close animation. This is a thing you hit dozens of times an
  * hour; anything that has to play first makes the whole site feel slower, and
  * Raycast is right about that.
+ *
+ * The index is imported on first open rather than with the page. It is the
+ * prose of every docs page, which is worth carrying to answer a search and
+ * not worth carrying on a page view that never runs one.
  */
 export function Search({ trigger = true }: { trigger?: boolean }) {
   const router = useRouter()
   const [open, setOpen] = React.useState(false)
   const [query, setQuery] = React.useState('')
   const [active, setActive] = React.useState(0)
+  const [index, setIndex] = React.useState<SearchEntry[] | null>(null)
 
   const inputRef = React.useRef<HTMLInputElement>(null)
   const listRef = React.useRef<HTMLUListElement>(null)
-  const results = useResults(query)
+
+  const words = React.useMemo(() => query.toLowerCase().split(/\s+/).filter(Boolean), [query])
+
+  const results = React.useMemo(() => {
+    if (index === null) return []
+    if (words.length === 0) {
+      return index
+        .filter((entry) => entry.section === null)
+        .slice(0, MAX_RESULTS)
+        .map((entry) => ({ entry, quote: snippet(entry.text, words) }))
+    }
+
+    const ranked = index
+      .map((entry) => ({ entry, rank: score(entry, words) }))
+      .filter((hit) => hit.rank > 0)
+      .sort((a, b) => b.rank - a.rank)
+
+    /*
+     * A page's text contains its sections' text, so a hit buried in the body
+     * surfaces twice: once as the section that discusses it, once as the page
+     * that contains it, quoting the very same sentence. Deduplicating on the
+     * quote drops the second, and because the list is already ranked the one
+     * that survives is the more specific of the two.
+     */
+    const seen = new Set<string>()
+    const out: { entry: SearchEntry; quote: string }[] = []
+    for (const hit of ranked) {
+      const quote = snippet(hit.entry.text, words)
+      if (seen.has(quote)) continue
+      seen.add(quote)
+      out.push({ entry: hit.entry, quote })
+      if (out.length === MAX_RESULTS) break
+    }
+    return out
+  }, [index, words])
 
   React.useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
@@ -102,6 +200,17 @@ export function Search({ trigger = true }: { trigger?: boolean }) {
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
   }, [])
+
+  React.useEffect(() => {
+    if (!open || index !== null) return
+    let live = true
+    import('./search-index').then((module) => {
+      if (live) setIndex(module.SEARCH_INDEX)
+    })
+    return () => {
+      live = false
+    }
+  }, [open, index])
 
   React.useEffect(() => {
     if (!open) {
@@ -149,7 +258,7 @@ export function Search({ trigger = true }: { trigger?: boolean }) {
         break
       case 'Enter':
         event.preventDefault()
-        go(results[active])
+        go(results[active]?.entry)
         break
       case 'Escape':
         event.preventDefault()
@@ -170,13 +279,6 @@ export function Search({ trigger = true }: { trigger?: boolean }) {
         </button>
       ) : null}
 
-      {/*
-       * Portalled to the body. The trigger lives in the docs sidebar, which is
-       * `position: sticky` and therefore a stacking context of its own, so a
-       * fixed overlay inside it still paints under anything later on the page
-       * that has a z-index. Here that meant the control pills sat on top of
-       * the dialog.
-       */}
       {open
         ? createPortal(
             <div
@@ -214,25 +316,33 @@ export function Search({ trigger = true }: { trigger?: boolean }) {
                 </div>
 
                 <ul className="search-results" id="search-results" role="listbox" ref={listRef}>
-                  {results.map((entry, index) => (
+                  {results.map(({ entry, quote }, position) => (
                     <li
                       key={entry.href}
-                      id={`search-${index}`}
+                      id={`search-${position}`}
                       role="option"
-                      aria-selected={index === active}
+                      aria-selected={position === active}
                       className="search-result"
-                      data-active={index === active || undefined}
+                      data-active={position === active || undefined}
                       onPointerDown={(event) => event.preventDefault()}
-                      onPointerEnter={() => setActive(index)}
+                      onPointerEnter={() => setActive(position)}
                       onClick={() => go(entry)}
                     >
-                      <span className="search-result-title">{entry.section ?? entry.title}</span>
-                      {entry.section !== null ? (
-                        <span className="search-result-page">{entry.title}</span>
-                      ) : null}
+                      <span className="search-result-icon">
+                        {entry.section === null ? <PageIcon /> : <SectionIcon />}
+                      </span>
+                      <span className="search-result-body">
+                        <span className="search-result-title">{entry.section ?? entry.title}</span>
+                        <span className="search-result-snippet">
+                          <Highlight text={quote} words={words} />
+                        </span>
+                      </span>
+                      <span className="search-result-page">
+                        {entry.section === null ? 'Page' : entry.title}
+                      </span>
                     </li>
                   ))}
-                  {results.length === 0 ? (
+                  {index !== null && results.length === 0 ? (
                     <li className="search-empty">Nothing matches &ldquo;{query}&rdquo;</li>
                   ) : null}
                 </ul>
