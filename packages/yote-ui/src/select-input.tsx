@@ -89,7 +89,7 @@ export const SelectInput = React.forwardRef<HTMLInputElement, SelectInputProps>(
       info,
       emptyLabel = 'No match',
       id: idProp,
-      placeholder = 'Placeholder text...',
+      placeholder = 'Select an option',
       'aria-describedby': ariaDescribedByProp,
       onFocus,
       onBlur,
@@ -319,10 +319,10 @@ export const SelectInput = React.forwardRef<HTMLInputElement, SelectInputProps>(
         >
           {message != null ? (
             showError ? (
-              <AlertIcon />
+              <AlertIcon size={14} />
             ) : (
               <span className="yote-message-icon yote-message-icon-sm">
-                <InfoIcon size={16} />
+                <InfoIcon size={14} />
               </span>
             )
           ) : null}

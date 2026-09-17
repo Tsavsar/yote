@@ -224,10 +224,10 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(function Inp
       >
         {message != null ? (
           showError ? (
-            <AlertIcon />
+            <AlertIcon size={14} />
           ) : (
             <span className="yote-message-icon yote-message-icon-sm">
-              <InfoIcon size={16} />
+              <InfoIcon size={14} />
             </span>
           )
         ) : null}

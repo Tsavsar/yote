@@ -327,7 +327,7 @@ function CountrySelect({
                     setQuery(e.target.value)
                     setActiveIndex(0)
                   }}
-                  placeholder="Search country or code..."
+                  placeholder="Search country or code"
                   role="combobox"
                   aria-expanded="true"
                   aria-controls={listId}
@@ -530,10 +530,10 @@ export const PhoneInput = React.forwardRef<HTMLInputElement, PhoneInputProps>(fu
       >
         {message != null ? (
           showError ? (
-            <AlertIcon />
+            <AlertIcon size={14} />
           ) : (
             <span className="yote-message-icon yote-message-icon-sm">
-              <InfoIcon size={16} />
+              <InfoIcon size={14} />
             </span>
           )
         ) : null}

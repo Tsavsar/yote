@@ -105,7 +105,7 @@ export const TagsInput = React.forwardRef<HTMLInputElement, TagsInputProps>(func
     info,
     removeLabel = (tag) => `Remove ${tag}`,
     id: idProp,
-    placeholder = 'Placeholder text...',
+    placeholder = 'Add a tag',
     'aria-describedby': ariaDescribedByProp,
     onFocus,
     onBlur,
@@ -312,10 +312,10 @@ export const TagsInput = React.forwardRef<HTMLInputElement, TagsInputProps>(func
       >
         {message != null ? (
           showError ? (
-            <AlertIcon />
+            <AlertIcon size={14} />
           ) : (
             <span className="yote-message-icon yote-message-icon-sm">
-              <InfoIcon size={16} />
+              <InfoIcon size={14} />
             </span>
           )
         ) : null}

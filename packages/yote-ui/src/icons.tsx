@@ -63,11 +63,11 @@ export function ResizeIcon() {
  * are not symmetric, so centring it would land half a pixel low. The translate
  * reproduces the frame exactly.
  */
-export function AlertIcon() {
+export function AlertIcon({ size = 20 }: { size?: number }) {
   return (
     <svg
-      width="20"
-      height="20"
+      width={size}
+      height={size}
       viewBox="0 0 20 20"
       fill="none"
       aria-hidden="true"

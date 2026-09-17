@@ -29,7 +29,6 @@ const ACCESS = [
 const SNIPPETS: Record<Kind, string> = {
   dropdown: `<SelectInput
   label="Country"
-  leading={<UserIcon />}
   options={[
     { value: 'fi', label: 'Finland' },
     { value: 'se', label: 'Sweden' },
@@ -71,8 +70,8 @@ export function SelectPreview() {
         {kind === 'dropdown' ? (
           <SelectInput
             label="Country"
-            leading={<UserIcon />}
             options={COUNTRIES}
+            placeholder="Search countries"
             hint="Type to filter. The field is the search."
           />
         ) : (

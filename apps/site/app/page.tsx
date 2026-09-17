@@ -1,3 +1,5 @@
+import { HeroDemo } from '../components/hero-demo'
+import { Reveal } from '../components/reveal'
 import { Install } from '../components/install'
 import { InputPreview } from '../components/input-preview'
 import { PasswordPreview } from '../components/password-preview'
@@ -29,41 +31,43 @@ export default function LandingPage() {
           </p>
         </section>
 
+        <HeroDemo />
+
         <Install />
 
-        <section className="showcase">
+        <Reveal>
           <InputPreview
             title="Text input"
             description="One line, with room at either end for a mark or an affix"
           />
-        </section>
+        </Reveal>
 
-        <section className="showcase">
+        <Reveal>
           <Preview title="Digit input" description="Inputs for codes, keys, pins, passwords etcs" />
-        </section>
+        </Reveal>
 
-        <section className="showcase">
+        <Reveal>
           <TextareaPreview
             title="Text area"
             description="Multi-line entry, with a counter and a drag handle"
           />
-        </section>
+        </Reveal>
 
-        <section className="showcase">
+        <Reveal>
           <PasswordPreview
             title="Password"
             description="Masked entry, with a reveal toggle and live requirements"
           />
-        </section>
+        </Reveal>
 
-        <section className="showcase">
+        <Reveal>
           <PhonePreview
             title="Phone number"
             description="A dialling country and a national number, in one field"
           />
-        </section>
+        </Reveal>
 
-        <section className="showcase">
+        <Reveal>
           <div className="showcase-head">
             <div className="showcase-text">
               <h2 className="showcase-title">Select</h2>
@@ -73,9 +77,9 @@ export default function LandingPage() {
             </div>
           </div>
           <SelectPreview />
-        </section>
+        </Reveal>
 
-        <section className="showcase">
+        <Reveal>
           <div className="showcase-head">
             <div className="showcase-text">
               <h2 className="showcase-title">Tags</h2>
@@ -85,7 +89,7 @@ export default function LandingPage() {
             </div>
           </div>
           <TagsPreview />
-        </section>
+        </Reveal>
       </main>
 
       <footer className="footer">

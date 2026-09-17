@@ -324,10 +324,10 @@ export const PasswordInput = React.forwardRef<HTMLInputElement, PasswordInputPro
         >
           {message != null ? (
             showError ? (
-              <AlertIcon />
+              <AlertIcon size={14} />
             ) : (
               <span className="yote-message-icon yote-message-icon-sm">
-                <InfoIcon size={16} />
+                <InfoIcon size={14} />
               </span>
             )
           ) : null}

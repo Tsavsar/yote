@@ -167,7 +167,12 @@ export const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(fun
             <span className={cx('yote-optional', classNames?.optional)}>(Optional)</span>
           ) : null}
           {info != null ? (
-            <span className={cx('yote-info', classNames?.info)} title={info} role="img" aria-label={info}>
+            <span
+              className={cx('yote-info', classNames?.info)}
+              title={info}
+              role="img"
+              aria-label={info}
+            >
               <InfoIcon size={14} />
             </span>
           ) : null}
@@ -242,10 +247,10 @@ export const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(fun
       >
         {message != null ? (
           showError ? (
-            <AlertIcon />
+            <AlertIcon size={14} />
           ) : (
             <span className="yote-message-icon yote-message-icon-sm">
-              <InfoIcon size={16} />
+              <InfoIcon size={14} />
             </span>
           )
         ) : null}

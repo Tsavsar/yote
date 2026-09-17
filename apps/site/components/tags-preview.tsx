@@ -40,7 +40,7 @@ export function TagsPreview() {
           tagsPosition={place}
           value={tags}
           onChange={setTags}
-          placeholder="Type and press Enter..."
+          placeholder="Type and press Enter"
           hint="Enter or a comma adds one. Backspace on an empty field removes the last."
         />
       </Stage>
@@ -51,7 +51,7 @@ export function TagsPreview() {
   tagsPosition="${place}"
   value={tags}
   onChange={setTags}
-  placeholder="Type and press Enter..."
+  placeholder="Type and press Enter"
 />`}
       />
     </div>

@@ -33,7 +33,7 @@
     --yote-stroke-soft: rgba(0, 0, 0, 0.05);
     --yote-text-strong: #171717;
     --yote-text-sub: #5c5c5c;
-    --yote-text-soft: #8a8a8a;
+    --yote-text-soft: #a3a3a3;
 
     /* Brand. The hex is canonical — hsla(256, 88%, 64%) resolves to #7E52F4,
        one value off in red. Figma variable `feature-base` is #7D52F4. */
@@ -172,10 +172,13 @@
    * Deliberately carries no width of its own — each component decides that,
    * because a digit group is sized by its cell count and a textarea is not.
    */
+  /* 10px, from the input family's frames (6:508, 6:2010, 6:3434, 6:4209,
+     6:4527). The 8 that was here predates them and made every field a
+     fraction tighter than the file. */
   .yote-field {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 10px;
     width: 100%;
   }
 
@@ -221,20 +224,28 @@
   }
 
   /*
-   * Reserve the message row so an error appearing never moves the form.
+   * Reserve the message row so an error appearing never moves the form. One
+   * line of the type below is the reserve.
    *
-   * Type is Figma's Paragraph/Medium (node 6:4770): 16px on 24px with 0.32px
-   * tracking. One line of that is the reserve.
+   * Paragraph/X-Small — 12 on 16 with 0.24px tracking. The row started at
+   * Paragraph/Medium (16 on 24, from the error frame 6:4770) and read as
+   * loud as the field it was describing; the input family draws its hint at
+   * Paragraph/Small, and a step below that is where it settles into being
+   * support text rather than a second label.
+   *
+   * Colour is text-sub, not text-soft. The frames say so, and it is also the
+   * only readable choice now that text-soft is the file's #a3a3a3 — 2.5:1 on
+   * white, which is fine for a placeholder and not for a sentence.
    */
   .yote-message {
     display: flex;
     align-items: center;
-    gap: 6px;
-    min-height: 24px;
-    font-size: 16px;
-    line-height: 24px;
-    letter-spacing: 0.32px;
-    color: var(--yote-text-soft);
+    gap: 4px;
+    min-height: 16px;
+    font-size: 12px;
+    line-height: 16px;
+    letter-spacing: 0.24px;
+    color: var(--yote-text-sub);
     transition: color var(--yote-duration) ease;
   }
 
@@ -242,14 +253,14 @@
     color: var(--yote-error-base);
   }
 
-  /* Never let the 20px mark squash when the message wraps to two lines. */
+  /* Never let the mark squash when the message wraps to two lines. */
   .yote-message-icon {
     flex: none;
     align-self: flex-start;
-    width: 20px;
-    height: 20px;
-    /* Optically centres the mark against a 24px line box. */
-    margin-top: 2px;
+    width: 14px;
+    height: 14px;
+    /* Optically centres the mark against a 16px line box. */
+    margin-top: 1px;
   }
 
   /* ---------------------------------------------------------------------
@@ -677,9 +688,9 @@
     justify-content: center;
     flex: none;
     align-self: flex-start;
-    width: 20px;
-    height: 20px;
-    margin-top: 2px;
+    width: 14px;
+    height: 14px;
+    margin-top: 1px;
   }
 
   .yote-message[data-disabled] {

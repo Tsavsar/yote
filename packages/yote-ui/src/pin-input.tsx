@@ -19,7 +19,8 @@ type NativeInputProps = Omit<
   | 'maxLength'
 >
 
-export interface PinInputProps extends Omit<YoteFieldProps<PinInputPart>, 'size'>, NativeInputProps {
+export interface PinInputProps
+  extends Omit<YoteFieldProps<PinInputPart>, 'size'>, NativeInputProps {
   /** Cell count, also sets `maxLength`. */
   length?: number
   /** Fires when the last cell fills. */
@@ -302,7 +303,7 @@ export const PinInput = React.forwardRef<HTMLInputElement, PinInputProps>(functi
       >
         {/* The mark is decoration — the message text already carries the
             meaning, and announcing an icon before it would just be noise. */}
-        {showError ? <AlertIcon /> : null}
+        {showError ? <AlertIcon size={14} /> : null}
         {message != null ? <span className="yote-message-text">{message}</span> : null}
       </div>
     </div>
