@@ -1688,6 +1688,36 @@
     color: var(--yote-text-strong);
   }
 
+  /* ---- founder note ---------------------------------------------------- */
+
+  /*
+   * Set apart from the reference prose around it, because it is the one
+   * paragraph on the site written by a person rather than about a component.
+   * A left rule rather than a box: a card would make it an announcement.
+   */
+  .founder {
+    margin-top: 4px;
+    padding-left: 16px;
+    border-left: 2px solid var(--yote-bg-subtle);
+  }
+
+  .founder-text {
+    max-width: 62ch;
+    color: var(--yote-text-sub);
+    text-wrap: pretty;
+  }
+
+  .founder-text em {
+    font-style: italic;
+    color: var(--yote-text-strong);
+  }
+
+  .founder-sign {
+    margin-top: 12px;
+    font-size: 13px;
+    color: var(--yote-text-soft);
+  }
+
   /* ---- prev / next ----------------------------------------------------- */
 
   .docs-pager {
