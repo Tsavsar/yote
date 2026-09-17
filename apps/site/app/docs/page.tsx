@@ -61,7 +61,9 @@ export function VerifyForm() {
         Components
       </h2>
       <p className="docs-p">
-        Two so far. Both take the same props, so the second one needs no new learning.
+        Four so far. They all take the same props, so every one after the first needs no new
+        learning — the vocabulary below is the whole API, and each page only documents what that
+        field adds to it.
       </p>
       <ul className="bullets">
         <li>
@@ -75,6 +77,18 @@ export function VerifyForm() {
             Text area
           </Link>{' '}
           — multi-line entry with a counter, a drag handle and three sizes.
+        </li>
+        <li>
+          <Link className="docs-inline-link" href="/docs/password">
+            Password
+          </Link>{' '}
+          — masked entry with a reveal toggle and a requirements block you define.
+        </li>
+        <li>
+          <Link className="docs-inline-link" href="/docs/phone">
+            Phone number
+          </Link>{' '}
+          — a dialling country and a national number, kept as two values.
         </li>
       </ul>
 

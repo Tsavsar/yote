@@ -631,7 +631,39 @@
 
   /* Borderless, 6px, and the active one is a surface fill rather than a dark
      one — the frame keeps the control row quiet so the stage carries the eye. */
+  /* The row is the indicator's containing block, so its offsets are the
+     pills' own. */
+  .pill-group {
+    position: relative;
+  }
+
+  /*
+   * One element that glides, measured from the real pills. Translated on both
+   * axes, because these rows wrap on a narrow screen and a selection that
+   * only moves sideways would slide along a line it has left.
+   */
+  .pill-indicator {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 0;
+    border-radius: 6px;
+    background: var(--yote-bg-surface);
+    transition:
+      transform 280ms var(--yote-ease-out),
+      width 280ms var(--yote-ease-out),
+      height 280ms var(--yote-ease-out);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .pill-indicator {
+      transition: none;
+    }
+  }
+
   .pill {
+    position: relative;
+    z-index: 1;
     padding: 4px 12px;
     border-radius: 6px;
     border: 0;
@@ -656,8 +688,10 @@
     transform: scale(0.97);
   }
 
+  /* Colour only. The background is the indicator behind it — leaving it here
+     as well would paint the selection twice, once arriving and once already
+     there. */
   .pill[data-active] {
-    background: var(--yote-bg-surface);
     color: var(--yote-text-strong);
   }
 

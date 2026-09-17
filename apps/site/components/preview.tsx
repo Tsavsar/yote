@@ -4,7 +4,7 @@ import * as React from 'react'
 import { PinInput } from 'yote-ui'
 import { CodeBlock } from './code-block'
 import { MoreMenu, Toggle } from './more-controls'
-import { Pill } from './state-switcher'
+import { Pill, PillGroup } from './state-switcher'
 import { Stage } from './stage'
 
 /**
@@ -132,11 +132,7 @@ function reduce(model: Model, action: Action): Model {
  * "you can see they are different" argument.
  */
 function Row({ label, children }: { label: string; children: React.ReactNode }) {
-  return (
-    <div className="control-row" role="group" aria-label={label}>
-      {children}
-    </div>
-  )
+  return <PillGroup label={label}>{children}</PillGroup>
 }
 
 export function Preview({

@@ -4,7 +4,7 @@ import * as React from 'react'
 import { Textarea } from 'yote-ui'
 import { CodeBlock } from './code-block'
 import { MoreMenu, Toggle } from './more-controls'
-import { Pill } from './state-switcher'
+import { Pill, PillGroup } from './state-switcher'
 import { Stage } from './stage'
 
 /**
@@ -114,20 +114,20 @@ export function TextareaPreview({
       ) : null}
 
       <div className="controls">
-        <div className="control-row" role="group" aria-label="State">
+        <PillGroup label="State">
           {STATES.map((s) => (
             <Pill key={s} active={state === s} onClick={() => pickState(s)}>
               {LABELS[s]}
             </Pill>
           ))}
-        </div>
-        <div className="control-row" role="group" aria-label="Size">
+        </PillGroup>
+        <PillGroup label="Size">
           {SIZES.map((s) => (
             <Pill key={s} active={size === s} onClick={() => setSize(s)}>
               {s}
             </Pill>
           ))}
-        </div>
+        </PillGroup>
       </div>
 
       <Stage className="stage-tall">
