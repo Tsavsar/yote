@@ -1691,14 +1691,12 @@
   /* ---- founder note ---------------------------------------------------- */
 
   /*
-   * Set apart from the reference prose around it, because it is the one
-   * paragraph on the site written by a person rather than about a component.
-   * A left rule rather than a box: a card would make it an announcement.
+   * No rule and no box. The signature at the foot of it already says this
+   * paragraph is a person talking; a border would be the same thing said
+   * twice, and louder.
    */
   .founder {
     margin-top: 4px;
-    padding-left: 16px;
-    border-left: 2px solid var(--yote-bg-subtle);
   }
 
   .founder-text {
@@ -1713,7 +1711,16 @@
   }
 
   .founder-sign {
-    margin-top: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
+    margin-top: 16px;
+    /* The mark itself, at full ink — a signature that whispers is not one. */
+    color: var(--yote-text-strong);
+  }
+
+  .founder-name {
     font-size: 13px;
     color: var(--yote-text-soft);
   }

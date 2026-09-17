@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { CodeBlock } from '../../components/code-block'
 import { DOCS_COMPONENTS } from '../../components/docs-routes'
 import { Install } from '../../components/install'
+import { Signature } from '../../components/signature'
 
 export default function GettingStartedPage() {
   return (
@@ -111,7 +112,10 @@ export function VerifyForm() {
           </a>
           . Thank you!
         </p>
-        <p className="founder-sign">Shater</p>
+        <div className="founder-sign">
+          <Signature />
+          <span className="founder-name">Shater</span>
+        </div>
       </div>
     </>
   )
